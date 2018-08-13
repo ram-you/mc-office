@@ -29,7 +29,7 @@
     "vue-swatches": "^1.0.1",
     "vuetify": "^1.1.10",
     "vuex": "^3.0.1"
-  }, 
+  },
   "devDependencies": {
     "@babel/polyfill": "^7.0.0-rc.1",
     "babel-core": "^6.26.3",
@@ -83,10 +83,8 @@
     "webpack-cli": "^3.1.0",
     "webpack-dev-server": "3.1.5",
     "webpack-hot-middleware": "^2.22.3"
-  }, 
-  
-  "main": "./dist/electron/main.js", 
-
+  },
+  "main": "./dist/electron/main.js",
   "scripts": {
     "build": "npm run pack && electron-builder",
     "build:dir": "npm run pack && electron-builder --dir",
@@ -104,8 +102,7 @@
     "postinstall": "electron-builder install-app-deps && npm rebuild node-sass",
     "rebuild-electron": "./node_modules/.bin/electron-rebuild",
     "release": "build"
-  }, 
-
+  },
   "build": {
     "asar": true,
     "asarUnpack": [
