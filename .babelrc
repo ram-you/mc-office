@@ -1,0 +1,25 @@
+{
+  "plugins": [
+    ["syntax-dynamic-import"],
+    ["transform-runtime", {
+      "helpers": false,
+      "polyfill": false,
+      "regenerator": true,
+      "moduleName": "babel-runtime"
+    }],
+    [ 
+      "transform-imports",
+      {
+        "vuetify": {
+          "transform": "vuetify/es5/components/${member}",
+          "preventFullImport": true
+        }
+      }
+    ]
+  ],
+  "presets": [ 
+    [
+      "env" 
+    ]
+  ]
+}

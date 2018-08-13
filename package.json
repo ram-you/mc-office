@@ -1,0 +1,190 @@
+{
+  "name": "mc-office",
+  "version": "0.2.0",
+  "license": "MIT",
+  "description": "A MEDIACEPT Technology creation",
+  "author": {
+    "name": "Ramzi Youssef",
+    "email": "contact@mediacept.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ram-you/mc-office.git"
+  },
+  "dependencies": {
+    "bulma": "^0.7.1",
+    "vue-electron": "^1.0.6",
+    "@fortawesome/fontawesome-free": "^5.2.0",
+    "@mdi/font": "^2.6.95",
+    "animejs": "^2.2.0",
+    "assert": "^1.4.1",
+    "electron-store": "^2.0.0",
+    "lodash": "^4.17.10",
+    "nedb": "^1.8.0",
+    "sql.js": "^0.5.0",
+    "trilogy": "^1.4.5",
+    "vue": "^2.5.17",
+    "vue-i18n": "^8.0.0",
+    "vue-router": "^3.0.1",
+    "vue-swatches": "^1.0.1",
+    "vuetify": "^1.1.10",
+    "vuex": "^3.0.1"
+  }, 
+  "devDependencies": {
+    "@babel/polyfill": "^7.0.0-rc.1",
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.6",
+    "babel-loader": "^7.1.5",
+    "babel-plugin-istanbul": "^4.1.6",
+    "babel-plugin-syntax-dynamic-import": "^6.18.0",
+    "babel-plugin-transform-imports": "^1.5.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-minify": "^0.4.3",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "babel-runtime": "^6.26.0",
+    "copy-webpack-plugin": "^4.5.2",
+    "cross-env": "^5.2.0",
+    "css-loader": "^1.0.0",
+    "del": "^3.0.0",
+    "devtron": "^1.4.0",
+    "electron": "^2.0.7",
+    "electron-builder": "^20.27.1",
+    "electron-debug": "^2.0.0",
+    "electron-rebuild": "^1.8.2",
+    "eslint": "^5.3.0",
+    "eslint-config-airbnb-base": "^13.0.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-import-resolver-webpack": "^0.10.1",
+    "eslint-loader": "^2.1.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-vue": "^4.7.1",
+    "file-loader": "^1.1.11",
+    "html-webpack-plugin": "^3.2.0",
+    "inject-loader": "^4.0.1",
+    "less": "^3.8.0",
+    "less-loader": "^4.1.0",
+    "mini-css-extract-plugin": "0.4.1",
+    "multispinner": "^0.2.1",
+    "node-loader": "^0.6.0",
+    "node-sass": "^4.9.2",
+    "sass-loader": "^7.1.0",
+    "script-ext-html-webpack-plugin": "^2.0.1",
+    "style-loader": "^0.21.0",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2",
+    "url-loader": "^1.0.1",
+    "vue-devtools": "^4.1.4",
+    "vue-loader": "^15.2.6",
+    "vue-style-loader": "^4.1.1",
+    "vue-template-compiler": "^2.5.17",
+    "webpack": "^4.16.5",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "3.1.5",
+    "webpack-hot-middleware": "^2.22.3"
+  }, 
+  
+  "main": "./dist/electron/main.js", 
+
+  "scripts": {
+    "build": "npm run pack && electron-builder",
+    "build:dir": "npm run pack && electron-builder --dir",
+    "build:linux": "npm run pack && electron-builder --linux",
+    "build:mac": "npm run pack && electron-builder --mac",
+    "build:win": "npm run pack && electron-builder --win",
+    "build:win-app": "npm run pack && electron-builder",
+    "clean": "cross-env BUILD_TARGET=clean node vue-electron/build.js",
+    "dev": "cross-env NODE_ENV=development node vue-electron/dev-runner.js",
+    "lint": "eslint --ext .js,.vue src test",
+    "lint:fix": "eslint --ext .js,.vue --fix src test",
+    "pack": "cross-env NODE_ENV=production npm run pack:main && npm run pack:renderer",
+    "pack:main": "webpack --mode production --hide-modules --config vue-electron/webpack.main.config.js",
+    "pack:renderer": "webpack --mode production --hide-modules --config vue-electron/webpack.renderer.config.js",
+    "postinstall": "electron-builder install-app-deps && npm rebuild node-sass",
+    "rebuild-electron": "./node_modules/.bin/electron-rebuild",
+    "release": "build"
+  }, 
+
+  "build": {
+    "asar": true,
+    "asarUnpack": [
+      "./"
+    ],
+    "productName": "MC-Office",
+    "appId": "com.mediacept.mc-office",
+    "directories": {
+      "output": "dist_electron"
+    },
+    "extraResources": [
+      {
+        "from": "./src/common/locales",
+        "to": "locales"
+      },
+      {
+        "from": "./src/common/assets",
+        "to": "assets"
+      }
+    ],
+    "win": {
+      "icon": "./src/common/assets/icons/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "ia32"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "allowToChangeInstallationDirectory": true,
+      "oneClick": false,
+      "displayLanguageSelector": true,
+      "installerLanguages": [
+        "fr_FR",
+        "en_US"
+      ]
+    },
+    "linux": {
+      "icon": "./src/common/assets/icons",
+      "category": "Office",
+      "target": [
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "synopsis": "MEDIACEPT Office",
+      "description": "A full desktop office application developed by MEDIACEPT Technology",
+      "desktop": {
+        "Name": "MC-Office",
+        "Comment": "MEDIACEPT Office",
+        "Categories": "Office, Desktop"
+      }
+    },
+    "appImage": {
+      "systemIntegration": "doNotAsk",
+      "synopsis": "MEDIACEPT Office",
+      "description": "A full desktop office application developed by MEDIACEPT Technology",
+      "desktop": {
+        "Name": "MC-Office",
+        "Comment": "MEDIACEPT Office",
+        "Categories": "Office, Desktop"
+      }
+    },
+    "deb": {
+      "synopsis": "MEDIACEPT Office",
+      "afterInstall": "./scripts/debian-add-repo.sh",
+      "afterRemove": "./scripts/debian-uninstaller.sh"
+    }
+  }
+}

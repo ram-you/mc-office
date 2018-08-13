@@ -1,0 +1,26 @@
+{ 
+  "app": {
+    "Title": "ميدياسبت أوفيس",
+    "Title_Long":  "ميدياسبت أوفيس",
+    "Home": "الصفحة الرئيسية",
+    "About": "عن ميدياسبت أوفيس",
+    "Application_Locale":"لغة التطبيق",
+    "Arab": "عربي",
+    "English": "انجليزى",
+    "French": "الفرنسية",
+    "Login":"تسجيل الدخول",
+    "Logout": "تسجيل خروج",
+    "Sign_In":"تسجيل الدخول",
+    "Username":"اسم المستخدم",
+    "Password":"كلمه السر",
+    "Username_is_required":"اسم المستخدم مطلوب",
+    "Enter_username":"ادخل اسم المستخدم",
+    "Password_is_required":"كلمة المرور مطلوبة",
+    "Enter_password":"أدخل كلمة المرور",
+    "Remember_me":"تذكرنى",
+    "Search":"البحث عن",
+    "Color_theme":"موضوع اللون",
+    "dark":"داكن (أسود) ",
+    "light":"فاتح (أبيض)"
+  }
+}
