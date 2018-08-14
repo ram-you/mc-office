@@ -8,21 +8,18 @@ const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
-const ScriptExtHtmlWebpackPlugin =require('script-ext-html-webpack-plugin')
+const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 
-// const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 /* eslint-enable */
- 
 
-/**
- * List of node_modules to include in webpack bundle
- *
- * Required for specific packages like Vue UI libraries
- * that provide pure *.vue files that need compiling
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/webpack-configurations.html#white-listing-externals
- */
+const devMode = process.env.NODE_ENV !== 'production'
+
+
 const whiteListedModules = ['vue']
 
 const rendererConfig = {
@@ -37,10 +34,11 @@ const rendererConfig = {
   ],
   module: {
     rules: [
-      {
-        test: /\.styl$/,
-        loader: ['style-loader', 'css-loader', 'stylus-loader']
-      },
+      // {
+      //   test: /\.styl$/,
+      //   loader: ['style-loader', 'css-loader', 'stylus-loader']
+      // },
+
       {
         test: /\.scss$/,
         use: ['vue-style-loader', 'css-loader', 'sass-loader']
@@ -53,10 +51,27 @@ const rendererConfig = {
         test: /\.less$/,
         use: ['vue-style-loader', 'css-loader', 'less-loader']
       },
+
+
+      // {
+      //   test: /\.css$/,
+      //   use: ['vue-style-loader', 'css-loader']
+      // },
+
+
       {
         test: /\.css$/,
-        use: ['vue-style-loader', 'css-loader']
+        use: [MiniCssExtractPlugin.loader, 'css-loader', ]
       },
+
+
+      {
+        test: /\.styl$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'stylus-loader']
+      },
+
+
+
       {
         test: /\.html$/,
         use: 'vue-html-loader'
@@ -64,13 +79,13 @@ const rendererConfig = {
 
       {
         test: /\.js$/,
-        
-        loader: 'babel-loader', 
-        exclude: /node_modules/  
+
+        loader: 'babel-loader',
+        exclude: /node_modules/
       },
 
-      
-      
+
+
       {
         test: /\.node$/,
         use: 'node-loader'
@@ -79,7 +94,7 @@ const rendererConfig = {
       {
         test: /\.vue$/,
         loader: 'vue-loader',
-        options: { 
+        options: {
           extractCSS: true,
           loaders: {
             js: 'babel-loader'
@@ -125,41 +140,53 @@ const rendererConfig = {
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: path.resolve(__dirname, '../src/index.ejs'),
-      nodeModules:
-        process.env.NODE_ENV !== 'production'
-          ? path.resolve(__dirname, '../node_modules')
-          : false,
-       
-      
+      nodeModules: process.env.NODE_ENV !== 'production' ? path.resolve(__dirname, '../node_modules') : false,
+      minify: {
+        html5: false,
+        collapseWhitespace: true,
+        minifyCSS: true,
+        minifyJS: true,
+        minifyURLs: false,
+        removeAttributeQuotes: true,
+        removeComments: true,
+        removeEmptyAttributes: true,
+        removeOptionalTags: true,
+        removeRedundantAttributes: true,
+        removeScriptTypeAttributes: true,
+        removeStyleLinkTypeAttributese: true,
+        useShortDoctype: true
+      }
     }),
-    new ScriptExtHtmlWebpackPlugin({
 
-      defaultAttribute: 'defer',
-     
-       
+    new ScriptExtHtmlWebpackPlugin({
+      defaultAttribute: 'async',
       // defer: /\.js$/,
       preload: /\.js$/,
       prefetch: {
         test: /\.js$/,
         chunks: 'async'
       },
-      
     }),
+
     new VueLoaderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
- 
 
-    // new MiniCssExtractPlugin()
+    new MiniCssExtractPlugin({
+      filename: '[name].[hash].css',
+      chunkFilename: '[id].[hash].css',
+    })
+
+
   ],
 
   output: {
     filename: '[name].js',
     libraryTarget: 'commonjs2',
     path: path.join(__dirname, '../dist/electron'),
-    chunkFilename: '[name].js' ,
+    chunkFilename: '[name].[chunkhash:4].js',
     crossOriginLoading: 'anonymous',
   },
-  
+
   resolve: {
     alias: {
       '@': path.join(__dirname, '../src/renderer'),
@@ -170,13 +197,22 @@ const rendererConfig = {
   },
   target: 'electron-renderer',
 
-	optimization: {
-		splitChunks: {
-      chunks: "all",
-    }    
-	},
+  optimization: {
+    splitChunks: { chunks: 'all' },
+    runtimeChunk: false,
+    minimizer: [
+      new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: true
+      }),
+      new OptimizeCSSAssetsPlugin({})
+    ],
 
-  
+
+  },
+
+
 
 }
 
@@ -185,13 +221,11 @@ const rendererConfig = {
  */
 if (process.env.NODE_ENV === 'production') {
   rendererConfig.plugins.push(
-    new CopyWebpackPlugin([
-      {
-        from: path.join(__dirname, '../static'),
-        to: path.join(__dirname, '../dist/electron/static'),
-        ignore: ['.*']
-      }
-    ])
+    new CopyWebpackPlugin([{
+      from: path.join(__dirname, '../static'),
+      to: path.join(__dirname, '../dist/electron/static'),
+      ignore: ['.*']
+    }])
   )
 }
 

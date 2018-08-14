@@ -22,7 +22,16 @@ import {
   VBtn,
   VIcon,
   VGrid,
-  VToolbar,VChip,VSwitch,VStepper,VRadioGroup,VTooltip,VProgressLinear,VProgressCircular,VAvatar,VSelect,
+  VToolbar,
+  VChip,
+  VSwitch,
+  VStepper,
+  VRadioGroup,
+  VTooltip,
+  VProgressLinear,
+  VProgressCircular,
+  VAvatar,
+  VSelect,
   transitions
 } from 'vuetify'
 
@@ -52,7 +61,16 @@ Vue.use(Vuetify, {
     VBtn,
     VIcon,
     VGrid,
-    VToolbar,VChip,VSwitch,VStepper,VRadioGroup,VTooltip,VProgressLinear,VProgressCircular,VAvatar,VSelect,
+    VToolbar,
+    VChip,
+    VSwitch,
+    VStepper,
+    VRadioGroup,
+    VTooltip,
+    VProgressLinear,
+    VProgressCircular,
+    VAvatar,
+    VSelect,
     transitions
   },
   theme: {

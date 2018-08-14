@@ -2,7 +2,7 @@
 import '@babel/polyfill'
 
 import Vue from 'vue'
-import './plugins/vuetify'
+import './plugins/vuetify' 
 import App from './App.vue'
 import router from './router'
 import store from './store' 
@@ -10,6 +10,7 @@ import store from './store'
 Vue.config.productionTip = false
 Vue.config.devtools = true
 
+// electron can be used and accessed from this.$electron
 Vue.use(require('vue-electron'))
  
 
@@ -17,13 +18,10 @@ import ar_tn from '../common/locales/ar-tn/';
 import en_gb from '../common/locales/en-gb/';
 import fr_fr from '../common/locales/fr-fr/';
 
-import YesNo from './components/YesNo.vue'
-Vue.component('app-yesno', YesNo)
 
 import db from './db/datastore' 
 Vue.prototype.$db = db 
 
- 
  
 Vue.prototype.$localesItems= [{ name: 'العربية', locale: 'ar-tn' }, { name: 'English', locale: 'en-gb' }, { name: 'Français', locale: 'fr-fr' }]
 Vue.prototype.$colorThemeItems= [{ name: 'Dark (black)', theme: 'dark' }, { name: 'Light (white)', theme: 'light' }]
@@ -31,9 +29,10 @@ Vue.prototype.$colorThemeItems= [{ name: 'Dark (black)', theme: 'dark' }, { name
 import '@fortawesome/fontawesome-free/css/all.css'
 import '@mdi/font/css/materialdesignicons.css'
 
-import  '../common/assets/fonts/Ubuntu/index.css'
+// import  '../common/assets/fonts/Tajawal/index.css'
+// import  '../common/assets/fonts/Ubuntu/index.css'
+
 import  '../common/assets/fonts/Cairo/index.css'
-import  '../common/assets/fonts/Tajawal/index.css'
 
 
 import VueI18n from 'vue-i18n'
