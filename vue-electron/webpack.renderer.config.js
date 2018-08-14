@@ -34,10 +34,7 @@ const rendererConfig = {
   ],
   module: {
     rules: [
-      // {
-      //   test: /\.styl$/,
-      //   loader: ['style-loader', 'css-loader', 'stylus-loader']
-      // },
+
 
       {
         test: /\.scss$/,
@@ -53,6 +50,11 @@ const rendererConfig = {
       },
 
 
+
+      //    {
+      //   test: /\.styl$/,
+      //   loader: ['style-loader', 'css-loader', 'stylus-loader']
+      // },
       // {
       //   test: /\.css$/,
       //   use: ['vue-style-loader', 'css-loader']
@@ -61,7 +63,7 @@ const rendererConfig = {
 
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', ]
+        use: [MiniCssExtractPlugin.loader, 'css-loader',]
       },
 
 
@@ -141,26 +143,11 @@ const rendererConfig = {
       filename: 'index.html',
       template: path.resolve(__dirname, '../src/index.ejs'),
       nodeModules: process.env.NODE_ENV !== 'production' ? path.resolve(__dirname, '../node_modules') : false,
-      minify: {
-        html5: false,
-        collapseWhitespace: true,
-        minifyCSS: true,
-        minifyJS: true,
-        minifyURLs: false,
-        removeAttributeQuotes: true,
-        removeComments: true,
-        removeEmptyAttributes: true,
-        removeOptionalTags: true,
-        removeRedundantAttributes: true,
-        removeScriptTypeAttributes: true,
-        removeStyleLinkTypeAttributese: true,
-        useShortDoctype: true
-      }
+      minify: true
     }),
 
     new ScriptExtHtmlWebpackPlugin({
       defaultAttribute: 'async',
-      // defer: /\.js$/,
       preload: /\.js$/,
       prefetch: {
         test: /\.js$/,
@@ -172,7 +159,7 @@ const rendererConfig = {
     new webpack.HotModuleReplacementPlugin(),
 
     new MiniCssExtractPlugin({
-      filename: '[name].[hash].css',
+      filename: '[name].css',
       chunkFilename: '[id].[hash].css',
     })
 
@@ -184,21 +171,23 @@ const rendererConfig = {
     libraryTarget: 'commonjs2',
     path: path.join(__dirname, '../dist/electron'),
     chunkFilename: '[name].[chunkhash:4].js',
-    crossOriginLoading: 'anonymous',
+    // crossOriginLoading: 'anonymous',
   },
 
   resolve: {
     alias: {
       '@': path.join(__dirname, '../src/renderer'),
       vue$: 'vue/dist/vue.esm.js',
-      fabric$: path.join(__dirname, '../src/renderer/assets/script/fabric.js')
+      // fabric$: path.join(__dirname, '../src/renderer/assets/script/fabric.js')
     },
     extensions: ['.js', '.vue', '.json', '.css', '.node']
   },
   target: 'electron-renderer',
 
   optimization: {
-    splitChunks: { chunks: 'all' },
+    splitChunks: { 
+      chunks: 'all'
+    },
     runtimeChunk: false,
     minimizer: [
       new UglifyJsPlugin({

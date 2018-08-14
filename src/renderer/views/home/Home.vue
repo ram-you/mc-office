@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container fluid style="height:100%"> 
     <v-slide-y-transition mode="out-in">
       <div>
 

@@ -8,18 +8,22 @@ var da
 var Datastore = require('nedb')
 var db = {}
 
+const userFilename = path.join(remote.app.getPath('userData'), 'datastore/users.db')
+const desssertFilename = path.join(remote.app.getPath('userData'), 'datastore/desserts.db')
+
 // ============== USERS ==============
 db.Users = new Datastore({
-  filename: path.join(remote.app.getPath('userData'), 'datastore/users.db'),
+  filename: userFilename,
   autoload: true,
-  onload: function(error) {
+  timestampData: true,
+  onload: function (error) {
     if (error) { alert(error) } else {
-      db.Users.count({}, function(err, count) {
+      db.Users.count({}, function (err, count) {
         if (count == 0) {
           var password = "admin"
           var pass_hash = crypto.createHash('md5').update(password, 'utf-8').digest('hex').toUpperCase();
           var user = { username: "admin", password: pass_hash };
-          db.Users.insert(user, function(err, newDoc) {})
+          db.Users.insert(user, function (err, newDoc) { })
         }
       });
     }
@@ -30,9 +34,10 @@ db.Users = new Datastore({
 
 // ============== DESSERTS ==============
 db.Desserts = new Datastore({
-  filename: path.join(remote.app.getPath('userData'), 'datastore/desserts.db'),
+  filename: desssertFilename,
   autoload: true,
-  onload: function(error) {
+  timestampData: true,
+  onload: function (error) {
     if (error) alert(error)
   },
 });

@@ -1,5 +1,5 @@
 <template>
-  <v-tabs centered icons-and-text >
+  <v-tabs centered icons-and-text style="height:100%">
     <v-tabs-slider color="orange"></v-tabs-slider>
 
     <v-tab href="#tab-profile">
@@ -14,19 +14,19 @@
       General
     </v-tab>
 
-   <v-tabs-items  style="height:100%">
-    <v-tab-item id="tab-profile">
-      <profile-settings/>
-    </v-tab-item>
+    <v-tabs-items>
+      <v-tab-item id="tab-profile">
+        <profile-settings/>
+      </v-tab-item>
 
-    <v-tab-item id="tab-invoice">
-      <invoice-settings/>
-    </v-tab-item>
+      <v-tab-item id="tab-invoice">
+        <invoice-settings/>
+      </v-tab-item>
 
-    <v-tab-item id="tab-general">
-      <general-settings/>
-    </v-tab-item>
-   </v-tabs-items>
+      <v-tab-item id="tab-general">
+        <general-settings/>
+      </v-tab-item>
+    </v-tabs-items>
 
   </v-tabs>
 </template>
