@@ -25,18 +25,7 @@
           <dashboard :theme="_userTheme"/> 
         </v-layout>
 
-        <!-- <v-layout column align-center class="mt-4">
-          <v-card class="weatherwidget">
-            <a class="weatherwidget-io" data-icons="Climacons Animated" :href="'https://forecast7.com/'+userShortLocale+'/35d8210d63/sousse/'"
-              data-label_1="Sousse" data-label_2="Tunisie" data-font="Ubuntu" :data-theme="(userTheme.theme=='dark')?'dark':'pure'">Sousse, Tunisie</a>
-          </v-card>
-        </v-layout>
-
-        <v-layout column align-center class="mt-4">
-          <v-card class="elevation-1 pa-1">
-          <video style="display:block" src="../../common/assets/videos/big_buck_bunny.mp4"   controls></video>
-          </v-card>
-        </v-layout> -->
+       
 
   
       </div>
