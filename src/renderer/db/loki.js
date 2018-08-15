@@ -46,13 +46,14 @@ function databaseInitialize() {
   }
   if (users === null) {
     users = db.addCollection("users");
+   
     users.insert({
       username: "admin",
-      password: "admin"
+      password: password_hash
     });
   }
 }
 
-
+ 
 
 export default db

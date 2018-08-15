@@ -62,7 +62,7 @@
          label: 'New',
          accelerator: 'CmdOrCtrl+N',
          click() {
-           mainWindow.webContents.send('menu-change-tab', 'form');
+          mainWindow.webContents.send('menu-change-tab', 'new-invoice');
          },
        },
        {

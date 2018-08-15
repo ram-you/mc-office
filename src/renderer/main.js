@@ -13,6 +13,7 @@ Vue.config.devtools = true
 // electron can be used and accessed from this.$electron
 Vue.use(require('vue-electron'))
  
+ 
 
 import ar_tn from '../common/locales/ar-tn/';
 import en_gb from '../common/locales/en-gb/';
