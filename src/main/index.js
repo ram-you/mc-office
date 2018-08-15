@@ -56,7 +56,7 @@ function createMainWindow() {
     backgroundColor: isDarkMode ? '#303030' : '#fff',
     show: false,
     icon: ASSETS_DIR + '/icons/64x64.png',// path.join(__dirname, '../common/assets/icons/64x64.png'),
-    webPreferences: { plugins: false, secure:false  }
+    webPreferences: { plugins: false }
 
   })
 

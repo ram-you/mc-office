@@ -20,7 +20,7 @@ import en_gb from '../common/locales/en-gb/';
 import fr_fr from '../common/locales/fr-fr/';
 
 
-import db from './db/datastore' 
+import db from './db/models' 
 Vue.prototype.$db = db 
 
  
