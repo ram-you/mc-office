@@ -12,21 +12,20 @@ const dsFolder = 'database'
 const invoicesFilename = path.join(remote.app.getPath('userData'), dsFolder + '/invoices.db')
 
 
-
-
-var model
+var table = {}
+table.name = "Invoices"
 // ==============   ==============
 function init() {
-  model = new Datastore({
+  table.model = new Datastore({
     filename: invoicesFilename,
     autoload: true,
     timestampData: true,
     onload: (error) => {
       if (error) { alert(error) } else {
-        model.count({}, function(err, count) {
+        table.model.count({}, function (err, count) {
           if (count == 0) {
-            model.insert(JSON.parse(JSON.stringify(require('../invoices-sample.json'))), function(err, newDoc) {})
-          } else {}
+            table.model.insert(JSON.parse(JSON.stringify(require('../invoices-sample.json'))), function (err, newDoc) { })
+          } else { }
         });
       }
     },
@@ -36,6 +35,10 @@ function init() {
 
 init()
 
+var methods = {
 
+}
 
-export default model
+table.methods = methods
+
+export default table

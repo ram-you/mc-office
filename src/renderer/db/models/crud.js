@@ -8,7 +8,7 @@ const crypto = require('crypto');
 var Datastore = require('nedb') 
 
 const version = require('../../../../package').version
-const dsFolder = 'database/' + version
+const dsFolder = 'database/' 
 const autoIncrementFilename = path.join(remote.app.getPath('userData'), dsFolder + '/autoIncrement.db')
 
 // ==============UniqueID========================
@@ -56,16 +56,16 @@ function getUniqueId(nameDb, cb) {
 
 
 // ===================
-function insertUnique(dbName, data, cb) {
-  getUniqueId(dbName, function (uniqueId) {
-      data.itemId = uniqueId;
+function insertUnique(table, data, cb) {
+  getUniqueId(table.name, function (uniqueId) {
+      data.id = uniqueId;
 
-      db[dbName].insert(data, function (err, newDoc) {
+   table.model.insert(data, function (err, newDoc) {
           if (err) {
-              cb({error: '1', message: 'error#2'});
+              cb({error: true, message: 'error#2'});
               throw err;
           }
-          cb({error: '0', message: 'Item add'});
+          cb({error: false, message: newDoc});
       });
 
   });

@@ -139,6 +139,7 @@
     </v-flex>
 
   </div>
+  
 </template>
 <script>
 export default {
@@ -159,21 +160,7 @@ export default {
     }
   },
   created: function () {
-    this.$root.breadcrumbs = [
-      {
-        text: 'Dashboard',
-        disabled: false,
-        href: '/dashboard'
-      },
-      {
-        text: 'Form Inputs & Controls',
-        disabled: true
-      },
-      {
-        text: 'Selection Controls',
-        disabled: true
-      }
-    ]
+  
   }
 }
 </script>

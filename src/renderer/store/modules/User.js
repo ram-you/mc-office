@@ -2,7 +2,7 @@
 import db from "../../db/models";
  
 
-var Users = db.Users
+var Users = db.Users.model
 
 
 
@@ -105,21 +105,7 @@ const actions = {
   },
 
   getUsers({ commit }) {
-
-    // const query = ds.knex('users').select('*')
-    // console.log(query.toString())
-    //     ds.raw(query, true).then(users => {
-    //   commit("setUsers", users)
-    //   return Promise.resolve();
-    // })
-
-
-    //  knex.select("FirstName").from("User") .then(function(rows){
-    //   commit("setUsers", rows)
-    //   return Promise.resolve();
-    //   })
-
-    Users.find({}, function (err, docs) {
+     Users.find({}, function (err, docs) {
       commit("setUsers", docs)
       return Promise.resolve();
     })
