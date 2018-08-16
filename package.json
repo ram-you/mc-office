@@ -35,6 +35,8 @@
     "animejs": "^2.2.0",
     "assert": "^1.4.1",
     "electron-store": "^2.0.0",
+    "leveldown": "^4.0.1",
+    "linvodb3": "^3.25.2",
     "lodash": "^4.17.10",
     "modli": "^2.1.2",
     "modli-nedb": "^2.0.1",

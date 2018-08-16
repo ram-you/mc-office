@@ -188,7 +188,7 @@ export default {
       miniVariant: false,
       drawerState: false,
       drawer: -1,
-      localesItems: [{ name: 'العربية', locale: 'ar-tn' }, { name: 'English', locale: 'en-gb' }, { name: 'Français', locale: 'fr-fr' }],
+      localesItems: this.$localesItems,
       themesItems: this.$colorThemeItems,
 
       items2: [

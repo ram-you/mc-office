@@ -51,8 +51,7 @@ function createMainWindow() {
     minWidth: 500,
     minHeight: 350,
     x: winPOS.x,
-    y: winPOS.y,
-    darkTheme: isDarkMode, // GTK+3
+    y: winPOS.y, 
     backgroundColor: isDarkMode ? '#303030' : '#fff',
     show: false,
     icon: ASSETS_DIR + '/icons/64x64.png',// path.join(__dirname, '../common/assets/icons/64x64.png'),

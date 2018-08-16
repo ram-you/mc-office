@@ -1,13 +1,13 @@
 <template>
   <div class="container-login100" :style="isConnected?'':' min-height: calc(100vh - 37px) !important;'">
-    <v-card class="wrap-login100  " :dark="userTheme.theme=='dark'">
+    <v-card v-if=" inited" class="wrap-login100  " :dark="userTheme.theme=='dark'">
       <div class="login100-form-title" v-bind:style="{ 'background-image': 'url(' + image + ')' }">
         <span class="login100-form-title-1">
           {{ $t('main.app.Sign_In') }}
         </span>
       </div>
 
-      <v-card v-if="!isConnected" :dark="userTheme.theme=='dark'" class="pa-4" flat style="border-top-left-radius: 0; border-top-right-radius: 0;">
+      <v-card v-if="!isConnected  && inited" :dark="userTheme.theme=='dark'" class="pa-4" flat style="border-top-left-radius: 0; border-top-right-radius: 0;">
         <v-form>
           <v-text-field prepend-icon="mdi-account-outline" name="Username" v-model="username" :label="$t('main.app.Username')"
             :dark="userTheme.theme=='dark'"></v-text-field>
@@ -24,7 +24,7 @@
       </v-card>
 
       <v-divider v-if="!isConnected"></v-divider>
-      <v-card-actions v-if="!isConnected">
+      <v-card-actions v-if="!isConnected && inited">
 
         <div :class="$vuetify.rtl?'text-xs-right':'text-xs-left'">
           <v-menu offset-y transition="slide-y-transition">
@@ -35,7 +35,7 @@
             <v-list dense subheader>
               <v-subheader> {{ $t('main.app.Application_Locale')}}</v-subheader>
               <v-list-tile v-for="item in localesItems" :key="item.locale" @click="updateUserLocale(item)">
-                <v-list-tile-title v-text="item.name" class="mx-1" :class="(item.name==userLocale.name)?  getLocaleFontClass(item)+'font-weight-bold':  getLocaleFontClass(item)"></v-list-tile-title>
+                <v-list-tile-title v-text="item.name" class="mx-1" :class="(item.name==userLocale.name)? 'font-weight-bold': ''"></v-list-tile-title>
               </v-list-tile>
             </v-list>
           </v-menu>
@@ -92,12 +92,16 @@ var image = require('../../common/assets/img/login-background.jpg')
 export default {
   data() {
     return {
+      inited: false,
       image: image,
       username: "",
       password: "",
       remember: true,
-      localesItems: [{ name: 'العربية', locale: 'ar-tn' }, { name: 'English', locale: 'en-gb' }, { name: 'Français', locale: 'fr-fr' }],
-      themesItems: this.$colorThemeItems
+      localesItems: this.$localesItems,
+      themesItems: this.$colorThemeItems,
+      actualLocale: [],
+      actualTheme: [],
+
     }
   },
   computed: {
@@ -114,32 +118,39 @@ export default {
   mounted() {
     var vm = this
     ipcRenderer.send('update-menu')
-    this.$vuetify.lang.current = (this.$root.$i18n.locale).substring(0, 2);
-    this.$vuetify.rtl = this.$vuetify.lang.current == "ar";
-    this.themesItems = this.$colorThemeItems.map(function (e) {
-      e.name = vm.$i18n.t('main.app.' + e.theme)
-      return e;
+    this.actualLocale = this.userLocale
+    this.actualTheme=this.userTheme
+    this.updateUserLocale(this.actualLocale)
+    setTimeout(() => {
+      vm.inited = true
     });
   },
   methods: {
-    getLocaleFontClass(item) {
-      return item.locale.substring(0, 2) + '-fontFamily ';
-    },
     updateUserLocale(locale) {
       var vm = this
+      this.actualLocale = locale
       var connectedUserName = this.connectedUserName
       this.$root.$i18n.locale = locale.locale
       this.$vuetify.lang.current = (this.$root.$i18n.locale).substring(0, 2);
       this.$vuetify.rtl = this.$vuetify.lang.current == "ar"
-      this.$store.dispatch('setUserLocale', locale.locale) 
-      this.themesItems = this.$colorThemeItems.map(function (e) {
-        e.name = vm.$i18n.t('main.app.' + e.theme)
-        return e;
-      });
+      this.$store.dispatch('setUserLocale', locale.locale).then(() => {
+        if (connectedUserName && connectedUserName == 'admin') _store.set('global.locale', locale);
+        if (connectedUserName) _store.set('users.' + connectedUserName + '.locale', locale);
+      })
+      if (!this.isConnected)
+        this.themesItems = this.$colorThemeItems.map(function (e) {
+          e.name = vm.$i18n.t('main.app.' + e.theme)
+          return e;
+        });
     },
+
     updateUserTheme(theme) {
+      this.actualTheme = theme
       var connectedUserName = this.connectedUserName
-      this.$store.dispatch('setUserTheme', theme.theme)
+      this.$store.dispatch('setUserTheme', theme.theme).then(() => {
+        if (connectedUserName && connectedUserName == 'admin') _store.set('global.theme', theme);
+        if (connectedUserName) _store.set('users.' + connectedUserName + '.theme', theme);
+      })
 
     },
     login() {
@@ -154,6 +165,13 @@ export default {
 
 
         if (connectedUser) {
+
+
+          console.log(vm.actualLocale)
+           console.log(vm.actualTheme)
+          vm.updateUserLocale(vm.actualLocale)
+          vm.updateUserTheme(vm.actualTheme)
+
 
           var connectedUserName = connectedUser.username
           _store.set('user.username', connectedUserName)
@@ -237,7 +255,7 @@ export default {
 }
 
 .login100-form-title::before {
-  content: "";
+  content: '';
   display: block;
   position: absolute;
   z-index: -1;

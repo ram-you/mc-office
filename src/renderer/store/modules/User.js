@@ -1,5 +1,6 @@
 // import db from "../../db/datastore";
 import db from "../../db/models";
+ 
 
 var Users = db.Users
 
@@ -67,7 +68,7 @@ const actions = {
   login({ commit }, data) {
     var pass_hash = crypto.createHash('md5').update(data.password, 'utf-8').digest('hex').toUpperCase();
     return new Promise((resolve, reject) => {
-      Users.read({ username: data.username, password: pass_hash }, function (err, doc) {
+      Users.findOne({ username: data.username, password: pass_hash }, function (err, doc) {
         if (doc) {
           if (data.remember) {
             var user = { username: doc.username, password: doc.password, connected: true };
@@ -92,7 +93,7 @@ const actions = {
   },
 
   getUser({ commit }, data) {
-    return Users.read({ username: data.username }, function (err, doc) {
+    return Users.findOne({ username: data.username }, function (err, doc) {
       if (doc) {
         var user = { username: doc.username }
         return commit("setUser", user)
@@ -118,7 +119,7 @@ const actions = {
     //   return Promise.resolve();
     //   })
 
-    Users.read({}, function (err, docs) {
+    Users.find({}, function (err, docs) {
       commit("setUsers", docs)
       return Promise.resolve();
     })
@@ -128,7 +129,7 @@ const actions = {
     var userName = _store.get('users.' + connectedUserName + '.credential.name');
     var userPassword = _store.get('users.' + connectedUserName + '.credential.password');
     if (userName && userPassword) {
-      Users.read({ username: userName, password: userPassword }, function (err, doc) {
+      Users.findOne({ username: userName, password: userPassword }, function (err, doc) {
         if (doc) {
           var user = { username: doc.username, connected: true }
           commit("setUser", user);

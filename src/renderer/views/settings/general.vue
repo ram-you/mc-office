@@ -7,8 +7,8 @@
 
         <v-card v-if="defaultPrinter &&  defaultPrinter.name" flat class="elevation-1 py-2 px-3  mb-2" style="max-width:600px">
           <div class="toolbar__content">
-            <v-icon class="v-icon  mdi mdi-18px  green--text"> mdi-checkbox-marked-circle</v-icon>
-            <span class=" green--text"> {{defaultPrinter.name}} </span>
+            <v-icon class="v-icon  mdi mdi-24px  green--text"> mdi-printer</v-icon>
+            <span class=" green--text font-weight-bold"> {{defaultPrinter.name}} </span>
             <span class="px-1 grey--text">( {{defaultPrinter.description}} ) </span>
           </div>
         </v-card>
