@@ -2,13 +2,12 @@ var fs = require('fs');
 
 import path from 'path'
 import { remote } from 'electron'
-
-import crud from './crud'
+ 
 
 const crypto = require('crypto');
 
-var Datastore = crud.Datastore// require('nedb')
-var db = {}
+var Datastore =  require('nedb')
+ 
 
 const version = require('../../../../package').version
 const dsFolder = 'database'
@@ -32,8 +31,8 @@ function init() {
             var password = "admin"
             var pass_hash = crypto.createHash('md5').update(password, 'utf-8').digest('hex').toUpperCase();
             var adminUser = { username: "admin", password: pass_hash };
-            // table.model.insert(adminUser, function (err, newDoc) { })
-            crud.insertUnique(table,adminUser, function (err, newDoc) { })
+            table.model.insert(adminUser, function (err, newDoc) { })
+            // crud.insertUnique(table,adminUser, function (err, newDoc) { })
           } else { }
         });
       }
@@ -44,18 +43,10 @@ function init() {
 
 
 init()
-
 var methods = {
-  async  addOne(data) {
-    await crud.insertUnique(table, data, (err, message) => {
-      if (err) {
-        return ({ error: true, message: 'error#2' });
-        throw err;
-      }
-      return ({ error: true, message: 'error#2' });
-    })
-  }
+
 }
 
 table.methods = methods
+ 
 export default table

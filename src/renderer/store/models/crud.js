@@ -5,15 +5,14 @@ import { remote } from 'electron'
 
 const crypto = require('crypto');
 
-var Datastore //= require('nedb') 
+var Datastore = require('nedb') 
 
 const version = require('../../../../package').version
-const dsFolder = 'database/' 
+const dsFolder = 'database/'
 const autoIncrementFilename = path.join(remote.app.getPath('userData'), dsFolder + '/autoIncrement.db')
 
 // ==============UniqueID========================
-
-if( !Datastore) Datastore = require('nedb') 
+ 
 const autoIncrement = new Datastore({ filename: autoIncrementFilename, autoload: true });
 
 function getUniqueId(nameDb, cb) {
@@ -60,23 +59,21 @@ function getUniqueId(nameDb, cb) {
 
 function insertUnique(table, data, cb) {
   getUniqueId(table.name, function (uniqueId) {
-      data.id = uniqueId;
+    data.id = uniqueId;
 
-   table.model.insert(data, function (err, newDoc) {
-          if (err) {
-              cb({error: true, message: 'error#2'});
-              throw err;
-          }
-          cb({error: false, message: newDoc});
-      });
+    table.model.insert(data, function (err, newDoc) {
+      if (err) {
+        cb({ error: true, message: 'error#2' });
+        throw err;
+      }
+      cb({ error: false, message: newDoc });
+    });
 
   });
- }
+}
 
-  // =======================EXPORT======================
-  export default {
-    Datastore,
-    insertUnique,
-  }
+// =======================EXPORT======================
+export default { 
+  insertUnique,
+}
 
- 

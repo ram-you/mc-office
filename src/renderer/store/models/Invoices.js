@@ -3,11 +3,11 @@ var fs = require('fs');
 import path from 'path'
 import { remote } from 'electron'
 
-import crud from './crud'
+ 
 
 const crypto = require('crypto');
 
-var Datastore = crud.Datastore// require('nedb')
+var Datastore =   require('nedb')
 
 const version = require('../../../../package').version
 const dsFolder = 'database'
@@ -27,12 +27,8 @@ function init() {
       if (error) { alert(error) } else {
         table.model.count({}, function (err, count) {
           if (count == 0) {
-            // table.model.insert(JSON.parse(JSON.stringify(require('../data/invoices-sample.json'))), function (err, newDoc) { })
-            crud.insertUnique(
-              table,
-              JSON.parse(JSON.stringify(require('../data/invoices-sample.json'))), 
-              function (err, newDoc) { }
-            )
+            table.model.insert(JSON.parse(JSON.stringify(require('../data/invoices-sample.json'))), function (err, newDoc) { })
+            
           } else { }
         });
       }
