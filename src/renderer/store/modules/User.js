@@ -1,11 +1,8 @@
 // import db from "../../db/datastore";
-import db from "../../db/models";
- 
-
+import db from "../models";
 var Users = db.Users.model
 
-
-
+ require("../orm")
 
 
 
