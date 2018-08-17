@@ -30,9 +30,14 @@ function init() {
           if (count == 0) {
             var password = "admin"
             var pass_hash = crypto.createHash('md5').update(password, 'utf-8').digest('hex').toUpperCase();
-            var adminUser = { username: "admin", password: pass_hash };
-            table.model.insert(adminUser, function (err, newDoc) { })
-            // crud.insertUnique(table,adminUser, function (err, newDoc) { })
+            // var adminUser = { username: "admin", password: pass_hash };
+            // var adminUser2 = { username: "admin2", password: pass_hash };
+            var adminUsers=[
+              { username: "admin", password: pass_hash },
+              {  name: "admin2", password: pass_hash },
+              { firstname: "admin3", lastname:"M3allim", password: pass_hash },
+            ]
+            table.model.insert(adminUsers, function (err, newDoc) { })  
           } else { }
         });
       }
