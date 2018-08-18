@@ -79,7 +79,7 @@
                     <v-icon v-else class="green--text mdi-18px px-2">mdi-subdirectory-arrow-right</v-icon>
                     <span class="grey--text text--darken-3 font-weight-regular px-2">Facture:</span>
                     <a class="font-weight-medium" @click="goDetail(props.item)"> {{ props.item.number }} </a>
-                      
+
                   </v-card-text>
                 </v-card>
               </template>
@@ -98,15 +98,28 @@
       </v-layout>
     </v-flex>
 
- <v-layout row wrap align-center justify-start py-3  >
-     <template v-for="item in usersList">
-      <v-card  :key="item.firstname" >
-            <v-card-title primary-title v-html="item.firstname +' '+item.lastname">
-             
-            </v-card-title>
+    <v-layout v-if="invoicesList.length>0" row wrap align-center justify-start py-3 mb-4>
+       <v-flex xs12 sm10 offset-sm1>
+          <v-card style="text-align: -webkit-auto;">
+      <template v-for="item in invoicesList">
+        <v-card :key="item.id">
+          <v-card-title primary-title v-html="item.invoiceNumber +' '+item.invoiceClient">
+
+          </v-card-title>
+        </v-card>
+      </template>
           </v-card>
-    </template>
-</v-layout>
+       </v-flex>
+    </v-layout>
+    <v-layout v-else row wrap align-center justify-start py-3  mb-4>
+       <v-flex xs12 sm10 offset-sm1>
+          <v-card style="text-align: -webkit-auto;">
+       <v-card-title primary-title v-html="'Please Wait ...'">
+
+          </v-card-title>
+          </v-card>
+       </v-flex>
+    </v-layout>
 
   </div>
 </template>
@@ -165,13 +178,13 @@ export default {
         fat: 0,
         carbs: 0,
         protein: 0
-      }
+      },
     }
   },
   computed: {
     connectedUserName() { return this.$store.state.User.user ? this.$store.state.User.user.username : null; },
     formTitle() { return this.editedIndex === -1 ? 'New Item' : 'Edit Item' },
-    usersList(){return this.$store.state.User.users}
+    invoicesList() { return this.$store.state.Invoice.invoices }
   },
   watch: {
     pagination: {
@@ -189,9 +202,11 @@ export default {
     }
   },
   created() {
-    this.initialize()
+    this.initialize();
+
   },
   mounted() {
+    var vm = this
     this.getDataFromApi()
       .then(data => {
         this.desserts1 = data.items
@@ -202,9 +217,10 @@ export default {
     var userTheme = _store.get('users.' + connectedUserName + '.invoice.theme') || 'default'
     this.theme = userTheme
 
- 
+    vm.$store.dispatch('getInvoices').then(() => {
+      })
 
-  this.$store.dispatch('getUsers') 
+ 
 
   },
   methods: {
