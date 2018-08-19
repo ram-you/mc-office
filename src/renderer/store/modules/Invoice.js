@@ -5,10 +5,8 @@ import path from 'path'
 import { remote } from 'electron'
 
 
-import { create } from 'trilogy'
-
-import * as trilogy from 'trilogy'
-console.log(trilogy.Trilogy.prototype)
+import { connect } from 'trilogy'
+  
 
 const dsFolder = 'database'
 const dbFilename = path.join(remote.app.getPath('userData'), dsFolder + '/invoices.sqlite')
@@ -69,7 +67,7 @@ const actions = {
 
   async initDB({ commit, state }) {
 
-    if (!db) db = await create(dbFilename, { client: 'sql.js' })
+    if (!db) db = await connect(dbFilename, { client: 'sql.js' })
     await initModel()
     return true
 

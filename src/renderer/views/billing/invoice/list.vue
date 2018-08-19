@@ -114,7 +114,7 @@
     <v-layout v-else row wrap align-center justify-start py-3 mb-4>
       <v-flex xs12 sm10 offset-sm1>
         <v-card style="text-align: -webkit-auto;">
-          <v-card-title primary-title id="no-data"  class="justify-center py-5 mb-4">
+          <v-card-title primary-title id="no-data" class="justify-center py-5 mb-4">
             <v-progress-circular :size="70" :width="7" color="red" indeterminate></v-progress-circular>
 
           </v-card-title>
@@ -205,8 +205,8 @@ export default {
     }
   },
   created() {
+    var vm=this
     this.initialize();
-
   },
   mounted() {
     var vm = this
@@ -220,8 +220,9 @@ export default {
     var userTheme = _store.get('users.' + connectedUserName + '.invoice.theme') || 'default'
     this.theme = userTheme
 
- 
+
     setTimeout(() => { vm.initInvoicesData() }, 400);
+
 
   },
   methods: {
