@@ -76,7 +76,9 @@ export default {
     ipc.on('menu-change-tab', function (event, tab) {
       vm.$router.push({ name: tab });
     })
-
+ 
+  
+ 
 
   },
   methods: {
