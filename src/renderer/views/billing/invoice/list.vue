@@ -221,21 +221,7 @@ export default {
     this.theme = userTheme
 
  
-
-    var imgs = document.images,
-      len = imgs.length,
-      counter = 0;
-
-    [].forEach.call(imgs, function (img) {
-      img.addEventListener('load', incrementCounter, false);
-    });
-
-    function incrementCounter() {
-      counter++;
-      if (counter === len) {
-        setTimeout(() => { vm.initInvoicesData() }, 400);
-      }
-    }
+    setTimeout(() => { vm.initInvoicesData() }, 400);
 
   },
   methods: {
