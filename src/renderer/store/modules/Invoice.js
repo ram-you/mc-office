@@ -10,7 +10,7 @@ import { connect } from 'trilogy'
 const dsFolder = 'database'
 const dbFilename = path.join(remote.app.getPath('userData'), dsFolder + '/invoices.sqlite')
 
-var db = null //= connect(dbFilename, {  client: 'sql.js'})
+var db = null  
 var invoicesModel = null
 
 async function initModel() {

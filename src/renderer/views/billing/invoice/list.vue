@@ -246,6 +246,16 @@ export default {
     setTimeout(() => { vm.initInvoicesData() }, 400);
 
 
+
+  
+ 
+   
+
+
+
+
+
+
   },
   methods: {
     async initInvoicesData() {
