@@ -208,10 +208,14 @@ export default {
   computed: {
     connectedUserName() { return this.$store.state.User.user ? this.$store.state.User.user.username : null; },
     formTitle() { return this.editedIndex === -1 ? 'New Item' : 'Edit Item' },
+    invoicesModel() { return this.$store.state.Invoice.invoicesModel },
     invoicesList() { return this.$store.state.Invoice.invoices },
 
   },
   watch: {
+    invoicesModel() {
+      // this.initInvoicesData()
+    },
     pagination: {
       handler() {
         this.getDataFromApi()
@@ -229,7 +233,10 @@ export default {
   created() {
     var vm = this
     this.initialize();
+    // this.$store.dispatch('initInvoicesModels')
+    vm.initInvoicesData()
   },
+  
   mounted() {
     var vm = this
     this.getDataFromApi()
@@ -242,14 +249,13 @@ export default {
     var userTheme = _store.get('users.' + connectedUserName + '.invoice.theme') || 'default'
     this.theme = userTheme
 
-
-    setTimeout(() => { vm.initInvoicesData() }, 400);
-
-
-
-  
  
-   
+
+if(!vm.isInvoicesDataLoaded)
+vm.initInvoicesData()
+
+
+
 
 
 

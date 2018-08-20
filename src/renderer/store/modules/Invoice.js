@@ -10,11 +10,12 @@ import { connect } from 'trilogy'
 const dsFolder = 'database'
 const dbFilename = path.join(remote.app.getPath('userData'), dsFolder + '/invoices.sqlite')
 
-var db = null  
+ var db=null
 var invoicesModel = null
 
-async function initModel() {
-  invoicesModel = await db.model('invoices', {
+ async function initInvoicesModel() {
+   
+  invoicesModel =  await   db.model('invoices', {
     invoiceClient: String,
     invoiceNumber: String,
     invoiceDate: Date,
@@ -23,9 +24,15 @@ async function initModel() {
     id: 'increments', // special type, primary key
 
   })
-  await invoicesModel.create({
+  return invoicesModel
+  
+}
+
+  function iniInvoicesData() {
+ 
+    invoicesModel.create({
     invoiceClient: 'John Doe',
-    invoiceNumber: 'Invoice #'+ Math.floor((Math.random() * 9000) + 1),
+    invoiceNumber: 'Invoice #' + Math.floor((Math.random() * 9000) + 1),
     invoiceDate: new Date(),
     invoiceTotal: '500 $',
     invoiceLines: [
@@ -41,12 +48,10 @@ async function initModel() {
 }
 
 
-
-
 // =======================STATE======================
 const state = {
-  db: null,
-  invoiceModel: null,
+  invoiceDB: null,
+  invoicesModel: null,
   invoices: []
 }
 
@@ -55,7 +60,10 @@ const getters = {}
 
 // =======================MUTATIONS======================
 const mutations = {
-
+  
+  setInvoicesModel(state, data) {
+    state.invoicesModel = true;
+  },
   setInvoices(state, data) {
     state.invoices = data;
   },
@@ -64,24 +72,45 @@ const mutations = {
 // =======================ACTIONS======================
 const actions = {
 
-  async initDB({ commit, state }) {
+async  initInvoicesDB({ commit, state }) {
 
-    if (!db) { db =   connect(dbFilename, { client: 'sql.js' }) }
 
-    return new Promise((resolve, reject) => { 
-      initModel().then((model) => {
-        resolve(true)
+
+    return new Promise(async (resolve, reject) => {
+
+      if (!db) { 
+      db= await  connect(dbFilename, { client: 'sql.js' })
+        
+       }
+      resolve(true)
+
+    })
+
+
+  },
+
+  initInvoicesModels({ commit, state ,dispatch}) {
+
+
+    return new Promise((resolve, reject) => {
+      dispatch("initInvoicesDB").then(() => {
+       
+         
+        initInvoicesModel().then(() => {
+          commit("setInvoicesModel")
+          resolve(true)
+        });
       });
     })
 
 
   },
 
-  async getInvoices({ commit, state, dispatch }) {
-    
+  getInvoices({ commit, state, dispatch }) {
+
 
     return new Promise((resolve, reject) => {
-      dispatch("initDB").then(() => {
+      dispatch("initInvoicesModels").then(() => { 
         const query = db.knex('invoices').select('*')
         db.raw(query, true).then(data => {
           commit("setInvoices", data)

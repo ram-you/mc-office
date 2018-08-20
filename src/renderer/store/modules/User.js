@@ -66,31 +66,7 @@ const actions = {
   login({ commit }, data) {
     var pass_hash = crypto.createHash('md5').update(data.password, 'utf-8').digest('hex').toUpperCase();
     return new Promise((resolve, reject) => {
-
-      // database().then(db => {
-
-      //   db.find('users', {username: data.username, password: pass_hash })
-      //     .then(found => {
-      //       if (found) {
-      //         var doc = found[0]
-      //         if (data.remember) {
-      //           var user = { username: doc.username, password: doc.password, connected: true };
-      //         } else {
-      //           var user = { username: doc.username, connected: true };
-      //         }
-      //         commit("setUser", user);
-      //         resolve(user)
-      //       } else {
-      //          commit("resetUser"); 
-      //          resolve(false)
-      //         } 
-
-      //     })
-      // })
-
-
-
-
+ 
 
       Users.findOne({ username: data.username, password: pass_hash }, function (err, doc) {
         if (doc) {
@@ -134,19 +110,7 @@ const actions = {
 
   getUsers({ commit }) {
 
-    // database().then(db => {
-    //   const query = db.knex('users').select('*')
-    //   console.log(query.toString())
-
-    //   db.raw(query, true).then(users => {
-    //     commit("setUsers", users)
-    //     return Promise.resolve();
-    //   })
-    // });
-
-
-
-
+ 
      Users.find({}, function (err, docs) {
       commit("setUsers", docs)
       return Promise.resolve();
@@ -157,22 +121,7 @@ const actions = {
     var userName = _store.get('users.' + connectedUserName + '.credential.name');
     var userPassword = _store.get('users.' + connectedUserName + '.credential.password');
     if (userName && userPassword) {
-
-      
-      // database().then(db => {
-
-      //   db.find('users', { username: userName, password: userPassword })
-      //     .then(found => {
-      //       if (found) {
-      //         var doc = found[0]
-      //         var user = { username: doc.username, connected: true }
-      //         commit("setUser", user);
-      //       } else { commit("resetUser"); }
-      //       return Promise.resolve(false);
-
-      //     })
-      // })
-
+ 
       Users.findOne({ username: userName, password: userPassword }, function (err, doc) {
         if (doc) {
           var user = { username: doc.username, connected: true }
