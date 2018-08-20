@@ -3,8 +3,30 @@
     <div class="hidden-div">
       <invoice-detail :id="selectedInvoiceID" :number="selectedInvoiceNumber"></invoice-detail>
     </div>
+
+    <v-toolbar flat style="border-bottom:1px solid rgba(150, 150, 150, 0.23);">
+      <v-breadcrumbs divider="/">
+        <v-breadcrumbs-item to="/">
+          <span class="subheading">Home </span>
+        </v-breadcrumbs-item>
+        <v-breadcrumbs-item disabled>
+          <span class="subheading">Liste des Factures </span>
+          <span class="subheading font-weight-medium"> </span>
+        </v-breadcrumbs-item>
+      </v-breadcrumbs>
+      <v-spacer></v-spacer>
+      <div class="mx-1">
+        <v-btn icon>
+          <v-icon class="grey--text text--darken-2">mdi-run-fast</v-icon>
+        </v-btn>
+
+      </div>
+
+    </v-toolbar>
+
     <v-flex xs12 mb-4 mt-4>
       <div class="display-1 px-3">Liste des Factures</div>
+
       <v-layout row wrap align-center justify-start py-3 :reverse="$vuetify.rtl">
 
         <v-flex xs12 sm10 offset-sm1>
@@ -205,7 +227,7 @@ export default {
     }
   },
   created() {
-    var vm=this
+    var vm = this
     this.initialize();
   },
   mounted() {
