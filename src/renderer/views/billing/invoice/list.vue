@@ -225,9 +225,7 @@ export default {
       },
       deep: true
     },
-    dialog(val) {
-      val || this.close()
-    }
+    dialog(val) { val || this.close() }
   },
   created() {
     var vm = this
