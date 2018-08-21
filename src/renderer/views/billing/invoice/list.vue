@@ -155,6 +155,7 @@ const os = require('os')
 const path = require('path')
 const { ipcRenderer } = require('electron')
 
+
 import InvoiceDetail from "./detail.vue"
 
 export default {
@@ -163,6 +164,7 @@ export default {
   data() {
     return {
       isInvoicesDataLoaded: false,
+      // invoicesList: [],
       theme: 'default',
       selectedInvoiceID: null,
       selectedInvoiceNumber: null,
@@ -208,14 +210,11 @@ export default {
   computed: {
     connectedUserName() { return this.$store.state.User.user ? this.$store.state.User.user.username : null; },
     formTitle() { return this.editedIndex === -1 ? 'New Item' : 'Edit Item' },
-    invoicesModel() { return this.$store.state.Invoice.invoicesModel },
+
     invoicesList() { return this.$store.state.Invoice.invoices },
 
   },
   watch: {
-    invoicesModel() {
-      // this.initInvoicesData()
-    },
     pagination: {
       handler() {
         this.getDataFromApi()
@@ -234,9 +233,10 @@ export default {
     var vm = this
     this.initialize();
     // this.$store.dispatch('initInvoicesModels')
-    vm.initInvoicesData()
+    // vm.initInvoicesData()
+    ipcRenderer.send("getInvoices", 'invoices');
   },
-  
+
   mounted() {
     var vm = this
     this.getDataFromApi()
@@ -249,15 +249,26 @@ export default {
     var userTheme = _store.get('users.' + connectedUserName + '.invoice.theme') || 'default'
     this.theme = userTheme
 
- 
-
-if(!vm.isInvoicesDataLoaded)
-vm.initInvoicesData()
 
 
+    // if(!vm.isInvoicesDataLoaded)
+    // vm.initInvoicesData()
+
+     setTimeout(() => {
+            if (!vm.isInvoicesDataLoaded)
+      ipcRenderer.send("getInvoices", 'invoices');
+      }, 50);
 
 
+    ipcRenderer.on("invoicesResults", (event, data) => {
+      console.log("Done invoicesResults", data)
+   vm.isInvoicesDataLoaded = true
+      setTimeout(() => {
+            //  vm.invoicesList = data
+             this.$store.commit("setInvoices", data)
+      }, 100);
 
+    });
 
 
 

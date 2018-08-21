@@ -4,8 +4,7 @@ import path from 'path'
 import { remote } from 'electron'
 
 
-import { connect } from 'trilogy'
-
+import { connect } from 'trilogy' 
 
 const dsFolder = 'database'
 const dbFilename = path.join(remote.app.getPath('userData'), dsFolder + '/invoices.sqlite')
@@ -31,10 +30,10 @@ var invoicesModel = null
   function iniInvoicesData() {
  
     invoicesModel.create({
-    invoiceClient: 'John Doe',
+    invoiceClient: 'John Doe'+ Math.floor((Math.random() * 100) + 1),
     invoiceNumber: 'Invoice #' + Math.floor((Math.random() * 9000) + 1),
     invoiceDate: new Date(),
-    invoiceTotal: '500 $',
+    invoiceTotal:   Math.floor((Math.random() * 9000) + 1)+' $',
     invoiceLines: [
       'Game of the Year',
       'Best Multiplayer Game',
@@ -110,6 +109,7 @@ async  initInvoicesDB({ commit, state }) {
 
 
     return new Promise((resolve, reject) => {
+
       dispatch("initInvoicesModels").then(() => { 
         const query = db.knex('invoices').select('*')
         db.raw(query, true).then(data => {

@@ -1,5 +1,8 @@
 'use strict'
-const debounce =require( "lodash/debounce");
+
+import { connect } from 'trilogy'
+
+const debounce = require("lodash/debounce");
 var i18n = new (require('./i18n'))
 const Store = require('electron-store');
 const _store = new Store();
@@ -9,13 +12,13 @@ var windowWidth = _store.get('users.' + connectedUserName + '.window.width')
 var windowHeight = _store.get('users.' + connectedUserName + '.window.height')
 const theme = _store.get('users.' + connectedUserName + '.theme.theme') || _store.get('global.theme.theme');
 const isDarkMode = theme == "dark"
-const { app, protocol, BrowserWindow, Menu, shell, dialog, globalShortcut, ipcMain } =require( 'electron')
+const { app, protocol, BrowserWindow, Menu, shell, dialog, globalShortcut, ipcMain } = require('electron')
 const fs = require('fs')
 const fse = require('fs-extra');
 const os = require('os')
 const path = require('path')
 // import { format as formatUrl } from 'url'
-const formatUrl=require('url').format
+const formatUrl = require('url').format
 
 const centerOnPrimaryDisplay = require('./helpers/center-on-primary-display');
 
@@ -32,6 +35,7 @@ let mainWindow = null
 let printWorkerWindow = null
 let pdfViewerWindow = null
 let userDataPath = ''
+let dbInvoices= null
 
 // Standard scheme must be registered before the app is ready
 protocol.registerStandardSchemes(['app'], {
@@ -51,7 +55,7 @@ function createMainWindow() {
     minWidth: 500,
     minHeight: 350,
     x: winPOS.x,
-    y: winPOS.y, 
+    y: winPOS.y,
     backgroundColor: isDarkMode ? '#303030' : '#fff',
     show: false,
     icon: ASSETS_DIR + '/icons/64x64.png',// path.join(__dirname, '../common/assets/icons/64x64.png'),
@@ -67,7 +71,7 @@ function createMainWindow() {
       mainWindow.webContents.openDevTools()
     }
   })
-  
+
   if (isDevelopment) {
     // Load the url of the dev server if in development mode
     mainWindow.loadURL(`http://localhost:9080`)
@@ -75,9 +79,9 @@ function createMainWindow() {
     // mainWindow.loadURL("http://mediacept.com")
 
 
-    
-    if (!process.env.IS_TEST) { 
-        mainWindow.webContents.openDevTools()   
+
+    if (!process.env.IS_TEST) {
+      mainWindow.webContents.openDevTools()
     }
     globalShortcut.register('f5', function () {
       mainWindow.reload()
@@ -126,7 +130,7 @@ function createMainWindow() {
     e.preventDefault();
     onWindowResize();
   }, 100));
- 
+
 
   require('./menu').init(mainWindow)
   require('./traymenu').init(mainWindow)
@@ -134,6 +138,49 @@ function createMainWindow() {
 
   return mainWindow
 }
+
+// create main BrowserWindow when electron is ready
+app.on('ready', async  () => {
+  mainWindow = createMainWindow()
+  printWorkerWindow = createPrintWorkerWindow()
+  userDataPath = app.getPath('userData') + path.sep;
+
+  const dsFolder = 'database'
+  const dbFilename = path.join(userDataPath, dsFolder + '/invoices.sqlite')
+  dbInvoices = connect(dbFilename, { client: 'sql.js' })
+  const invoicesModel = await dbInvoices.model('invoices', {
+    invoiceClient: String,
+    invoiceNumber: String,
+    invoiceDate: Date,
+    invoiceLines: Array,
+    invoiceTotal: String,
+    id: 'increments', // special type, primary key
+
+  })
+var i
+  for (i = 0; i < 1000; i++) { 
+    invoicesModel.create({
+      invoiceClient: 'John Doe'+ i+1,
+      invoiceNumber: 'Invoice #' + Math.floor((Math.random() * 9000) + 1),
+      invoiceDate: new Date(),
+      invoiceTotal:   Math.floor((Math.random() * 9000) + 1)+' $',
+      invoiceLines: [
+        'Game of the Year',
+        'Best Multiplayer Game',
+        'Best ESports Game'
+      ]
+    })
+  }
+
+})
+
+ipcMain.on("getInvoices", (event, model) => {
+  const query =dbInvoices.knex('invoices').select('*')
+  dbInvoices.raw(query, true).then(data => {
+    mainWindow.send("invoicesResults", data);
+  })
+
+});
 
 // quit application when all windows are closed
 app.on('window-all-closed', () => {
@@ -152,12 +199,6 @@ app.on('activate', () => {
 
 
 
-// create main BrowserWindow when electron is ready
-app.on('ready', () => {
-  mainWindow = createMainWindow()
-  printWorkerWindow = createPrintWorkerWindow()
-  userDataPath = app.getPath('userData') + path.sep;
-})
 
 
 function makeSingleInstance() {
