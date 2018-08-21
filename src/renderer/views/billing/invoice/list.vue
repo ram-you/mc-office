@@ -7,7 +7,7 @@
     <v-toolbar flat style="border-bottom:1px solid rgba(150, 150, 150, 0.23);">
       <v-breadcrumbs divider="/">
         <v-breadcrumbs-item to="/">
-          <span class="subheading">Home </span>
+          <span class="subheading">{{ $t('main.app.Home') }} </span>
         </v-breadcrumbs-item>
         <v-breadcrumbs-item disabled>
           <span class="subheading">Liste des Factures </span>
@@ -232,9 +232,6 @@ export default {
   created() {
     var vm = this
     this.initialize();
-    // this.$store.dispatch('initInvoicesModels')
-    // vm.initInvoicesData()
-    ipcRenderer.send("getInvoices", 'invoices');
   },
 
   mounted() {
@@ -254,18 +251,18 @@ export default {
     // if(!vm.isInvoicesDataLoaded)
     // vm.initInvoicesData()
 
-     setTimeout(() => {
-            if (!vm.isInvoicesDataLoaded)
-      ipcRenderer.send("getInvoices", 'invoices');
-      }, 50);
+    setTimeout(() => {
+      if (!vm.isInvoicesDataLoaded)
+        ipcRenderer.send("getInvoices", 'invoices');
+    }, 50);
 
 
     ipcRenderer.on("invoicesResults", (event, data) => {
       console.log("Done invoicesResults", data)
-   vm.isInvoicesDataLoaded = true
+      vm.isInvoicesDataLoaded = true
       setTimeout(() => {
-            //  vm.invoicesList = data
-             this.$store.commit("setInvoices", data)
+        //  vm.invoicesList = data
+        this.$store.commit("setInvoices", data)
       }, 100);
 
     });

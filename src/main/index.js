@@ -57,7 +57,7 @@ function createMainWindow() {
     x: winPOS.x,
     y: winPOS.y,
     backgroundColor: isDarkMode ? '#303030' : '#fff',
-    show: false,
+    show: true,
     icon: ASSETS_DIR + '/icons/64x64.png',// path.join(__dirname, '../common/assets/icons/64x64.png'),
     webPreferences: { plugins: false }
 
@@ -145,9 +145,14 @@ app.on('ready', async  () => {
   printWorkerWindow = createPrintWorkerWindow()
   userDataPath = app.getPath('userData') + path.sep;
 
+
+
+})
+
+async function initDatabase(){
   const dsFolder = 'database'
   const dbFilename = path.join(userDataPath, dsFolder + '/invoices.sqlite')
-  dbInvoices = connect(dbFilename, { client: 'sql.js' })
+ if(!dbInvoices) dbInvoices = connect(dbFilename, { client: 'sql.js' })
   const invoicesModel = await dbInvoices.model('invoices', {
     invoiceClient: String,
     invoiceNumber: String,
@@ -158,7 +163,8 @@ app.on('ready', async  () => {
 
   })
 var i
-  for (i = 0; i < 1000; i++) { 
+if(invoicesModel.count==0)
+  for (i = 0; i < 1000; i++) {
     invoicesModel.create({
       invoiceClient: 'John Doe'+ i+1,
       invoiceNumber: 'Invoice #' + Math.floor((Math.random() * 9000) + 1),
@@ -171,11 +177,11 @@ var i
       ]
     })
   }
+}
 
-})
-
-ipcMain.on("getInvoices", (event, model) => {
-  const query =dbInvoices.knex('invoices').select('*')
+ipcMain.on("getInvoices",async (event, model) => {
+  await initDatabase()
+  const query =dbInvoices.knex('invoices').select('*').limit(3)
   dbInvoices.raw(query, true).then(data => {
     mainWindow.send("invoicesResults", data);
   })
