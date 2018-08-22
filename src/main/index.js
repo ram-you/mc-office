@@ -1,6 +1,8 @@
 'use strict'
 
-import { connect } from 'trilogy'
+ 
+
+
 
 const debounce = require("lodash/debounce");
 var i18n = new (require('./i18n'))
@@ -21,7 +23,6 @@ const path = require('path')
 const formatUrl = require('url').format
 
 const centerOnPrimaryDisplay = require('./helpers/center-on-primary-display');
-
 var ASSETS_DIR = path.resolve(__dirname, '../common/assets');
 
 
@@ -32,15 +33,13 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 let platform = os.platform()
 
 let mainWindow = null
+let dbWorkerWindow = null
 let printWorkerWindow = null
 let pdfViewerWindow = null
 let userDataPath = ''
-let dbInvoices= null
 
 // Standard scheme must be registered before the app is ready
-protocol.registerStandardSchemes(['app'], {
-  secure: true
-})
+protocol.registerStandardSchemes(['app'], { secure: true })
 
 function createMainWindow() {
   const winPOS = centerOnPrimaryDisplay(windowWidth || 1264, windowHeight || 700);
@@ -73,34 +72,11 @@ function createMainWindow() {
   })
 
   if (isDevelopment) {
-    // Load the url of the dev server if in development mode
     mainWindow.loadURL(`http://localhost:9080`)
-
-    // mainWindow.loadURL("http://mediacept.com")
-
-
-
-    if (!process.env.IS_TEST) {
-      mainWindow.webContents.openDevTools()
-    }
-    globalShortcut.register('f5', function () {
-      mainWindow.reload()
-    })
+    if (!process.env.IS_TEST) { mainWindow.webContents.openDevTools() }
+    globalShortcut.register('f5', function () { mainWindow.reload() })
   } else {
-
-
-
-
-
-
-    mainWindow.loadURL(
-      formatUrl({
-        pathname: path.join(__dirname, 'index.html'),
-        protocol: 'file',
-        slashes: true
-      })
-    )
-
+    mainWindow.loadURL(formatUrl({ pathname: path.join(__dirname, 'index.html'), protocol: 'file', slashes: true }))
     if (platform === 'linux' || platform === 'win32') {
       globalShortcut.register('Control+Shift+R', () => {
         mainWindow.webContents.openDevTools()
@@ -111,19 +87,11 @@ function createMainWindow() {
     }
   }
 
-
-
-  mainWindow.on('closed', () => {
-    app.quit()
-  })
-
-
+  mainWindow.on('closed', () => { app.quit() })
 
   mainWindow.webContents.on('devtools-opened', () => {
     mainWindow.focus()
-    setImmediate(() => {
-      mainWindow.focus()
-    })
+    setImmediate(() => { mainWindow.focus() })
   })
 
   mainWindow.on('resize', debounce(function (e) {
@@ -131,62 +99,44 @@ function createMainWindow() {
     onWindowResize();
   }, 100));
 
-
   require('./menu').init(mainWindow)
   require('./traymenu').init(mainWindow)
-
 
   return mainWindow
 }
 
 // create main BrowserWindow when electron is ready
-app.on('ready', async  () => {
+app.on('ready', async () => {
+  dbWorkerWindow = createDataBaseWorkerWindow()
   mainWindow = createMainWindow()
   printWorkerWindow = createPrintWorkerWindow()
   userDataPath = app.getPath('userData') + path.sep;
-
-
-
 })
 
-async function initDatabase(){
-  const dsFolder = 'database'
-  const dbFilename = path.join(userDataPath, dsFolder + '/invoices.sqlite')
- if(!dbInvoices) dbInvoices = connect(dbFilename, { client: 'sql.js' })
-  const invoicesModel = await dbInvoices.model('invoices', {
-    invoiceClient: String,
-    invoiceNumber: String,
-    invoiceDate: Date,
-    invoiceLines: Array,
-    invoiceTotal: String,
-    id: 'increments', // special type, primary key
-
-  })
-var i
-if(invoicesModel.count==0)
-  for (i = 0; i < 1000; i++) {
-    invoicesModel.create({
-      invoiceClient: 'John Doe'+ i+1,
-      invoiceNumber: 'Invoice #' + Math.floor((Math.random() * 9000) + 1),
-      invoiceDate: new Date(),
-      invoiceTotal:   Math.floor((Math.random() * 9000) + 1)+' $',
-      invoiceLines: [
-        'Game of the Year',
-        'Best Multiplayer Game',
-        'Best ESports Game'
-      ]
-    })
+// =====================DATABASE======================
+function createDataBaseWorkerWindow() {
+  dbWorkerWindow = new BrowserWindow({ show: true });
+  var dbWorkerPathname = isDevelopment ? (ASSETS_DIR + '/database/worker.html') : path.join(__dirname, '/../../../assets/database/worker.html')
+  dbWorkerWindow.loadURL(formatUrl({ pathname: dbWorkerPathname, protocol: 'file', slashes: true }));
+ 
+  if (!isDevelopment || process.argv.indexOf('--debug') !== -1) {
+    dbWorkerWindow.webContents.openDevTools();
   }
+  dbWorkerWindow.webContents.openDevTools();
+   return dbWorkerWindow
 }
 
-ipcMain.on("getInvoices",async (event, model) => {
-  await initDatabase()
-  const query =dbInvoices.knex('invoices').select('*').limit(3)
-  dbInvoices.raw(query, true).then(data => {
-    mainWindow.send("invoicesResults", data);
-  })
-
+ipcMain.on("getInvoices", async (event, model) => {
+  dbWorkerWindow.webContents.send("getInvoices", model);
 });
+
+ipcMain.on("gotInvoices", async (event, data) => {
+  mainWindow.send("invoicesResults", data);
+});
+
+
+
+
 
 // quit application when all windows are closed
 app.on('window-all-closed', () => {
@@ -202,9 +152,6 @@ app.on('activate', () => {
     mainWindow = createMainWindow()
   }
 })
-
-
-
 
 
 function makeSingleInstance() {
@@ -235,10 +182,7 @@ ipcMain.on('update-window-size', (event) => {
   var connectedUserName = _store.get('user.username')
   var windowWidth = _store.get('users.' + connectedUserName + '.window.width')
   var windowHeight = _store.get('users.' + connectedUserName + '.window.height')
-  if (windowWidth && windowHeight) {
-    mainWindow.setSize(windowWidth, windowHeight)
-  }
-
+  if (windowWidth && windowHeight) { mainWindow.setSize(windowWidth, windowHeight) }
 })
 
 function createPdfViewerWindow(file) {
@@ -260,13 +204,10 @@ function createPdfViewerWindow(file) {
 function createPrintWorkerWindow() {
   printWorkerWindow = new BrowserWindow({ show: false });
   var printWorkerPathname = isDevelopment ? (ASSETS_DIR + '/billing/worker.html') : path.join(__dirname, '/../../../assets/billing/' + 'worker.html')
-  printWorkerWindow.loadURL(
-    formatUrl({ pathname: printWorkerPathname, protocol: 'file', slashes: true })
-  )
+  printWorkerWindow.loadURL(formatUrl({ pathname: printWorkerPathname, protocol: 'file', slashes: true }))
   if (!isDevelopment && process.argv.indexOf('--debug') !== -1) {
     printWorkerWindow.webContents.openDevTools();
   }
-
   return printWorkerWindow
 }
 
@@ -277,7 +218,6 @@ ipcMain.on("printPDF", (event, ID, content, theme) => {
 ipcMain.on("print", (event, ID, content, theme, printer) => {
   printWorkerWindow.webContents.send("print", ID, content, theme, printer);
 });
-
 
 
 ipcMain.on("readyToPrintPDF", (event, ID) => {
@@ -301,7 +241,6 @@ ipcMain.on("readyToPrintPDF", (event, ID) => {
 
       // shell.openItem(pdfPath)
       pdfViewerWindow = createPdfViewerWindow(pdfPath)
-
       mainWindow.send('wrote-pdf', pdfPath)
     })
   })

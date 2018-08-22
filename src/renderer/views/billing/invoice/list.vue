@@ -230,6 +230,7 @@ export default {
   created() {
     var vm = this
     this.initialize();
+     ipcRenderer.send("getInvoices", 'invoices');
   },
 
   mounted() {
@@ -245,23 +246,16 @@ export default {
     this.theme = userTheme
 
 
+ 
 
-    // if(!vm.isInvoicesDataLoaded)
-    // vm.initInvoicesData()
-
-    setTimeout(() => {
-      if (!vm.isInvoicesDataLoaded)
+    if (!vm.isInvoicesDataLoaded)
         ipcRenderer.send("getInvoices", 'invoices');
-    }, 50);
 
 
     ipcRenderer.on("invoicesResults", (event, data) => {
       console.log("Done invoicesResults", data)
       vm.isInvoicesDataLoaded = true
-      setTimeout(() => {
-        //  vm.invoicesList = data
-        this.$store.commit("setInvoices", data)
-      }, 100);
+       this.$store.commit("setInvoices", data)
 
     });
 
