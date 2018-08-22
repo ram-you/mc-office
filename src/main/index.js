@@ -115,7 +115,7 @@ app.on('ready', async () => {
 
 // =====================DATABASE======================
 function createDataBaseWorkerWindow() {
-  dbWorkerWindow = new BrowserWindow({ show: true });
+  dbWorkerWindow = new BrowserWindow({ show: false });
   var dbWorkerPathname = isDevelopment ? (ASSETS_DIR + '/database/worker.html') : path.join(__dirname, '/../../../assets/database/worker.html')
   dbWorkerWindow.loadURL(formatUrl({ pathname: dbWorkerPathname, protocol: 'file', slashes: true }));
  
