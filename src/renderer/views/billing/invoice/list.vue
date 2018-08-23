@@ -20,7 +20,7 @@
           <v-icon class="grey--text text--darken-2">mdi-run-fast</v-icon>
         </v-btn> -->
 
-        <upload-btn icon accept=".xlsx, .xls, .csv" :fileChangedCallback="fileSelectedFunc" outline>
+        <upload-btn icon accept=".xlsx, .xls" :fileChangedCallback="fileSelectedFunc" flat color='transparent'>
           <template slot="icon">
             <v-icon class="grey--text text--darken-2">mdi-run-fast</v-icon>
           </template>
@@ -158,12 +158,12 @@ const _store = new Store();
 
 const fs = require('fs')
 const os = require('os')
-const path = require('path') 
+const path = require('path')
 const fse = require('fs-extra');
 
 const { ipcRenderer } = require('electron')
 import { remote } from 'electron'
-const app=remote.app
+const app = remote.app
 
 import InvoiceDetail from "./detail.vue"
 import UploadButton from 'vuetify-upload-button';
@@ -271,7 +271,16 @@ export default {
     }
     ipcRenderer.on("invoicesResults", _CB);
 
+    ipcRenderer.on("xlsResults", (event, data) => {
+      console.log(data)
+      var userDataPath = app.getPath('userData') + path.sep;
+      let xslPathFolder = userDataPath + 'export' + path.sep + 'excel' + path.sep
+      fse.ensureDirSync(xslPathFolder)
+      const xslPath = xslPathFolder + 'mc-office.xls';
+      var XLSX = require('xlsx');
 
+      XLSX.writeFile(data, xslPath);
+    });
 
 
   },
@@ -546,20 +555,39 @@ export default {
       this.close()
     },
     fileSelectedFunc(file) {
-   var   userDataPath = app.getPath('userData') + path.sep;
+      var xlstojson = require("xls-to-json-lc");
+      var xlsxtojson = require("xlsx-to-json-lc");
+      var exceltojson
+
+      var fileName = file.name.split('.')[file.name.split('.').length - 2]
+      if (file.name.split('.')[file.name.split('.').length - 1] === 'xlsx') {
+        exceltojson = xlsxtojson;
+      } else {
+        exceltojson = xlstojson;
+      }
+
+      var userDataPath = app.getPath('userData') + path.sep;
       let xslPathFolder = userDataPath + 'import' + path.sep + 'excel' + path.sep
       fse.ensureDirSync(xslPathFolder)
       const xslPath = xslPathFolder + file.name;
 
-    fs.move(file, xslPath, function (err) {
-      if (err) { 
-        return;
-      }
- 
-    });
+      fse.move(file.path, xslPath, function (err) {
+        if (err) { return; }
+        try {
+          exceltojson({
+            input: xslPath,
+            output: xslPathFolder + fileName + '.json',
+            lowerCaseHeaders: true
+          }, function (err, result) {
+            if (err) { console.log(err); return }
+            console.log(result)
+          });
+        } catch (e) {
+          console.log(e)
+        }
 
-      // try { fs.writeFileSync(xslPath, content, 'utf-8'); }
-      // catch (e) { alert('Failed to save the file !'); }
+      });
+
     }
   },
 

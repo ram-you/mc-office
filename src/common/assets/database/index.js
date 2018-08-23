@@ -20,6 +20,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 const userDataPath = app.getPath('userData') + path.sep;
 var dbInvoices
 
+
 async function initDatabase() {
   const dsFolder = 'database'
   const dbFilename = path.join(userDataPath, dsFolder + '/invoices.sqlite')
@@ -55,12 +56,26 @@ async function initDatabase() {
 }
 
 // ===
+ 
+
 initDatabase()
+
+if(typeof XLSX == 'undefined') var XLSX = require('xlsx');
+
 ipcRenderer.on("getInvoices", (event, model) => {
   const query = dbInvoices.knex('invoices').select('*').limit(10)
   dbInvoices.raw(query, true).then(data => {
     // ipcRenderer.send("gotInvoicesData", data);
     fromWindow.webContents.send("invoicesResults", data);
+  
+    /* make the worksheet */
+var ws = XLSX.utils.json_to_sheet(data);
+
+/* add to workbook */
+var wb = XLSX.utils.book_new();
+XLSX.utils.book_append_sheet(wb, ws, "Invoices");
+
+    fromWindow.webContents.send("xlsResults", wb);
   })
 
 });

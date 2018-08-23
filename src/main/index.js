@@ -120,12 +120,12 @@ function createDataBaseWorkerWindow() {
   dbWorkerWindow.loadURL(formatUrl({ pathname: dbWorkerPathname, protocol: 'file', slashes: true }));
  
   if (!isDevelopment || process.argv.indexOf('--debug') !== -1) {
-    dbWorkerWindow.webContents.openDevTools();
+    dbWorkerWindow.webContents.openDevTools();   
   }
   dbWorkerWindow.webContents.openDevTools();
    return dbWorkerWindow
 }
-
+ 
 ipcMain.on("getInvoices",   (event, model) => {
   dbWorkerWindow.webContents.send("getInvoices", model);
 });
@@ -134,7 +134,7 @@ ipcMain.on("getInvoices",   (event, model) => {
 //   mainWindow.send("invoicesResults", data);
 // });
    
- 
+     
  
 
 
