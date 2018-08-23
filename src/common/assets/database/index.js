@@ -1,4 +1,3 @@
-
 var path = require('path');
 module.paths.push(path.resolve('node_modules'));
 module.paths.push(path.resolve('../node_modules'));
@@ -13,6 +12,9 @@ const connect = require("trilogy").connect
 var electron = require("electron")
 const remote = electron.remote;
 const app = remote.app;
+const { BrowserWindow } = require('electron').remote
+const windowID = BrowserWindow.getFocusedWindow().id
+const fromWindow = BrowserWindow.fromId(windowID)
 const ipcRenderer = electron.ipcRenderer;
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const userDataPath = app.getPath('userData') + path.sep;
@@ -34,7 +36,7 @@ async function initDatabase() {
   const invoicesCount = await invoicesModel.count();
   if (invoicesCount == 0) {
     for (var i = 0; i < 1000; i++) {
-      
+
       invoicesModel.create({
         invoiceClient: 'John Doe' + i + 1,
         invoiceNumber: 'Invoice #' + Math.floor((Math.random() * 9000) + 1),
@@ -54,10 +56,11 @@ async function initDatabase() {
 
 // ===
 initDatabase()
-ipcRenderer.on("getInvoices", async (event, model) => {
+ipcRenderer.on("getInvoices", (event, model) => {
   const query = dbInvoices.knex('invoices').select('*').limit(10)
   dbInvoices.raw(query, true).then(data => {
-    ipcRenderer.send("gotInvoices", data);
+    // ipcRenderer.send("gotInvoicesData", data);
+    fromWindow.webContents.send("invoicesResults", data);
   })
 
 });

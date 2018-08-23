@@ -16,9 +16,15 @@
       </v-breadcrumbs>
       <v-spacer></v-spacer>
       <div class="mx-1">
-        <v-btn icon>
+        <!-- <v-btn icon @click="refreshInvoicesData">
           <v-icon class="grey--text text--darken-2">mdi-run-fast</v-icon>
-        </v-btn>
+        </v-btn> -->
+
+        <upload-btn icon accept=".xlsx, .xls, .csv" :fileChangedCallback="fileSelectedFunc" outline>
+          <template slot="icon">
+            <v-icon class="grey--text text--darken-2">mdi-run-fast</v-icon>
+          </template>
+        </upload-btn>
 
       </div>
 
@@ -152,14 +158,17 @@ const _store = new Store();
 
 const fs = require('fs')
 const os = require('os')
-const path = require('path')
-const { ipcRenderer } = require('electron')
+const path = require('path') 
+const fse = require('fs-extra');
 
+const { ipcRenderer } = require('electron')
+import { remote } from 'electron'
+const app=remote.app
 
 import InvoiceDetail from "./detail.vue"
-
+import UploadButton from 'vuetify-upload-button';
 export default {
-  components: { InvoiceDetail },
+  components: { 'upload-btn': UploadButton, InvoiceDetail },
   name: 'invoicesList',
   data() {
     return {
@@ -230,10 +239,14 @@ export default {
   created() {
     var vm = this
     this.initialize();
-     ipcRenderer.send("getInvoices", 'invoices');
+    ipcRenderer.send("getInvoices", 'invoices');
+    vm.isInvoicesDataLoaded = true
   },
-
+  destroyed() {
+    ipcRenderer.removeAllListeners("invoicesResults");
+  },
   mounted() {
+
     var vm = this
     this.getDataFromApi()
       .then(data => {
@@ -246,24 +259,26 @@ export default {
     this.theme = userTheme
 
 
- 
+
 
     if (!vm.isInvoicesDataLoaded)
-        ipcRenderer.send("getInvoices", 'invoices');
+      ipcRenderer.send("getInvoices", 'invoices');
 
-
-    ipcRenderer.on("invoicesResults", (event, data) => {
+    var _CB = (event, data) => {
       console.log("Done invoicesResults", data)
       vm.isInvoicesDataLoaded = true
-       this.$store.commit("setInvoices", data)
-
-    });
+      this.$store.commit("setInvoices", data)
+    }
+    ipcRenderer.on("invoicesResults", _CB);
 
 
 
 
   },
   methods: {
+    refreshInvoicesData() {
+      ipcRenderer.send("getInvoices", 'invoices');
+    },
     async initInvoicesData() {
       var vm = this
       await this.$store.dispatch('getInvoices')
@@ -529,6 +544,22 @@ export default {
         this.desserts2.push(this.editedItem)
       }
       this.close()
+    },
+    fileSelectedFunc(file) {
+   var   userDataPath = app.getPath('userData') + path.sep;
+      let xslPathFolder = userDataPath + 'import' + path.sep + 'excel' + path.sep
+      fse.ensureDirSync(xslPathFolder)
+      const xslPath = xslPathFolder + file.name;
+
+    fs.move(file, xslPath, function (err) {
+      if (err) { 
+        return;
+      }
+ 
+    });
+
+      // try { fs.writeFileSync(xslPath, content, 'utf-8'); }
+      // catch (e) { alert('Failed to save the file !'); }
     }
   },
 

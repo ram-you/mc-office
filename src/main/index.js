@@ -126,16 +126,16 @@ function createDataBaseWorkerWindow() {
    return dbWorkerWindow
 }
 
-ipcMain.on("getInvoices", async (event, model) => {
+ipcMain.on("getInvoices",   (event, model) => {
   dbWorkerWindow.webContents.send("getInvoices", model);
 });
 
-ipcMain.on("gotInvoices", async (event, data) => {
-  mainWindow.send("invoicesResults", data);
-});
-
-
-
+// ipcMain.on("gotInvoicesData", async (event, data) => {
+//   mainWindow.send("invoicesResults", data);
+// });
+   
+ 
+ 
 
 
 // quit application when all windows are closed
