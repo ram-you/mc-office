@@ -257,10 +257,7 @@ export default {
 
     var connectedUserName = this.connectedUserName;
     var userTheme = _store.get('users.' + connectedUserName + '.invoice.theme') || 'default'
-    this.theme = userTheme
-
-
-
+    this.theme = userTheme 
 
     if (!vm.isInvoicesDataLoaded)
       ipcRenderer.send("getInvoices", 'invoices');
@@ -272,7 +269,7 @@ export default {
     }
     ipcRenderer.on("invoicesResults", _CB);
 
-    
+
 
 
   },
@@ -546,57 +543,18 @@ export default {
       }
       this.close()
     },
-    fileSelectedFunc(file) {
-      if (typeof XLSX == 'undefined') var XLSX = require('xlsx');
-      var excel = require("../../../tools/excel.js")
-      var fileName = file.name.split('.')[file.name.split('.').length - 2]
-      var userDataPath = app.getPath('userData') + path.sep;
-      let xslPathFolder = userDataPath + 'import' + path.sep + 'excel' + path.sep
-      fse.ensureDirSync(xslPathFolder)
-      const xslFilePath = xslPathFolder + file.name;
-      try {
-        fs.readFile(file.path, function read(err, data) {
-          if (err) { throw err; }
-          fse.outputFile(xslFilePath, data)
-          processFile(data);
-        });
-        function processFile(data) {
-          // pre-process data
-          var binary = "";
-          var bytes = new Uint8Array(data);
-          var length = bytes.byteLength;
-          for (var i = 0; i < length; i++) {
-            binary += String.fromCharCode(bytes[i]);
-          }
-          var wb = XLSX.read(binary, { type: 'binary' });
-          var jsonArray = excel.to_json(wb)
-          Object.keys(jsonArray).forEach(key => {
-            writeJson(fileName + " (" + key + ")", jsonArray[key])
-          });
-        }
-        async function writeJson(jsonFile, jsonData) {
-          try {
-            await fse.writeJson(xslPathFolder + jsonFile + '.json', jsonData)
-            console.log('success!')
-          } catch (err) {
-            console.error(err)
-          }
-        }
-      } catch (e) {
-        console.log(e)
-      }
 
-
-
-    },
     exportDatabaseToExel() {
       ipcRenderer.once('exportToXLS', (event, message) => { alert(message); });
       let dbWorkerWindow = remote.getGlobal('dbWorkerWindow');
- 
-   dbWorkerWindow.webContents.send('exportToXLS', "Message from Window 1");
-
-
+      dbWorkerWindow.webContents.send('exportToXLS', "Message from Window 1");
     },
+    fileSelectedFunc(file) {
+      ipcRenderer.once('importFromXLS', (event, message) => { alert(message); });
+      let dbWorkerWindow = remote.getGlobal('dbWorkerWindow');
+      dbWorkerWindow.webContents.send('importFromXLS', file);
+    },
+
   },
 
 

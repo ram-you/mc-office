@@ -47,7 +47,7 @@ function createMainWindow() {
   const shouldQuit = makeSingleInstance()
   if (shouldQuit) return app.quit()
 
-  mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({ 
     title: "MEDIACEPT Office",
     useContentSize: true,
     width: windowWidth || 1264,
@@ -57,13 +57,13 @@ function createMainWindow() {
     x: winPOS.x,
     y: winPOS.y,
     backgroundColor: isDarkMode ? '#303030' : '#fff',
-    show: true,
+    show: false,
     icon: ASSETS_DIR + '/icons/64x64.png', // path.join(__dirname, '../common/assets/icons/64x64.png'),
     webPreferences: { plugins: false }
 
   })
 
-  mainWindow.on('ready-to-show', () => {
+  mainWindow.once('ready-to-show', () => {
     mainWindow.show()
     mainWindow.focus()
 
@@ -188,6 +188,7 @@ ipcMain.on('update-window-size', (event) => {
 
 function createPdfViewerWindow(file) {
   pdfViewerWindow = new BrowserWindow({
+    // parent: mainWindow, modal: true,
     show: false,
     icon: ASSETS_DIR + '/icons/pdf.png', //path.join(__dirname, '../common/assets/icons/pdf.png'),
     webPreferences: { plugins: true, },

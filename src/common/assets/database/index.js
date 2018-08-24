@@ -8,7 +8,10 @@ module.paths.push(path.resolve(__dirname, '..', '..', 'app.asar', 'node_modules'
 
 const connect = require("trilogy").connect
 
+const fs = require('fs')
 const fse = require('fs-extra');
+
+var XLSX = require('xlsx');
 
 var electron = require("electron")
 const remote = electron.remote;
@@ -18,15 +21,15 @@ const windowID = BrowserWindow.getFocusedWindow().id
 const fromWindow = BrowserWindow.fromId(windowID)
 const ipcRenderer = electron.ipcRenderer;
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const userDataPath = app.getPath('userData') + path.sep;
-var dbInvoices
+let sep = path.sep
+const userDataPath = app.getPath('userData') + sep;
+var appDatabase
 
 
-async function initDatabase() {
-  const dsFolder = 'database'
-  const dbFilename = path.join(userDataPath, dsFolder + '/invoices.sqlite')
-  dbInvoices = connect(dbFilename, { client: 'sql.js' })
-  const invoicesModel = await dbInvoices.model('invoices', {
+async function initDatabase() { 
+  const dbFilename = path.join(userDataPath,   'database/mc-office.sqlite')
+  appDatabase = connect(dbFilename, { client: 'sql.js' })
+  const invoicesModel = await appDatabase.model('invoices', {
     invoiceClient: String,
     invoiceNumber: String,
     invoiceDate: Date,
@@ -35,10 +38,10 @@ async function initDatabase() {
     id: 'increments', // special type, primary key
 
   })
-  const usersModel = await dbInvoices.model('users', {
+  const usersModel = await appDatabase.model('users', {
     firstName: String,
     lastName: String,
-    password: String, 
+    password: String,
     id: 'increments', // special type, primary key
 
   })
@@ -65,7 +68,7 @@ async function initDatabase() {
         firstName: 'John' + i + 1,
         lastName: 'Doe' + Math.floor((Math.random() * 10) + 1),
         password: Math.floor((Math.random() * 9000) + 1) + ' $',
-    
+
       })
     }
   }
@@ -77,45 +80,86 @@ async function initDatabase() {
 
 initDatabase()
 
-if (typeof XLSX == 'undefined') var XLSX = require('xlsx');
-ipcRenderer.on('exportToXLS', (event, message) => { 
-  const query = dbInvoices.knex('invoices').select('*');
-  dbInvoices.raw(query, true).then(data => {
-  
-    var ws = XLSX.utils.json_to_sheet(data);
- 
-    var wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "invoices");
-   
-    var userDataPath = app.getPath('userData') + path.sep;
-    let xslPathFolder = userDataPath + 'export' + path.sep + 'excel' + path.sep
+
+// ------------
+ipcRenderer.on('exportToXLS', (event, message) => {
+  var models = appDatabase.models
+  var wb = XLSX.utils.book_new();
+  var promises = models.map(model => {
+    return new Promise((resolve, reject) => {
+      var query = appDatabase.knex(model).select('*');
+      appDatabase.raw(query, true).then(data => {
+        resolve({ data: data, model: model })
+      })
+    });
+  });
+
+  Promise.all(promises).then(function (values) {
+    for (var i = 0; i < values.length; i++) {
+      var value = values[i]
+      var ws = XLSX.utils.json_to_sheet(value.data);
+      XLSX.utils.book_append_sheet(wb, ws, value.model);
+    }
+    saveAndExit()
+  });
+
+  function saveAndExit() {
+    let xslPathFolder = userDataPath + 'database' + sep + 'excel' + sep + 'export' + sep
     fse.ensureDirSync(xslPathFolder)
     const xslPath = xslPathFolder + 'mc-office.xls';
-   
     XLSX.writeFile(wb, xslPath);
-
     fromWindow.webContents.send("exportToXLS", "Export To XLS\n" + ".......Done.");
-  })
-
-
-
+  }
 
 });
 
+// ------------
+ipcRenderer.on('importFromXLS', (event, file) => {
+  var utils = require("./utils")
+  var fileName = file.name.split('.')[file.name.split('.').length - 2]
+  let xslPathFolder = userDataPath + 'database' + sep + 'excel' + sep + 'import' + sep
+  fse.ensureDirSync(xslPathFolder)
+  const xslFilePath = xslPathFolder + file.name;
+  try {
+    fs.readFile(file.path, function read(err, data) {
+      if (err) { throw err; }
+      fse.outputFile(xslFilePath, data)
+      processFile(data);
+    });
+    function processFile(data) {
+      // pre-process data
+      var binary = "";
+      var bytes = new Uint8Array(data);
+      var length = bytes.byteLength;
+      for (var i = 0; i < length; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      var wb = XLSX.read(binary, { type: 'binary' });
+      var jsonArray = utils.to_json(wb)
+      Object.keys(jsonArray).forEach(key => {
+        writeJson(fileName + " (" + key + ")", jsonArray[key])
+      });
+
+      fromWindow.webContents.send("importFromXLS", "Import From XLS\n" + ".......Done.");
+    }
+    async function writeJson(jsonFile, jsonData) {
+      try {
+        await fse.writeJson(xslPathFolder + jsonFile + '.json', jsonData)
+
+      } catch (err) {
+        console.error(err)
+      }
+    }
+  } catch (e) {
+    console.log(e)
+  }
+});
+
+// ------------
 ipcRenderer.on("getInvoices", (event, model) => {
-  const query = dbInvoices.knex('invoices').select('*').limit(10)
-  dbInvoices.raw(query, true).then(data => {
-    // ipcRenderer.send("gotInvoicesData", data);
+  const query = appDatabase.knex('invoices').select('*').limit(10)
+  appDatabase.raw(query, true).then(data => { 
     fromWindow.webContents.send("invoicesResults", data);
-
-    // /* make the worksheet */
-    // var ws = XLSX.utils.json_to_sheet(data);
-
-    // /* add to workbook */
-    // var wb = XLSX.utils.book_new();
-    // XLSX.utils.book_append_sheet(wb, ws, "Invoices");
-
-    // fromWindow.webContents.send("xlsResults", wb);
   })
-
 });
+
