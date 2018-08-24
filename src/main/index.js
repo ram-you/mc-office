@@ -1,11 +1,11 @@
 'use strict'
 
- 
+
 
 
 
 const debounce = require("lodash/debounce");
-var i18n = new (require('./i18n'))
+var i18n = new(require('./i18n'))
 const Store = require('electron-store');
 const _store = new Store();
 
@@ -32,10 +32,11 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 
 let platform = os.platform()
 
-let mainWindow = null
-let dbWorkerWindow = null
-let printWorkerWindow = null
-let pdfViewerWindow = null
+global.mainWindow = null
+global.dbWorkerWindow = null
+global.printWorkerWindow = null
+global.pdfViewerWindow = null
+
 let userDataPath = ''
 
 // Standard scheme must be registered before the app is ready
@@ -57,7 +58,7 @@ function createMainWindow() {
     y: winPOS.y,
     backgroundColor: isDarkMode ? '#303030' : '#fff',
     show: true,
-    icon: ASSETS_DIR + '/icons/64x64.png',// path.join(__dirname, '../common/assets/icons/64x64.png'),
+    icon: ASSETS_DIR + '/icons/64x64.png', // path.join(__dirname, '../common/assets/icons/64x64.png'),
     webPreferences: { plugins: false }
 
   })
@@ -74,14 +75,14 @@ function createMainWindow() {
   if (isDevelopment) {
     mainWindow.loadURL(`http://localhost:9080`)
     if (!process.env.IS_TEST) { mainWindow.webContents.openDevTools() }
-    globalShortcut.register('f5', function () { mainWindow.reload() })
+    globalShortcut.register('f5', function() { mainWindow.reload() })
   } else {
     mainWindow.loadURL(formatUrl({ pathname: path.join(__dirname, 'index.html'), protocol: 'file', slashes: true }))
     if (platform === 'linux' || platform === 'win32') {
       globalShortcut.register('Control+Shift+R', () => {
         mainWindow.webContents.openDevTools()
       })
-      globalShortcut.register('f5', function () {
+      globalShortcut.register('f5', function() {
         mainWindow.reload()
       })
     }
@@ -94,7 +95,7 @@ function createMainWindow() {
     setImmediate(() => { mainWindow.focus() })
   })
 
-  mainWindow.on('resize', debounce(function (e) {
+  mainWindow.on('resize', debounce(function(e) {
     e.preventDefault();
     onWindowResize();
   }, 100));
@@ -118,24 +119,24 @@ function createDataBaseWorkerWindow() {
   dbWorkerWindow = new BrowserWindow({ show: false });
   var dbWorkerPathname = isDevelopment ? (ASSETS_DIR + '/database/worker.html') : path.join(__dirname, '/../../../assets/database/worker.html')
   dbWorkerWindow.loadURL(formatUrl({ pathname: dbWorkerPathname, protocol: 'file', slashes: true }));
- 
+
   if (!isDevelopment || process.argv.indexOf('--debug') !== -1) {
-    dbWorkerWindow.webContents.openDevTools();   
+    dbWorkerWindow.webContents.openDevTools();
   }
   dbWorkerWindow.webContents.openDevTools();
-   return dbWorkerWindow
+  return dbWorkerWindow
 }
- 
-ipcMain.on("getInvoices",   (event, model) => {
+
+ipcMain.on("getInvoices", (event, model) => {
   dbWorkerWindow.webContents.send("getInvoices", model);
 });
 
 // ipcMain.on("gotInvoicesData", async (event, data) => {
 //   mainWindow.send("invoicesResults", data);
 // });
-   
-     
- 
+
+
+
 
 
 // quit application when all windows are closed
@@ -188,7 +189,7 @@ ipcMain.on('update-window-size', (event) => {
 function createPdfViewerWindow(file) {
   pdfViewerWindow = new BrowserWindow({
     show: false,
-    icon: ASSETS_DIR + '/icons/pdf.png',//path.join(__dirname, '../common/assets/icons/pdf.png'),
+    icon: ASSETS_DIR + '/icons/pdf.png', //path.join(__dirname, '../common/assets/icons/pdf.png'),
     webPreferences: { plugins: true, },
   });
   pdfViewerWindow.setMenu(null)
@@ -232,9 +233,9 @@ ipcMain.on("readyToPrintPDF", (event, ID) => {
     printSelectionOnly: false,
     landscape: false
   }
-  printWorkerWindow.webContents.printToPDF(printOptions, function (error, data) {
+  printWorkerWindow.webContents.printToPDF(printOptions, function(error, data) {
     if (error) throw error
-    fs.writeFile(pdfPath, data, function (error) {
+    fs.writeFile(pdfPath, data, function(error) {
       if (error) {
         throw error
       }
@@ -255,7 +256,7 @@ ipcMain.on("readyToPrint", (event, ID, printer) => {
     printSelectionOnly: false,
     landscape: false
   }
-  printWorkerWindow.webContents.print(printOptions, function (success) {
+  printWorkerWindow.webContents.print(printOptions, function(success) {
     if (success) { console.log('invoice-' + ID, "...printed.") } else {
       console.log('invoice-' + ID, "...NOT PRINTED")
     }

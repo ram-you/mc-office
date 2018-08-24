@@ -16,13 +16,13 @@
       </v-breadcrumbs>
       <v-spacer></v-spacer>
       <div class="mx-1">
-        <!-- <v-btn icon @click="refreshInvoicesData">
-          <v-icon class="grey--text text--darken-2">mdi-run-fast</v-icon>
-        </v-btn> -->
+        <v-btn icon @click="exportDatabaseToExel">
+          <v-icon class="blue--text text--darken-2">mdi-database-export</v-icon>
+        </v-btn>
 
-        <upload-btn icon accept=".xlsx, .xls" :fileChangedCallback="fileSelectedFunc" flat color='transparent'>
+        <upload-btn icon :accept="SheetJSFT" :fileChangedCallback="fileSelectedFunc" flat color='transparent'>
           <template slot="icon">
-            <v-icon class="grey--text text--darken-2">mdi-run-fast</v-icon>
+            <v-icon class="green--text text--darken-2">mdi-database-import</v-icon>
           </template>
         </upload-btn>
 
@@ -172,6 +172,7 @@ export default {
   name: 'invoicesList',
   data() {
     return {
+      SheetJSFT: ["xlsx", "xlsb", "xlsm", "xls", "xml", "csv", "ods", "dbf"].map(function (x) { return "." + x; }).join(","),
       isInvoicesDataLoaded: false,
       // invoicesList: [],
       theme: 'default',
@@ -271,16 +272,7 @@ export default {
     }
     ipcRenderer.on("invoicesResults", _CB);
 
-    ipcRenderer.on("xlsResults", (event, data) => {
-      console.log(data)
-      var userDataPath = app.getPath('userData') + path.sep;
-      let xslPathFolder = userDataPath + 'export' + path.sep + 'excel' + path.sep
-      fse.ensureDirSync(xslPathFolder)
-      const xslPath = xslPathFolder + 'mc-office.xls';
-      var XLSX = require('xlsx');
-
-      XLSX.writeFile(data, xslPath);
-    });
+    
 
 
   },
@@ -555,42 +547,65 @@ export default {
       this.close()
     },
     fileSelectedFunc(file) {
-      var xlstojson = require("xls-to-json-lc");
-      var xlsxtojson = require("xlsx-to-json-lc");
-      var exceltojson
-
+      if (typeof XLSX == 'undefined') var XLSX = require('xlsx');
+      var excel = require("../../../tools/excel.js")
       var fileName = file.name.split('.')[file.name.split('.').length - 2]
-      if (file.name.split('.')[file.name.split('.').length - 1] === 'xlsx') {
-        exceltojson = xlsxtojson;
-      } else {
-        exceltojson = xlstojson;
-      }
-
       var userDataPath = app.getPath('userData') + path.sep;
       let xslPathFolder = userDataPath + 'import' + path.sep + 'excel' + path.sep
       fse.ensureDirSync(xslPathFolder)
-      const xslPath = xslPathFolder + file.name;
-
-      fse.move(file.path, xslPath, function (err) {
-        if (err) { return; }
-        try {
-          exceltojson({
-            input: xslPath,
-            output: xslPathFolder + fileName + '.json',
-            lowerCaseHeaders: true
-          }, function (err, result) {
-            if (err) { console.log(err); return }
-            console.log(result)
+      const xslFilePath = xslPathFolder + file.name;
+      try {
+        fs.readFile(file.path, function read(err, data) {
+          if (err) { throw err; }
+          fse.outputFile(xslFilePath, data)
+          processFile(data);
+        });
+        function processFile(data) {
+          // pre-process data
+          var binary = "";
+          var bytes = new Uint8Array(data);
+          var length = bytes.byteLength;
+          for (var i = 0; i < length; i++) {
+            binary += String.fromCharCode(bytes[i]);
+          }
+          var wb = XLSX.read(binary, { type: 'binary' });
+          var jsonArray = excel.to_json(wb)
+          Object.keys(jsonArray).forEach(key => {
+            writeJson(fileName + " (" + key + ")", jsonArray[key])
           });
-        } catch (e) {
-          console.log(e)
         }
+        async function writeJson(jsonFile, jsonData) {
+          try {
+            await fse.writeJson(xslPathFolder + jsonFile + '.json', jsonData)
+            console.log('success!')
+          } catch (err) {
+            console.error(err)
+          }
+        }
+      } catch (e) {
+        console.log(e)
+      }
 
-      });
 
-    }
+
+    },
+    exportDatabaseToExel() {
+      ipcRenderer.once('exportToXLS', (event, message) => { alert(message); });
+      let dbWorkerWindow = remote.getGlobal('dbWorkerWindow');
+ 
+   dbWorkerWindow.webContents.send('exportToXLS', "Message from Window 1");
+
+
+    },
   },
 
 
 }
 </script>
+
+<style>
+.upload-btn {
+  display: inline-flex;
+  vertical-align: middle;
+}
+</style>

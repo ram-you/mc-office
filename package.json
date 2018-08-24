@@ -1,6 +1,6 @@
 {
   "name": "mc-office",
-  "version": "0.2.50",
+  "version": "0.2.51",
   "license": "MIT",
   "description": "A MEDIACEPT Technology creation",
   "author": {
@@ -46,13 +46,10 @@
     "vue-swatches": "^1.0.1",
     "vuetify": "^1.1.14",
     "vuetify-upload-button": "^1.1.0",
-    "vuex": "^3.0.1",
-    "xls-to-json-lc": "^0.3.4",
-    "xlsx": "^0.13.4",
-    "xlsx-to-json-lc": "^0.5.0"
+    "vuex": "^3.0.1", 
+    "xlsx": "^0.13.4" 
   },
-  "devDependencies": {
-    "assert": "^1.4.1",
+  "devDependencies": { 
     "@babel/polyfill": "^7.0.0-rc.2",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.6",
