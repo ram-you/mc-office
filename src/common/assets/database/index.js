@@ -17,14 +17,14 @@ var electron = require("electron")
 const remote = electron.remote;
 const app = remote.app;
 const { BrowserWindow } = require('electron').remote
-const windowID = BrowserWindow.getFocusedWindow().id
-const fromWindow = BrowserWindow.fromId(windowID)
+// const windowID = BrowserWindow.getFocusedWindow().id
+// const mainWindow = BrowserWindow.fromId(windowID)
 const ipcRenderer = electron.ipcRenderer;
 const isDevelopment = process.env.NODE_ENV !== 'production';
 let sep = path.sep
 const userDataPath = app.getPath('userData') + sep;
 var appDatabase
-
+let mainWindow = remote.getGlobal('mainWindow');
 
 async function initDatabase() { 
   const dbFilename = path.join(userDataPath,   'database/mc-office.sqlite')
@@ -108,7 +108,7 @@ ipcRenderer.on('exportToXLS', (event, message) => {
     fse.ensureDirSync(xslPathFolder)
     const xslPath = xslPathFolder + 'mc-office.xls';
     XLSX.writeFile(wb, xslPath);
-    fromWindow.webContents.send("exportToXLS", "Export To XLS\n" + ".......Done.");
+    mainWindow.webContents.send("exportToXLS", "Export To XLS\n" + ".......Done.");
   }
 
 });
@@ -140,7 +140,7 @@ ipcRenderer.on('importFromXLS', (event, file) => {
         writeJson(fileName + " (" + key + ")", jsonArray[key])
       });
 
-      fromWindow.webContents.send("importFromXLS", "Import From XLS\n" + ".......Done.");
+      mainWindow.webContents.send("importFromXLS", "Import From XLS\n" + ".......Done.");
     }
     async function writeJson(jsonFile, jsonData) {
       try {
@@ -159,7 +159,8 @@ ipcRenderer.on('importFromXLS', (event, file) => {
 ipcRenderer.on("getInvoices", (event, model) => {
   const query = appDatabase.knex('invoices').select('*').limit(10)
   appDatabase.raw(query, true).then(data => { 
-    fromWindow.webContents.send("invoicesResults", data);
+    
+    mainWindow.webContents.send("invoicesResults", data);
   })
 });
 

@@ -111,8 +111,7 @@ function createMainWindow() {
 
 // create main BrowserWindow when electron is ready
 app.on('ready', async () => {
-  dbWorkerWindow = createDataBaseWorkerWindow()
-  ormWorkerWindow = createOrmWorkerWindow()
+  dbWorkerWindow = createDataBaseWorkerWindow() 
   mainWindow = createMainWindow()
   printWorkerWindow = createPrintWorkerWindow()
   userDataPath = app.getPath('userData') + path.sep;
@@ -120,34 +119,15 @@ app.on('ready', async () => {
 
 // =====================DATABASE======================
 function createDataBaseWorkerWindow() {
-  dbWorkerWindow = new BrowserWindow({ show: true });
-  var dbWorkerPathname = isDevelopment ? (ASSETS_DIR + '/database/worker.html') : path.join(__dirname, '/../../../assets/database/worker.html')
+  dbWorkerWindow = new BrowserWindow({ show: false });
+  var dbWorkerPathname = ASSETS_GLOBAL + '/database/worker.html';// isDevelopment ? (ASSETS_DIR + '/database/worker.html') : path.join(__dirname, '/../../../assets/database/worker.html')
   dbWorkerWindow.loadURL(formatUrl({ pathname: dbWorkerPathname, protocol: 'file', slashes: true }));
-
   dbWorkerWindow.webContents.openDevTools();
   return dbWorkerWindow
 }
-
-ipcMain.on("getInvoices", (event, model) => {
-  dbWorkerWindow.webContents.send("getInvoices", model);
-});
-
-
-// ===================== ORM ORM ORM ORM ~~~~~~~~~~~~ ORM ORM ORM ORM  ======================
-function createOrmWorkerWindow() {
-  ormWorkerWindow = new BrowserWindow({ show: true });
-  var ormWorkerPathname = isDevelopment ? (ASSETS_DIR + '/orm/worker.html') : path.join(__dirname, '/../../../assets/orm/worker.html')
-  ormWorkerWindow.loadURL(formatUrl({ pathname: ormWorkerPathname, protocol: 'file', slashes: true }));
-
-  ormWorkerWindow.webContents.openDevTools();
-  return ormWorkerWindow
-}
-
-
-
-
-
-
+ 
+ // =====================~~~~~~~======================
+ 
 
 
 
@@ -217,7 +197,7 @@ function createPdfViewerWindow(file) {
 
 function createPrintWorkerWindow() {
   printWorkerWindow = new BrowserWindow({ show: false });
-  var printWorkerPathname = isDevelopment ? (ASSETS_DIR + '/billing/worker.html') : path.join(__dirname, '/../../../assets/billing/' + 'worker.html')
+  var printWorkerPathname =  ASSETS_GLOBAL + '/billing/worker.html';// isDevelopment ? (ASSETS_DIR + '/billing/worker.html') : path.join(__dirname, '/../../../assets/billing/' + 'worker.html')
   printWorkerWindow.loadURL(formatUrl({ pathname: printWorkerPathname, protocol: 'file', slashes: true }))
   if (!isDevelopment && process.argv.indexOf('--debug') !== -1) {
     printWorkerWindow.webContents.openDevTools();

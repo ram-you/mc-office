@@ -164,6 +164,7 @@ const fse = require('fs-extra');
 const { ipcRenderer } = require('electron')
 import { remote } from 'electron'
 const app = remote.app
+let dbWorkerWindow = remote.getGlobal('dbWorkerWindow');
 
 import InvoiceDetail from "./detail.vue"
 import UploadButton from 'vuetify-upload-button';
@@ -240,7 +241,7 @@ export default {
   created() {
     var vm = this
     this.initialize();
-    ipcRenderer.send("getInvoices", 'invoices');
+    dbWorkerWindow.webContents.send("getInvoices", 'invoices');
     vm.isInvoicesDataLoaded = true
   },
   destroyed() {
@@ -260,7 +261,7 @@ export default {
     this.theme = userTheme 
 
     if (!vm.isInvoicesDataLoaded)
-      ipcRenderer.send("getInvoices", 'invoices');
+      dbWorkerWindow.webContents.send("getInvoices", 'invoices');
 
     var _CB = (event, data) => {
       console.log("Done invoicesResults", data)
@@ -545,13 +546,12 @@ export default {
     },
 
     exportDatabaseToExel() {
-      ipcRenderer.once('exportToXLS', (event, message) => { alert(message); });
-      let dbWorkerWindow = remote.getGlobal('dbWorkerWindow');
+      ipcRenderer.once('exportToXLS', (event, message) => { alert(message); }); 
       dbWorkerWindow.webContents.send('exportToXLS', "Message from Window 1");
     },
     fileSelectedFunc(file) {
       ipcRenderer.once('importFromXLS', (event, message) => { alert(message); });
-      let dbWorkerWindow = remote.getGlobal('dbWorkerWindow');
+      
       dbWorkerWindow.webContents.send('importFromXLS', file);
     },
 
