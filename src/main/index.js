@@ -5,7 +5,7 @@
 
 
 const debounce = require("lodash/debounce");
-var i18n = new(require('./i18n'))
+var i18n = new (require('./i18n'))
 const Store = require('electron-store');
 const _store = new Store();
 
@@ -23,17 +23,20 @@ const path = require('path')
 const formatUrl = require('url').format
 
 const centerOnPrimaryDisplay = require('./helpers/center-on-primary-display');
-var ASSETS_DIR = path.resolve(__dirname, '../common/assets');
-
-
-
-
-const isDevelopment = process.env.NODE_ENV !== 'production'
 
 let platform = os.platform()
 
+const isDevelopment = process.env.NODE_ENV !== 'production'
+
+
+
+let ASSETS_DIR =  path.resolve(__dirname, '../common/assets')  
+
+global.ASSETS_GLOBAL = isDevelopment? path.resolve(__dirname, '../common/assets') : path.join(__dirname, '/../../../assets');
+
 global.mainWindow = null
 global.dbWorkerWindow = null
+global.ormWorkerWindow = null
 global.printWorkerWindow = null
 global.pdfViewerWindow = null
 
@@ -47,7 +50,7 @@ function createMainWindow() {
   const shouldQuit = makeSingleInstance()
   if (shouldQuit) return app.quit()
 
-  mainWindow = new BrowserWindow({ 
+  mainWindow = new BrowserWindow({
     title: "MEDIACEPT Office",
     useContentSize: true,
     width: windowWidth || 1264,
@@ -75,14 +78,14 @@ function createMainWindow() {
   if (isDevelopment) {
     mainWindow.loadURL(`http://localhost:9080`)
     if (!process.env.IS_TEST) { mainWindow.webContents.openDevTools() }
-    globalShortcut.register('f5', function() { mainWindow.reload() })
+    globalShortcut.register('f5', function () { mainWindow.reload() })
   } else {
     mainWindow.loadURL(formatUrl({ pathname: path.join(__dirname, 'index.html'), protocol: 'file', slashes: true }))
     if (platform === 'linux' || platform === 'win32') {
       globalShortcut.register('Control+Shift+R', () => {
         mainWindow.webContents.openDevTools()
       })
-      globalShortcut.register('f5', function() {
+      globalShortcut.register('f5', function () {
         mainWindow.reload()
       })
     }
@@ -95,7 +98,7 @@ function createMainWindow() {
     setImmediate(() => { mainWindow.focus() })
   })
 
-  mainWindow.on('resize', debounce(function(e) {
+  mainWindow.on('resize', debounce(function (e) {
     e.preventDefault();
     onWindowResize();
   }, 100));
@@ -109,6 +112,7 @@ function createMainWindow() {
 // create main BrowserWindow when electron is ready
 app.on('ready', async () => {
   dbWorkerWindow = createDataBaseWorkerWindow()
+  ormWorkerWindow = createOrmWorkerWindow()
   mainWindow = createMainWindow()
   printWorkerWindow = createPrintWorkerWindow()
   userDataPath = app.getPath('userData') + path.sep;
@@ -116,13 +120,10 @@ app.on('ready', async () => {
 
 // =====================DATABASE======================
 function createDataBaseWorkerWindow() {
-  dbWorkerWindow = new BrowserWindow({ show: false });
+  dbWorkerWindow = new BrowserWindow({ show: true });
   var dbWorkerPathname = isDevelopment ? (ASSETS_DIR + '/database/worker.html') : path.join(__dirname, '/../../../assets/database/worker.html')
   dbWorkerWindow.loadURL(formatUrl({ pathname: dbWorkerPathname, protocol: 'file', slashes: true }));
 
-  if (!isDevelopment || process.argv.indexOf('--debug') !== -1) {
-    dbWorkerWindow.webContents.openDevTools();
-  }
   dbWorkerWindow.webContents.openDevTools();
   return dbWorkerWindow
 }
@@ -131,9 +132,20 @@ ipcMain.on("getInvoices", (event, model) => {
   dbWorkerWindow.webContents.send("getInvoices", model);
 });
 
-// ipcMain.on("gotInvoicesData", async (event, data) => {
-//   mainWindow.send("invoicesResults", data);
-// });
+
+// ===================== ORM ORM ORM ORM ~~~~~~~~~~~~ ORM ORM ORM ORM  ======================
+function createOrmWorkerWindow() {
+  ormWorkerWindow = new BrowserWindow({ show: true });
+  var ormWorkerPathname = isDevelopment ? (ASSETS_DIR + '/orm/worker.html') : path.join(__dirname, '/../../../assets/orm/worker.html')
+  ormWorkerWindow.loadURL(formatUrl({ pathname: ormWorkerPathname, protocol: 'file', slashes: true }));
+
+  ormWorkerWindow.webContents.openDevTools();
+  return ormWorkerWindow
+}
+
+
+
+
 
 
 
@@ -234,9 +246,9 @@ ipcMain.on("readyToPrintPDF", (event, ID) => {
     printSelectionOnly: false,
     landscape: false
   }
-  printWorkerWindow.webContents.printToPDF(printOptions, function(error, data) {
+  printWorkerWindow.webContents.printToPDF(printOptions, function (error, data) {
     if (error) throw error
-    fs.writeFile(pdfPath, data, function(error) {
+    fs.writeFile(pdfPath, data, function (error) {
       if (error) {
         throw error
       }
@@ -257,7 +269,7 @@ ipcMain.on("readyToPrint", (event, ID, printer) => {
     printSelectionOnly: false,
     landscape: false
   }
-  printWorkerWindow.webContents.print(printOptions, function(success) {
+  printWorkerWindow.webContents.print(printOptions, function (success) {
     if (success) { console.log('invoice-' + ID, "...printed.") } else {
       console.log('invoice-' + ID, "...NOT PRINTED")
     }
