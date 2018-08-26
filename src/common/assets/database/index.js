@@ -6,7 +6,7 @@ module.paths.push(path.resolve(__dirname, '..', '..', 'electron.asar', 'node_mod
 module.paths.push(path.resolve(__dirname, '..', '..', 'app', 'node_modules'));
 module.paths.push(path.resolve(__dirname, '..', '..', 'app.asar', 'node_modules'));
 
-const Trilogy =require( 'trilogy')
+const connect =require( 'trilogy').connect
 
 const fs = require('fs')
 const fse = require('fs-extra');
@@ -52,11 +52,11 @@ fs.exists(versionFile, function (exists) {
 
 async function migrateDB(version) {
 
-  await initDatabase();
+
   if (version.current == version.latest) {
     var initData = require("./schema/" + version.current + "/initData.js");
-      const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
-  const usersModel = await appDatabase.model('users', usersSchema);
+  //     const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
+  // const usersModel = await appDatabase.model('users', usersSchema);
 
   } else {
     var migrate = require("./schema/migrate/" + version.current + ".js");
@@ -81,8 +81,7 @@ async function initModels() {
 }
 
 async function initDatabase() {
-  const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
-  appDatabase = await new Trilogy(dbFilename, { client: 'sql.js' });
+
 
 }
 
@@ -90,10 +89,17 @@ async function initDatabase() {
 
 
 // ------------
-ipcRenderer.on('exportToXLS', (event, message) => {
-  var models = appDatabase.models
+ipcRenderer.on('exportToXLS', async (event, message) => {
+  const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
+  appDatabase = await connect(dbFilename, { client: 'sql.js' });
+  const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
+  const usersModel = await appDatabase.model('users', usersSchema);
+
+  var models = appDatabase.models;
+  console.log(models)
   var wb = XLSX.utils.book_new();
   var promises = models.map(model => {
+    console.log(model)
     return new Promise((resolve, reject) => {
       var query = appDatabase.knex(model).select('*');
       appDatabase.raw(query, true).then(data => {
@@ -164,7 +170,11 @@ ipcRenderer.on('importFromXLS', (event, file) => {
 });
 
 // ------------
-ipcRenderer.on("getInvoices", (event, model) => {
+ipcRenderer.on("getInvoices",async (event, model) => {
+  const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
+  appDatabase = await connect(dbFilename, { client: 'sql.js' });
+  const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
+  const usersModel = await appDatabase.model('users', usersSchema);
   const query = appDatabase.knex('invoices').select('*').limit(10)
   appDatabase.raw(query, true).then(data => {
 

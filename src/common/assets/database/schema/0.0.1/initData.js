@@ -9,7 +9,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 let sep = path.sep
 const userDataPath = app.getPath('userData') + sep;
 
-const Trilogy = require('trilogy')
+const connect = require('trilogy').connect
 
 var appDatabase, invoicesModel, usersModel
 let invoicesSchema = require("./Invoices")
@@ -18,7 +18,7 @@ let usersSchema = require("./Users")
 
 async function initDatabase() {
   const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite')
-  appDatabase = new Trilogy(dbFilename, { client: 'sql.js' })
+  appDatabase = connect(dbFilename, { client: 'sql.js' })
   invoicesModel = await appDatabase.model('invoices', invoicesSchema)
   usersModel = await appDatabase.model('users', usersSchema)
   const invoicesCount = await invoicesModel.count();

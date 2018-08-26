@@ -9,7 +9,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 let sep = path.sep
 const userDataPath = app.getPath('userData') + sep;
 
-const Trilogy = require('trilogy')
+const connect = require('trilogy').connect
 
 var appDatabase, invoicesModel, usersModel
 let DB_VERSION = remote.getGlobal('DB_VERSION')
@@ -20,7 +20,7 @@ var renameTables = function (appDatabase) {
   return new Promise(
     function (resolve, reject) {
       const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite')
-      appDatabase = new Trilogy(dbFilename, { client: 'sql.js' })
+      appDatabase = connect(dbFilename, { client: 'sql.js' })
       // if (!appDatabase.hasModel('users_old')) {
       var query = 'alter table users rename to users_old;'
       appDatabase.raw(query, true).then(async () => {
