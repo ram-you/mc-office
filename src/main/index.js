@@ -40,6 +40,8 @@ global.ormWorkerWindow = null
 global.printWorkerWindow = null
 global.pdfViewerWindow = null
 
+global.DB_VERSION= require('../../package.json').db_version
+
 let userDataPath = ''
 
 // Standard scheme must be registered before the app is ready
@@ -119,7 +121,7 @@ app.on('ready', async () => {
 
 // =====================DATABASE======================
 function createDataBaseWorkerWindow() {
-  dbWorkerWindow = new BrowserWindow({ show: false });
+  dbWorkerWindow = new BrowserWindow({ show: true });
   var dbWorkerPathname = ASSETS_GLOBAL + '/database/worker.html';// isDevelopment ? (ASSETS_DIR + '/database/worker.html') : path.join(__dirname, '/../../../assets/database/worker.html')
   dbWorkerWindow.loadURL(formatUrl({ pathname: dbWorkerPathname, protocol: 'file', slashes: true }));
   dbWorkerWindow.webContents.openDevTools();

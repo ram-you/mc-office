@@ -6,7 +6,7 @@ module.paths.push(path.resolve(__dirname, '..', '..', 'electron.asar', 'node_mod
 module.paths.push(path.resolve(__dirname, '..', '..', 'app', 'node_modules'));
 module.paths.push(path.resolve(__dirname, '..', '..', 'app.asar', 'node_modules'));
 
-const connect = require("trilogy").connect
+const Trilogy =require( 'trilogy')
 
 const fs = require('fs')
 const fse = require('fs-extra');
@@ -16,9 +16,7 @@ var XLSX = require('xlsx');
 var electron = require("electron")
 const remote = electron.remote;
 const app = remote.app;
-const { BrowserWindow } = require('electron').remote
-// const windowID = BrowserWindow.getFocusedWindow().id
-// const mainWindow = BrowserWindow.fromId(windowID)
+const { BrowserWindow } = require('electron').remote;
 const ipcRenderer = electron.ipcRenderer;
 const isDevelopment = process.env.NODE_ENV !== 'production';
 let sep = path.sep
@@ -26,59 +24,69 @@ const userDataPath = app.getPath('userData') + sep;
 var appDatabase
 let mainWindow = remote.getGlobal('mainWindow');
 
-async function initDatabase() { 
-  const dbFilename = path.join(userDataPath,   'database/mc-office.sqlite')
-  appDatabase = connect(dbFilename, { client: 'sql.js' })
-  const invoicesModel = await appDatabase.model('invoices', {
-    invoiceClient: String,
-    invoiceNumber: String,
-    invoiceDate: Date,
-    invoiceLines: Array,
-    invoiceTotal: String,
-    id: 'increments', // special type, primary key
+let DB_VERSION = remote.getGlobal('DB_VERSION')
 
-  })
-  const usersModel = await appDatabase.model('users', {
-    firstName: String,
-    lastName: String,
-    password: String,
-    id: 'increments', // special type, primary key
+let invoicesSchema = require("./schema/" + DB_VERSION + "/Invoices")
+let usersSchema = require("./schema/" + DB_VERSION + "/Users")
 
-  })
-  const invoicesCount = await invoicesModel.count();
-  if (invoicesCount == 0) {
-    for (var i = 0; i < 1000; i++) {
-      invoicesModel.create({
-        invoiceClient: 'John Doe' + i + 1,
-        invoiceNumber: 'Invoice #' + Math.floor((Math.random() * 9000) + 1),
-        invoiceDate: new Date(),
-        invoiceTotal: Math.floor((Math.random() * 9000) + 1) + ' $',
-        invoiceLines: [
-          'Game of the Year',
-          'Best Multiplayer Game',
-          'Best ESports Game'
-        ]
-      })
-    }
+var versionFile = path.join(userDataPath, 'database/version.json')
+
+var obj = { current: DB_VERSION, latest: DB_VERSION }
+fs.exists(versionFile, function (exists) {
+  if (exists) {
+    fs.readFile(versionFile, function readFileCallback(err, data) {
+      if (err) { console.log(err); } else {
+        obj = JSON.parse(data);
+        obj.latest = DB_VERSION
+        var json = JSON.stringify(obj);
+        fs.writeFile(versionFile, json, () => { migrateDB(obj) });
+      }
+    });
+  } else {
+    var json = JSON.stringify(obj);
+    fs.writeFile(versionFile, json, () => { migrateDB(obj) });
   }
-  const usersCount = await usersModel.count();
-  if (usersCount == 0) {
-    for (var i = 0; i < 1000; i++) {
-      usersModel.create({
-        firstName: 'John' + i + 1,
-        lastName: 'Doe' + Math.floor((Math.random() * 10) + 1),
-        password: Math.floor((Math.random() * 9000) + 1) + ' $',
+});
 
-      })
-    }
+
+
+async function migrateDB(version) {
+
+  await initDatabase();
+  if (version.current == version.latest) {
+    var initData = require("./schema/" + version.current + "/initData.js");
+      const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
+  const usersModel = await appDatabase.model('users', usersSchema);
+
+  } else {
+    var migrate = require("./schema/migrate/" + version.current + ".js");
+      migrate.renameTables(appDatabase).then(async ()=>{
+        // const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
+        // const usersModel = await appDatabase.model('users', usersSchema);
+        //   migrate.importData(appDatabase);
+      });
+  
+
   }
 
 }
 
-// ===
+async function initModels() {
+  // const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
+  // const usersModel = await appDatabase.model('users', usersSchema);
+ 
+     await appDatabase.model('invoices', invoicesSchema);
+   await appDatabase.model('users', usersSchema);
+  
+}
+
+async function initDatabase() {
+  const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
+  appDatabase = await new Trilogy(dbFilename, { client: 'sql.js' });
+
+}
 
 
-initDatabase()
 
 
 // ------------
@@ -158,8 +166,8 @@ ipcRenderer.on('importFromXLS', (event, file) => {
 // ------------
 ipcRenderer.on("getInvoices", (event, model) => {
   const query = appDatabase.knex('invoices').select('*').limit(10)
-  appDatabase.raw(query, true).then(data => { 
-    
+  appDatabase.raw(query, true).then(data => {
+
     mainWindow.webContents.send("invoicesResults", data);
   })
 });
