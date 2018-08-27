@@ -27,8 +27,9 @@ var renameTables = function (appDatabase) {
         invoicesModel = await appDatabase.model('invoices', invoicesSchema);
         usersModel = await appDatabase.model('users', usersSchema);
         query = 'insert into users(id, first_name, last_name, password) select id, firstName, lastName,password from users_old; drop table users_old;'
-        appDatabase.raw(query, true).then(() => {
-          resolve(true);
+        appDatabase.raw(query, true).then(result => {
+          
+        return  resolve("done");
         })
       })
       // } else {

@@ -60,10 +60,13 @@ async function migrateDB(version) {
 
   } else {
     var migrate = require("./schema/migrate/" + version.current + ".js");
-      migrate.renameTables(appDatabase).then(async ()=>{
+      migrate.renameTables(appDatabase).then(  (result)=>{
         // const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
         // const usersModel = await appDatabase.model('users', usersSchema);
         //   migrate.importData(appDatabase);
+        obj = { current: DB_VERSION, latest: DB_VERSION }
+        var json = JSON.stringify(obj);
+        fs.writeFile(versionFile, json, () => {alert("Migration de La base de données efféctuée avec succes.\nAncienne Version: "+ version.current+"\nNouvelle Version: "+version.latest)});
       });
   
 

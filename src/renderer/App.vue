@@ -107,6 +107,9 @@ export default {
 
 
 <style>
+::before, ::after { 
+    vertical-align: unset;
+}
 .application {
   -webkit-font-smoothing: antialiased;
   text-align: center;
