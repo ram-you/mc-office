@@ -121,7 +121,7 @@
               {{ $t('main.app.Application_Locale')}}</v-list-tile-title>
           </v-list-tile>
           <v-list dense subheader>
-            <v-subheader class="grey" :class="isDarkTheme?'darken-2':'lighten-2'"> {{ $t('main.app.Application_Locale')}}</v-subheader>
+            <v-subheader style="border-bottom:1px solid"> {{ $t('main.app.Application_Locale')}}</v-subheader>
             <v-list-tile v-for="item in localesItems" :key="item.locale" @click="updateUserLocale(item)">
               <v-list-tile-title v-text="item.name" :class="(item.name==userLocale.name)? getLocaleFontClass(item)+'font-weight-bold primary--text':getLocaleFontClass(item)"
                 style="overflow: unset;"></v-list-tile-title>
@@ -131,17 +131,17 @@
       </div>
 
       <div :class="$vuetify.rtl?'text-xs-right':'text-xs-left'">
-        <v-menu offset-x open-on-hover transition="slide-x-transition" open-delay="500" close-delay="300">
+        <v-menu offset-x open-on-hoverXXX transition="slide-x-transition" open-delay="500" close-delay="300">
           <v-list-tile slot="activator">
             <v-list-tile-action>
               <v-icon>mdi-theme-light-dark</v-icon>
             </v-list-tile-action>
-            <v-list-tile-title v-show="isDesktop?(drawer==1):true" :class="isDarkTheme?'white--text':''">
+            <v-list-tile-title v-show="isDesktop?(drawer==1):true" :class="isDarkTheme?'theme--dark':'theme--light'">
               {{ $t('main.app.Color_theme')}}</v-list-tile-title>
           </v-list-tile>
-          <v-list dense subheader>
-            <v-subheader class="grey" :class="isDarkTheme?'darken-2':'lighten-2'"> {{ $t('main.app.Color_theme')}}</v-subheader>
-            <v-list-tile v-for="item in themesItems" :key="item.theme" @click="updateUserTheme(item)">
+          <v-list dense subheader   :class="isDarkTheme?'theme--dark':'theme--light'">
+            <v-subheader style="border-bottom:1px solid"> {{ $t('main.app.Color_theme')}}</v-subheader>
+            <v-list-tile v-for="item in themesItems" :key="item.theme" @click="updateUserTheme(item)"   :class="isDarkTheme?'theme--dark':'theme--light'">
               <v-list-tile-title v-text="item.name" :class="(item.name==userTheme.name)?'font-weight-bold primary--text':''"
                 style="overflow: unset;"></v-list-tile-title>
             </v-list-tile>

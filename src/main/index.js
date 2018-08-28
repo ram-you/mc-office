@@ -13,7 +13,7 @@ var connectedUserName = _store.get('user.username')
 var windowWidth = _store.get('users.' + connectedUserName + '.window.width')
 var windowHeight = _store.get('users.' + connectedUserName + '.window.height')
 const theme = _store.get('users.' + connectedUserName + '.theme.theme') || _store.get('global.theme.theme');
-const isDarkMode = theme == "dark"
+const isDarkMode = theme == "dark";
 const { app, protocol, BrowserWindow, Menu, shell, dialog, globalShortcut, ipcMain } = require('electron')
 const fs = require('fs')
 const fse = require('fs-extra');

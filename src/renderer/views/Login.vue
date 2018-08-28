@@ -1,18 +1,18 @@
 <template>
   <div class="container-login100" :style="isConnected?'':' min-height: calc(100vh - 37px) !important;'">
-    <v-card v-if=" inited" class="wrap-login100  " :dark="userTheme.theme=='dark'">
+    <v-card v-if=" inited" class="wrap-login100  " :dark="isDarkTheme">
       <div class="login100-form-title" v-bind:style="{ 'background-image': 'url(' + image + ')' }">
         <span class="login100-form-title-1">
           {{ $t('main.app.Sign_In') }}
         </span>
       </div>
 
-      <v-card v-if="!isConnected  && inited" :dark="userTheme.theme=='dark'" class="pa-4" flat style="border-top-left-radius: 0; border-top-right-radius: 0;">
+      <v-card v-if="!isConnected  && inited" :dark="isDarkTheme" class="pa-4" flat style="border-top-left-radius: 0; border-top-right-radius: 0;">
         <v-form>
           <v-text-field prepend-icon="mdi-account-outline" name="Username" v-model="username" :label="$t('main.app.Username')"
-            :dark="userTheme.theme=='dark'"></v-text-field>
+            :dark="isDarkTheme"></v-text-field>
           <v-text-field prepend-icon="mdi-lock" name="Password" v-model="password" :label="$t('main.app.Password')"
-            type="password" :dark="userTheme.theme=='dark'"></v-text-field>
+            type="password" :dark="isDarkTheme"></v-text-field>
           <div class="pt-2 pb-4">
             <v-checkbox :label="$t('main.app.Remember_me')" v-model="remember" class="font-weight-bold"></v-checkbox>
           </div>
@@ -30,10 +30,10 @@
           <v-menu offset-y transition="slide-y-transition">
             <v-list-tile slot="activator">
               <v-icon class="mdi-18px mx-2">mdi-earth</v-icon>
-              <v-list-tile-title :class="userTheme.theme=='dark'?'white--text':''"> {{ $t('main.app.Application_Locale')}}</v-list-tile-title>
+              <v-list-tile-title :class="isDarkTheme?'white--text':''"> {{ $t('main.app.Application_Locale')}}</v-list-tile-title>
             </v-list-tile>
-            <v-list dense subheader>
-              <v-subheader> {{ $t('main.app.Application_Locale')}}</v-subheader>
+            <v-list dense subheader >
+              <v-subheader style="border-bottom:1px solid"> {{ $t('main.app.Application_Locale')}}</v-subheader>
               <v-list-tile v-for="item in localesItems" :key="item.locale" @click="updateUserLocale(item)">
                 <v-list-tile-title v-text="item.name" class="mx-1" :class="(item.name==userLocale.name)? 'font-weight-bold': ''"></v-list-tile-title>
               </v-list-tile>
@@ -45,11 +45,11 @@
           <v-menu offset-y transition="slide-y-transition">
             <v-list-tile slot="activator">
               <v-icon class="mdi-18px mx-2">mdi-theme-light-dark</v-icon>
-              <v-list-tile-title :class="userTheme.theme=='dark'?'white--text':''"> {{ $t('main.app.Color_theme')}}</v-list-tile-title>
+              <v-list-tile-title :class="isDarkTheme?'white--text':''"> {{ $t('main.app.Color_theme')}}</v-list-tile-title>
             </v-list-tile>
-            <v-list dense subheader>
-              <v-subheader> {{ $t('main.app.Color_theme')}}</v-subheader>
-              <v-list-tile v-for="item in themesItems" :key="item.theme" @click="updateUserTheme(item)">
+            <v-list dense subheader >
+              <v-subheader style="border-bottom:1px solid"> {{ $t('main.app.Color_theme')}}</v-subheader>
+              <v-list-tile v-for="item in themesItems" :key="item.theme" @click="updateUserTheme(item)" >
                 <v-list-tile-title v-text="item.name" class="px-1" :class="(item.name==userTheme.name)?'font-weight-bold':''"></v-list-tile-title>
               </v-list-tile>
             </v-list>
@@ -59,7 +59,7 @@
         <v-spacer></v-spacer>
       </v-card-actions>
 
-      <v-card v-else :dark="userTheme.theme=='dark'" class="pa-4" flat style="border-top-left-radius: 0; border-top-right-radius: 0;">
+      <v-card v-else :dark="isDarkTheme" class="pa-4" flat style="border-top-left-radius: 0; border-top-right-radius: 0;">
         <div class="text-xs-center">
           <v-btn round large color="red" dark @click="logout()"> {{ $t('main.app.Logout') }}</v-btn>
         </div>
@@ -111,6 +111,7 @@ export default {
     userLocale() { return this.localesItems.filter((item) => { return item.locale == this._userLocale; })[0] },
     _userTheme() { return this.$store.state.User.userTheme; },
     userTheme() { return this.themesItems.filter((item) => { return item.theme == this._userTheme; })[0] },
+      isDarkTheme() { return this.userTheme.theme == 'dark'; }
   },
   watch: {
 
@@ -223,7 +224,7 @@ export default {
 
 .wrap-login100 {
   width: 670px;
-  background: #fff;
+  /* background: #fff; */
   border-radius: 10px;
   overflow: hidden;
   position: relative;
