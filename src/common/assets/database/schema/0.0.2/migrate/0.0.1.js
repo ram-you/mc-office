@@ -1,4 +1,3 @@
-
 var path = require('path');
 var electron = require("electron")
 const remote = electron.remote;
@@ -14,11 +13,11 @@ const connect = require('trilogy').connect
 var appDatabase, invoicesModel, usersModel
 let DB_VERSION = remote.getGlobal('DB_VERSION')
 
-let invoicesSchema = require("../../schema/" + DB_VERSION + "/Invoices")
-let usersSchema = require("../../schema/" + DB_VERSION + "/Users")
-var renameTables = function (appDatabase) {
+let invoicesSchema = require("../Invoices")
+let usersSchema = require("../Users")
+var renameTables = function(appDatabase) {
   return new Promise(
-    function (resolve, reject) {
+    function(resolve, reject) {
       const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite')
       appDatabase = connect(dbFilename, { client: 'sql.js' })
       // if (!appDatabase.hasModel('users_old')) {
@@ -28,8 +27,9 @@ var renameTables = function (appDatabase) {
         usersModel = await appDatabase.model('users', usersSchema);
         query = 'insert into users(id, first_name, last_name, password) select id, firstName, lastName,password from users_old; drop table users_old;'
         appDatabase.raw(query, true).then(result => {
-          
-        return  resolve("done");
+          appDatabase.raw("VACUUM", true).then(result => {
+            return resolve("done");
+          })
         })
       })
       // } else {
@@ -42,9 +42,9 @@ var renameTables = function (appDatabase) {
 
 
 
-var importData = function (appDatabase) {
+var importData = function(appDatabase) {
   return new Promise(
-    function (resolve, reject) {
+    function(resolve, reject) {
       query = 'insert into users(id, first_name, last_name, password) select id, firstName, lastName,password from users_old; drop table users_old;'
       appDatabase.raw(query, true).then(() => {
         resolve(true);

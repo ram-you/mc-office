@@ -6,7 +6,7 @@ module.paths.push(path.resolve(__dirname, '..', '..', 'electron.asar', 'node_mod
 module.paths.push(path.resolve(__dirname, '..', '..', 'app', 'node_modules'));
 module.paths.push(path.resolve(__dirname, '..', '..', 'app.asar', 'node_modules'));
 
-const connect =require( 'trilogy').connect
+const connect = require('trilogy').connect
 
 const fs = require('fs')
 const fse = require('fs-extra');
@@ -25,14 +25,19 @@ var appDatabase
 let mainWindow = remote.getGlobal('mainWindow');
 
 let DB_VERSION = remote.getGlobal('DB_VERSION')
+let ASSETS = remote.getGlobal('ASSETS_GLOBAL')
 
 let invoicesSchema = require("./schema/" + DB_VERSION + "/Invoices")
 let usersSchema = require("./schema/" + DB_VERSION + "/Users")
 
+
+
 var versionFile = path.join(userDataPath, 'database/version.json')
 
+
+
 var obj = { current: DB_VERSION, latest: DB_VERSION }
-fs.exists(versionFile, function (exists) {
+fs.exists(versionFile, function(exists) {
   if (exists) {
     fs.readFile(versionFile, function readFileCallback(err, data) {
       if (err) { console.log(err); } else {
@@ -43,6 +48,7 @@ fs.exists(versionFile, function (exists) {
       }
     });
   } else {
+    fse.ensureDirSync(path.join(userDataPath, 'database'))
     var json = JSON.stringify(obj);
     fs.writeFile(versionFile, json, () => { migrateDB(obj) });
   }
@@ -55,20 +61,29 @@ async function migrateDB(version) {
 
   if (version.current == version.latest) {
     var initData = require("./schema/" + version.current + "/initData.js");
-  //     const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
-  // const usersModel = await appDatabase.model('users', usersSchema);
+    //     const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
+    // const usersModel = await appDatabase.model('users', usersSchema);
 
   } else {
-    var migrate = require("./schema/migrate/" + version.current + ".js");
-      migrate.renameTables(appDatabase).then(  (result)=>{
-        // const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
-        // const usersModel = await appDatabase.model('users', usersSchema);
-        //   migrate.importData(appDatabase);
-        obj = { current: DB_VERSION, latest: DB_VERSION }
-        var json = JSON.stringify(obj);
-        fs.writeFile(versionFile, json, () => {alert("Migration de La base de données efféctuée avec succes.\nAncienne Version: "+ version.current+"\nNouvelle Version: "+version.latest)});
-      });
+    var migrationFile = path.join(ASSETS,"database/schema/"+ version.latest +"/migrate/" + version.current+  ".js") ;
+    fs.exists(migrationFile, function(exists) {
+      if (exists) {
+        var migrate = require(migrationFile);
+        migrate.renameTables(appDatabase).then((result) => {
+          // const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
+          // const usersModel = await appDatabase.model('users', usersSchema);
+          //   migrate.importData(appDatabase);
+          obj = { current: DB_VERSION, latest: DB_VERSION }
+          var json = JSON.stringify(obj);
+          fs.writeFile(versionFile, json, () => { alert("Migration de La base de données efféctuée avec succes.\nAncienne Version: " + version.current + "\nNouvelle Version: " + version.latest) });
+        });
+      }else{
+        alert("NO NO \n"+path.join(migrationFile,"")+"\n"+migrationFile)
+      }
+    })
+
   
+
 
   }
 
@@ -77,10 +92,10 @@ async function migrateDB(version) {
 async function initModels() {
   // const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
   // const usersModel = await appDatabase.model('users', usersSchema);
- 
-     await appDatabase.model('invoices', invoicesSchema);
-   await appDatabase.model('users', usersSchema);
-  
+
+  await appDatabase.model('invoices', invoicesSchema);
+  await appDatabase.model('users', usersSchema);
+
 }
 
 async function initDatabase() {
@@ -111,7 +126,7 @@ ipcRenderer.on('exportToXLS', async (event, message) => {
     });
   });
 
-  Promise.all(promises).then(function (values) {
+  Promise.all(promises).then(function(values) {
     for (var i = 0; i < values.length; i++) {
       var value = values[i]
       var ws = XLSX.utils.json_to_sheet(value.data);
@@ -143,6 +158,7 @@ ipcRenderer.on('importFromXLS', (event, file) => {
       fse.outputFile(xslFilePath, data)
       processFile(data);
     });
+
     function processFile(data) {
       // pre-process data
       var binary = "";
@@ -173,7 +189,7 @@ ipcRenderer.on('importFromXLS', (event, file) => {
 });
 
 // ------------
-ipcRenderer.on("getInvoices",async (event, model) => {
+ipcRenderer.on("getInvoices", async (event, model) => {
   const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
   appDatabase = await connect(dbFilename, { client: 'sql.js' });
   const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
@@ -184,4 +200,3 @@ ipcRenderer.on("getInvoices",async (event, model) => {
     mainWindow.webContents.send("invoicesResults", data);
   })
 });
-

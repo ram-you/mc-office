@@ -1,11 +1,8 @@
 {
   "plugins": [
-    ["syntax-dynamic-import"],
-    ["transform-runtime", {
-      "helpers": false,
-      "polyfill": false,
-      "regenerator": true,
-      "moduleName": "babel-runtime"
+    ["@babel/syntax-dynamic-import"],
+    ["@babel/transform-runtime", {
+ 
     }],
     [ 
       "transform-imports",
@@ -19,7 +16,10 @@
   ],
   "presets": [ 
     [
-      "env" 
+      "@babel/env"  
+    ],
+    [
+      "minify"
     ]
   ]
 }

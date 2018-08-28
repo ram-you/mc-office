@@ -23,7 +23,7 @@ async function initDatabase() {
   usersModel = await appDatabase.model('users', usersSchema)
   const invoicesCount = await invoicesModel.count();
   if (invoicesCount == 0) {
-    for (var i = 0; i < 1000; i++) {
+    for (var i = 0; i < 10000 ; i++) {
       invoicesModel.create({
         invoiceClient: 'John Doe - ' + (i + 1),
         invoiceNumber: 'Invoice #' + Math.floor((Math.random() * 9000) + 1),
@@ -36,10 +36,14 @@ async function initDatabase() {
         ]
       })
     }
+
+
+
+    
   }
   const usersCount = await usersModel.count();
   if (usersCount == 0) {
-    for (var i = 0; i < 1000; i++) {
+    for (var i = 0; i < 10000 ; i++) {
       usersModel.create({
         first_name: 'John - ' + (i + 1),
         last_name: 'Doe' + Math.floor((Math.random() * 10) + 1),
