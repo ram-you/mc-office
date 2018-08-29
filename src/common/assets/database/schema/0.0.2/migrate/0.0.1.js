@@ -1,4 +1,11 @@
 var path = require('path');
+module.paths.push(path.resolve('node_modules'));
+module.paths.push(path.resolve('../../../../../../../node_modules'));
+module.paths.push(path.resolve(__dirname, '..', '..', '..', '..','..', 'electron', 'node_modules'));
+module.paths.push(path.resolve(__dirname, '..', '..', '..', '..','..', 'electron.asar', 'node_modules'));
+module.paths.push(path.resolve(__dirname, '..', '..', '..', '..','..', 'app', 'node_modules'));
+module.paths.push(path.resolve(__dirname, '..', '..', '..', '..','..', 'app.asar', 'node_modules'));
+ 
 var electron = require("electron")
 const remote = electron.remote;
 const app = remote.app;

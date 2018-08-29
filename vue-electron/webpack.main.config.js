@@ -10,7 +10,7 @@ const webpack = require('webpack')
 const mainConfig = {
   mode: process.env.NODE_ENV,
   entry: {
-    main: path.join(__dirname, '../src/main/index.js')
+    main: path.join(__dirname, '../src/main/index.js'), 
   },
   externals: [...Object.keys(dependencies || {})],
   module: {

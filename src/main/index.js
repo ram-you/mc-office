@@ -108,6 +108,9 @@ function createMainWindow() {
   require('./menu').init(mainWindow)
   require('./traymenu').init(mainWindow)
 
+
+  
+
   return mainWindow
 }
 

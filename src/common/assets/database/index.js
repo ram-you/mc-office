@@ -1,6 +1,6 @@
 var path = require('path');
 module.paths.push(path.resolve('node_modules'));
-module.paths.push(path.resolve('../node_modules'));
+module.paths.push(path.resolve('../../../../node_modules'));
 module.paths.push(path.resolve(__dirname, '..', '..', 'electron', 'node_modules'));
 module.paths.push(path.resolve(__dirname, '..', '..', 'electron.asar', 'node_modules'));
 module.paths.push(path.resolve(__dirname, '..', '..', 'app', 'node_modules'));
@@ -65,7 +65,7 @@ async function migrateDB(version) {
     // const usersModel = await appDatabase.model('users', usersSchema);
 
   } else {
-    var migrationFile = path.join(ASSETS,"database/schema/"+ version.latest +"/migrate/" + version.current+  ".js") ;
+    var migrationFile = path.join(ASSETS, "database/schema/" + version.latest + "/migrate/" + version.current + ".js");
     fs.exists(migrationFile, function(exists) {
       if (exists) {
         var migrate = require(migrationFile);
@@ -77,12 +77,12 @@ async function migrateDB(version) {
           var json = JSON.stringify(obj);
           fs.writeFile(versionFile, json, () => { alert("Migration de La base de données efféctuée avec succes.\nAncienne Version: " + version.current + "\nNouvelle Version: " + version.latest) });
         });
-      }else{
-        alert("NO NO \n"+path.join(migrationFile,"")+"\n"+migrationFile)
+      } else {
+        alert("NO NO \n" + path.join(migrationFile, "") + "\n" + migrationFile)
       }
     })
 
-  
+
 
 
   }
@@ -200,3 +200,6 @@ ipcRenderer.on("getInvoices", async (event, model) => {
     mainWindow.webContents.send("invoicesResults", data);
   })
 });
+
+
+ 
