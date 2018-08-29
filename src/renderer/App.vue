@@ -110,6 +110,9 @@ export default {
 ::before, ::after { 
     vertical-align: unset;
 }
+.v-breadcrumbs__item--disabled { 
+    color: inherit;
+}
 .application {
   -webkit-font-smoothing: antialiased;
   text-align: center;

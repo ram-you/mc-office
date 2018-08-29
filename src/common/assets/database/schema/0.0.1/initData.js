@@ -71,8 +71,8 @@ async function initDatabase() {
 
     var crypto = require("crypto"); 
     var j = 0
-    initInvoices(j)
-    function initInvoices(j) {
+    initUsers(j)
+    function initUsers(j) {
       var sql = "INSERT INTO users ( firstName,lastName,password) values ";
       for (var i = j * 100; i < (j * 100) + 100; i++) {
         var values = "";
@@ -87,7 +87,7 @@ async function initDatabase() {
         if (j < 100) {
           setTimeout(() => {
             console.log("j=", j);
-            initInvoices(j);
+            initUsers(j);
           }, j+100);
         }
       }) 

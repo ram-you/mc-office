@@ -131,7 +131,7 @@
       </div>
 
       <div :class="$vuetify.rtl?'text-xs-right':'text-xs-left'">
-        <v-menu offset-x open-on-hoverXXX transition="slide-x-transition" open-delay="500" close-delay="300">
+        <v-menu offset-x open-on-hover transition="slide-x-transition" open-delay="500" close-delay="300">
           <v-list-tile slot="activator">
             <v-list-tile-action>
               <v-icon>mdi-theme-light-dark</v-icon>
