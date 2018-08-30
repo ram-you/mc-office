@@ -1,6 +1,6 @@
 {
   "name": "mc-office",
-  "version": "0.2.107",
+  "version": "0.2.108",
   "db_version": "0.0.2",
   "license": "MIT",
   "description": "A MEDIACEPT Technology creation",
@@ -47,7 +47,7 @@
     "vue-swatches": "^1.0.1",
     "vuetify": "^1.2.1",
     "vuetify-upload-button": "^1.1.0",
-    "vuex": "^3.0.1",
+    "vuex": "^3.0.1", 
     "xlsx": "^0.13.5"
   },
   "devDependencies": {

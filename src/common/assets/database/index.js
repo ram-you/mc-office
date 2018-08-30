@@ -191,9 +191,9 @@ ipcRenderer.on('importFromXLS', (event, file) => {
 // ------------
 ipcRenderer.on("getInvoices", async (event, model) => {
   const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
-  appDatabase = await connect(dbFilename, { client: 'sql.js' });
-  const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
-  const usersModel = await appDatabase.model('users', usersSchema);
+  appDatabase = await connect(dbFilename );
+  // const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
+  // const usersModel = await appDatabase.model('users', usersSchema);
   const query = appDatabase.knex('invoices').select('*').limit(10)
   appDatabase.raw(query, true).then(data => {
 
