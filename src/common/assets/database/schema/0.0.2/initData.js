@@ -25,7 +25,7 @@ let usersSchema = require("./Users")
 
 async function initDatabase() {
   const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite')
-  appDatabase = connect(dbFilename, { client: 'sql.js' })
+  appDatabase = connect(dbFilename, { client: 'sqlite3' })
   invoicesModel = await appDatabase.model('invoices', invoicesSchema)
   usersModel = await appDatabase.model('users', usersSchema)
   const invoicesCount = await invoicesModel.count();
@@ -33,6 +33,7 @@ async function initDatabase() {
 
     var j = 0
     // initInvoices(j)
+
     function initInvoices(j) {
       var sql = "INSERT INTO invoices ( invoiceClient,invoiceNumber,invoiceDate,invoiceTotal,invoiceLines) values ";
       for (var i = j * 100; i < (j * 100) + 100; i++) {
@@ -46,6 +47,7 @@ async function initDatabase() {
       }
       sql = sql.substr(0, sql.length - 1);
       appDatabase.raw(sql, true).then(result => {
+        console.log(result)
         j += 1
         if (j < 3650) {
           // setTimeout(() => {
@@ -65,45 +67,125 @@ async function initDatabase() {
 
     // Load the db
     var db = new SQL.Database(filebuffer);
-    var startTime=new Date()
+    var startTime = new Date()
 
-   var j = 0
+    var j = 0
+    // initInvoices(j)
+
+    function initInvoices(j) {
+      var sql = "INSERT INTO invoices ( invoiceClient,invoiceNumber,invoiceDate,invoiceTotal,invoiceLines) values ";
+      for (var i = j * 500; i < (j * 500) + 500; i++) {
+        var values = "";
+        var d = new Date();
+        var n = d.toLocaleTimeString();
+        values += "'" + 'John Doe - ' + (i + 1) + "'" + ','
+        values += "'" + 'Invoice #' + Math.floor((Math.random() * 9000) + 1) + "'" + ','
+        values += "'" + n + "'" + ','
+        values += "'" + Math.floor((Math.random() * 9000) + 1) + ' $' + "'" + ','
+        values += "'[" + ['Game of the Year', 'Best Multiplayer Game', 'Best ESports Game'].toString() + "]'"
+        sql += "(" + values + "),";
+      }
+      sql = sql.substr(0, sql.length - 1);
+
+      db.exec(sql)
+
+      j += 1
+      if (j < 500) {
+        console.log("j=", j);
+        initInvoices(j);
+      } else {
+        var data = db.export();
+        var buffer = new Buffer(data);
+        fs.writeFile(dbFilename, buffer, () => {
+          db.close();
+          var endTime = new Date();
+          alert("DDDDDone in :\n" + (endTime - startTime + " ms."))
+        });
+      }
+    }
+
+  }
+
+
+  function makeTests() {
+    var sqlite3 = require('sqlite3').verbose();
+    var db = new sqlite3.Database(dbFilename);
+    var knex = require('knex')({
+      client: 'sqlite3',
+      connection: {
+        filename: dbFilename
+      }
+    });
+
+    db.serialize(function() {
+      // db.run("CREATE TABLE user (id INT, dt TEXT)");
+      var stmt = db.prepare("INSERT INTO invoices ( invoiceClient,invoiceNumber,invoiceDate,invoiceTotal,invoiceLines) VALUES (?,?,?,?,?) ");
+      // var stmt = db.prepare("INSERT INTO user VALUES (?,?)");
+      for (var i = 0; i < 10000; i++) {
+
+        var d = new Date();
+        var invoiceClient = 'John Doe - ' + (i + 1)
+        var invoiceNumber = 'Invoice #' + Math.floor((Math.random() * 9000) + 1)
+        var invoiceDate = d.toLocaleTimeString();
+        var invoiceTotal = Math.floor((Math.random() * 9000) + 1) + ' $'
+        var invoiceLines = ['Game of the Year', 'Best Multiplayer Game', 'Best ESports Game'].toString()
+
+
+        stmt.run(invoiceClient, invoiceNumber, invoiceDate, invoiceTotal, invoiceLines);
+      }
+      stmt.finalize();
+
+      // db.each("SELECT id, dt FROM user", function(err, row) {
+      //     console.log("User id : "+row.id, row.dt);
+      // });
+    });
+
+    db.close();
+
+  }
+  // if (invoicesCount == 0) { makeTests() }
+
+
+
+// ******************
+  function makeTestKnex() {
+    var knex = require('knex')({ client: 'sqlite3', connection: { filename: dbFilename }, useNullAsDefault: true });
+    var j = 0
     initInvoices(j)
     function initInvoices(j) {
-    var sql = "INSERT INTO invoices ( invoiceClient,invoiceNumber,invoiceDate,invoiceTotal,invoiceLines) values ";
-    for (var i = j * 500; i < (j * 500) + 500; i++) {
-      var values = "";
-      values += "'" + 'John Doe - ' + (i + 1) + "'" + ','
-      values += "'" + 'Invoice #' + Math.floor((Math.random() * 9000) + 1) + "'" + ','
-      values += "'" + new Date() + "'" + ','
-      values += "'" + Math.floor((Math.random() * 9000) + 1) + ' $' + "'" + ','
-      values += "'[" + ['Game of the Year', 'Best Multiplayer Game', 'Best ESports Game'].toString() + "]'"
-      sql += "(" + values + "),";
-    }
-    sql = sql.substr(0, sql.length - 1);
-     
-    db.exec(sql)
+    var datas=[]
+    for (var i = j * 100; i < (j * 100) + 100; i++) {
 
-    j += 1
-    if (j < 500) { 
-      console.log("j=", j);
-      initInvoices(j); 
-    }else{
-      var data = db.export();
-      var buffer = new Buffer(data); 
-      fs.writeFile(dbFilename, buffer, () => { db.close();var endTime=new Date();alert("DDDDDone in :\n"+(endTime-startTime+" ms.")) });
-    }
+      var d = new Date();
+      var data= {
+        invoiceClient: 'John Doe - ' + (i + 1),
+        invoiceNumber: 'Invoice #' + Math.floor((Math.random() * 9000) + 1),
+        invoiceDate: d.toLocaleTimeString(),
+        invoiceTotal: Math.floor((Math.random() * 9000) + 1) + ' $',
+        invoiceLines: ['Game of the Year', 'Best Multiplayer Game', 'Best ESports Game'],
+      }
+
+     datas.push(data)
+    } 
+
+    knex('invoices').insert(datas).then(result => { 
+      j += 1
+      if (j < 3650) { 
+        console.log("j=", j,result);
+        initInvoices(j);
+         
+      }
+    })
   }
 
-
-    
   }
 
+  if (invoicesCount == 0) { makeTestKnex() }
 
 
+ 
 
-
-
+  // ==================================================================USERS=======================
   const usersCount = await usersModel.count();
   if (usersCount == 0) {
 
