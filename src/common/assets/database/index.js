@@ -88,20 +88,8 @@ async function migrateDB(version) {
   }
 
 }
-
-async function initModels() {
-  // const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
-  // const usersModel = await appDatabase.model('users', usersSchema);
-
-  await appDatabase.model('invoices', invoicesSchema);
-  await appDatabase.model('users', usersSchema);
-
-}
-
-async function initDatabase() {
-
-
-}
+ 
+ 
 
 
 
@@ -153,9 +141,9 @@ ipcRenderer.on('exportToXLS', async (event, message) => {
       const content = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx', bookSST: false });
       fs.writeFileSync(xslPath, content);
       var endTime = new Date()
-      var response={
-        timed:msToTime(endTime - startTime),
-        link:xslPath
+      var response = {
+        timed: msToTime(endTime - startTime),
+        link: xslPath
       }
       mainWindow.webContents.send("exportToXLS", response);
     }
@@ -222,12 +210,17 @@ ipcRenderer.on('importFromXLS', (event, file) => {
 // ------------
 ipcRenderer.on("getInvoices", async (event, model) => {
   const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
-  appDatabase = await connect(dbFilename);
-  // const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
-  // const usersModel = await appDatabase.model('users', usersSchema);
-  const query = appDatabase.knex('invoices').select('*').limit(10)
-  appDatabase.raw(query, true).then(data => {
+  // appDatabase = await connect(dbFilename); 
+  var knex = require('knex')({ client: 'sqlite3', connection: { filename: dbFilename }, useNullAsDefault: true });
 
+  // const query = appDatabase.knex('invoices').select('*').limit(10)
+  // appDatabase.raw(query, true).then(data => {
+  //   mainWindow.webContents.send("invoicesResults", data);
+  // })
+
+
+  knex('invoices').select('*').limit(10).then(data => {
     mainWindow.webContents.send("invoicesResults", data);
   })
+
 });
