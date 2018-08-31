@@ -24,7 +24,7 @@ let usersSchema = require("./Users")
 
 async function initDatabase() {
   const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite')
-  appDatabase = connect(dbFilename, { client: 'sql.js' })
+  appDatabase = connect(dbFilename)
   invoicesModel = await appDatabase.model('invoices', invoicesSchema)
   usersModel = await appDatabase.model('users', usersSchema)
   const invoicesCount = await invoicesModel.count();

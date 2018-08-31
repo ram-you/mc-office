@@ -26,12 +26,12 @@ var renameTables = function(appDatabase) {
   return new Promise(
     function(resolve, reject) {
       const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite')
-      appDatabase = connect(dbFilename, { client: 'sql.js' })
+      appDatabase = connect(dbFilename)
       // if (!appDatabase.hasModel('users_old')) {
       var query = 'alter table users rename to users_old;'
       appDatabase.raw(query, true).then(async () => {
-        invoicesModel = await appDatabase.model('invoices', invoicesSchema);
-        usersModel = await appDatabase.model('users', usersSchema);
+        // invoicesModel = await appDatabase.model('invoices', invoicesSchema);
+        // usersModel = await appDatabase.model('users', usersSchema);
         query = 'insert into users(id, first_name, last_name, password) select id, firstName, lastName,password from users_old; drop table users_old;'
         appDatabase.raw(query, true).then(result => {
           appDatabase.raw("VACUUM", true).then(result => {

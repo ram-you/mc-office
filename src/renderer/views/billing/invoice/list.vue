@@ -4,6 +4,28 @@
       <invoice-detail :id="selectedInvoiceID" :number="selectedInvoiceNumber"></invoice-detail>
     </div>
 
+    <v-dialog v-model="waitingResponse" persistent width="300">
+      <v-card color="primary" dark>
+        <v-card-text> {{waitingMessage}}
+          <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="gotResponse" max-width="300">
+      <v-card color="primary" dark>
+        <v-card-title class="headline" color="white">Exportation en format Excel</v-card-title>
+        <v-card-text color="white">
+          <div> Done in : {{serverResponse.timed}} </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="gotResponse = false" light> OK </v-btn>
+          <v-btn @click='gotResponse = false;openXlsFile(serverResponse.link)' light> Ouvrir </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-toolbar flat style="border-bottom:1px solid rgba(150, 150, 150, 0.23);">
       <v-breadcrumbs divider="/">
         <v-breadcrumbs-item to="/">
@@ -173,6 +195,10 @@ export default {
   name: 'invoicesList',
   data() {
     return {
+      waitingResponse: false,
+      waitingMessage:'',
+      gotResponse: false,
+      serverResponse: '',
       SheetJSFT: ["xlsx", "xlsb", "xlsm", "xls", "xml", "csv", "ods", "dbf"].map(function (x) { return "." + x; }).join(","),
       isInvoicesDataLoaded: false,
       // invoicesList: [],
@@ -258,7 +284,7 @@ export default {
 
     var connectedUserName = this.connectedUserName;
     var userTheme = _store.get('users.' + connectedUserName + '.invoice.theme') || 'default'
-    this.theme = userTheme 
+    this.theme = userTheme
 
     if (!vm.isInvoicesDataLoaded)
       dbWorkerWindow.webContents.send("getInvoices", 'invoices');
@@ -546,12 +572,28 @@ export default {
     },
 
     exportDatabaseToExel() {
-      ipcRenderer.once('exportToXLS', (event, message) => { alert(message); }); 
+      var vm = this
+      this.waitingResponse = true;
+      this.waitingMessage="Exportation en cours, veuillez patienter... "
+      ipcRenderer.on('exportToXLS', (event, message) => {
+        ipcRenderer.removeAllListeners("exportToXLS");
+        vm.waitingResponse = false;
+        setTimeout(() => {
+          // alert(message);
+          vm.gotResponse = true;
+          vm.serverResponse = message;
+        }, 300);
+
+      });
       dbWorkerWindow.webContents.send('exportToXLS', "Message from Window 1");
+    },
+    openXlsFile(file) {
+      const { shell } = require('electron');
+      shell.openItem(file);
     },
     fileSelectedFunc(file) {
       ipcRenderer.once('importFromXLS', (event, message) => { alert(message); });
-      
+
       dbWorkerWindow.webContents.send('importFromXLS', file);
     },
 

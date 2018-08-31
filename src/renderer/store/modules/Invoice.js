@@ -78,7 +78,7 @@ async  initInvoicesDB({ commit, state }) {
     return new Promise(async (resolve, reject) => {
 
       if (!db) { 
-      db= await  connect(dbFilename, { client: 'sql.js' })
+      db= await  connect(dbFilename)
         
        }
       resolve(true)

@@ -109,39 +109,70 @@ async function initDatabase() {
 // ------------
 ipcRenderer.on('exportToXLS', async (event, message) => {
   const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
-  appDatabase = await connect(dbFilename, { client: 'sql.js' });
-  const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
-  const usersModel = await appDatabase.model('users', usersSchema);
+  // appDatabase = await connect(dbFilename);
+  // const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
+  // const usersModel = await appDatabase.model('users', usersSchema);
+  var knex = require('knex')({ client: 'sqlite3', connection: { filename: dbFilename }, useNullAsDefault: true });
+  var query = "SELECT name FROM sqlite_master" +
+    " WHERE type IN ('table','view') AND name NOT LIKE 'sqlite_%'" +
+    " UNION ALL" +
+    " SELECT name FROM sqlite_temp_master" +
+    " WHERE type IN ('table','view')" +
+    " ORDER BY 1";
+  var startTime = new Date()
+  knex.raw(query).then(function(resp) {
+    var models = resp.map(a => a.name);
+    console.log(models);
 
-  var models = appDatabase.models;
-  console.log(models)
-  var wb = XLSX.utils.book_new();
-  var promises = models.map(model => {
-    console.log(model)
-    return new Promise((resolve, reject) => {
-      var query = appDatabase.knex(model).select('*');
-      appDatabase.raw(query, true).then(data => {
-        resolve({ data: data, model: model })
-      })
+    var wb = XLSX.utils.book_new();
+    var promises = models.map(model => {
+      console.log(model)
+      return new Promise((resolve, reject) => {
+        knex(model).select('*').then(data => {
+          // console.log(data) 
+          resolve({ data: data, model: model })
+        })
+      });
     });
-  });
 
-  Promise.all(promises).then(function(values) {
-    for (var i = 0; i < values.length; i++) {
-      var value = values[i]
-      var ws = XLSX.utils.json_to_sheet(value.data);
-      XLSX.utils.book_append_sheet(wb, ws, value.model);
+    Promise.all(promises).then(function(values) {
+      for (var i = 0; i < values.length; i++) {
+        var value = values[i];
+        // console.log("value",value)
+        var ws = XLSX.utils.json_to_sheet(value.data);
+        XLSX.utils.book_append_sheet(wb, ws, value.model);
+      }
+      saveAndExit()
+    });
+
+    function saveAndExit() {
+      let xslPathFolder = userDataPath + 'database' + sep + 'excel' + sep + 'export' + sep
+      fse.ensureDirSync(xslPathFolder)
+      const xslPath = xslPathFolder + 'mc-office.xls';
+      // XLSX.writeFile(wb, xslPath);
+      const content = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx', bookSST: false });
+      fs.writeFileSync(xslPath, content);
+      var endTime = new Date()
+      var response={
+        timed:msToTime(endTime - startTime),
+        link:xslPath
+      }
+      mainWindow.webContents.send("exportToXLS", response);
     }
-    saveAndExit()
+
+    function msToTime(s) {
+      function pad(n, z) { z = z || 2; return ('00' + n).slice(-z); }
+      var ms = s % 1000;
+      s = (s - ms) / 1000;
+      var secs = s % 60;
+      s = (s - secs) / 60;
+      var mins = s % 60;
+      var hrs = (s - mins) / 60;
+      return pad(hrs) + ':' + pad(mins) + ':' + pad(secs) + '.' + pad(ms, 3);
+    }
   });
 
-  function saveAndExit() {
-    let xslPathFolder = userDataPath + 'database' + sep + 'excel' + sep + 'export' + sep
-    fse.ensureDirSync(xslPathFolder)
-    const xslPath = xslPathFolder + 'mc-office.xls';
-    XLSX.writeFile(wb, xslPath);
-    mainWindow.webContents.send("exportToXLS", "Export To XLS\n" + ".......Done.");
-  }
+
 
 });
 
@@ -191,7 +222,7 @@ ipcRenderer.on('importFromXLS', (event, file) => {
 // ------------
 ipcRenderer.on("getInvoices", async (event, model) => {
   const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
-  appDatabase = await connect(dbFilename );
+  appDatabase = await connect(dbFilename);
   // const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
   // const usersModel = await appDatabase.model('users', usersSchema);
   const query = appDatabase.knex('invoices').select('*').limit(10)
@@ -200,6 +231,3 @@ ipcRenderer.on("getInvoices", async (event, model) => {
     mainWindow.webContents.send("invoicesResults", data);
   })
 });
-
-
- 

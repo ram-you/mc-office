@@ -17,7 +17,7 @@ const usersFilename = path.join(remote.app.getPath('userData'), dsFolder + '/use
 
 
 
-const db = new Trilogy(usersFilename, { client: 'sql.js', })
+const db = new Trilogy(usersFilename)
 
 
 var password = "admin"
