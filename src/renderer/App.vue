@@ -1,12 +1,21 @@
 <template>
   <v-app id="app" :dark="dark=='dark'">
+
+    <v-dialog v-model="waitingResponse" persistent width="300">
+      <v-card color="primary" dark>
+        <v-card-text> {{waitingMessage}}
+          <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
     <header-section v-if="isConnected"></header-section>
 
     <v-content v-if="isConnected">
       <!-- <transition-slide-up :duration="300"> -->
-  <transition-page>
+      <transition-page>
         <router-view/>
-  </transition-page>
+      </transition-page>
       <!-- </transition-slide-up> -->
 
     </v-content>
@@ -41,6 +50,9 @@ export default {
   },
   data() {
     return {
+      waitingResponse: false,
+      waitingMessage: '',
+
       isHomePage: true,
 
     }
@@ -76,9 +88,17 @@ export default {
     ipc.on('menu-change-tab', function (event, tab) {
       vm.$router.push({ name: tab });
     })
- 
-  
- 
+
+
+    ipc.on('initApplicationData', function (event, state) {
+      if (state=='start') {
+        vm.waitingResponse = true;
+        vm.waitingMessage = "Initialisation des données, veuillez patienter... "
+      } else {
+        vm.waitingResponse = false;
+
+      }
+    })
 
   },
   methods: {
@@ -107,11 +127,12 @@ export default {
 
 
 <style>
-::before, ::after { 
-    vertical-align: unset;
+::before,
+::after {
+  vertical-align: unset;
 }
-.v-breadcrumbs__item--disabled { 
-    color: inherit;
+.v-breadcrumbs__item--disabled {
+  color: inherit;
 }
 .application {
   -webkit-font-smoothing: antialiased;
@@ -168,7 +189,7 @@ export default {
 .en-fontFamily,
 .fr-fontFamily,
 .application.application--is-rtl {
-  font-family: "Cairo", "Ubuntu", "Tajawal" !important;
+  font-family: 'Cairo', 'Ubuntu', 'Tajawal' !important;
 }
 .application.application--is-rtl {
   direction: rtl;

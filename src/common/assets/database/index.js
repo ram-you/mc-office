@@ -6,7 +6,7 @@ module.paths.push(path.resolve(__dirname, '..', '..', 'electron.asar', 'node_mod
 module.paths.push(path.resolve(__dirname, '..', '..', 'app', 'node_modules'));
 module.paths.push(path.resolve(__dirname, '..', '..', 'app.asar', 'node_modules'));
 
-const connect = require('trilogy').connect
+ 
 
 const fs = require('fs')
 const fse = require('fs-extra');
@@ -21,7 +21,7 @@ const ipcRenderer = electron.ipcRenderer;
 const isDevelopment = process.env.NODE_ENV !== 'production';
 let sep = path.sep
 const userDataPath = app.getPath('userData') + sep;
-var appDatabase
+var appDatabase;
 let mainWindow = remote.getGlobal('mainWindow');
 
 let DB_VERSION = remote.getGlobal('DB_VERSION')
@@ -30,7 +30,8 @@ let ASSETS = remote.getGlobal('ASSETS_GLOBAL')
 let invoicesSchema = require("./schema/" + DB_VERSION + "/Invoices")
 let usersSchema = require("./schema/" + DB_VERSION + "/Users")
 
-
+const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
+var knex = require('knex')({ client: 'sqlite3', connection: { filename: dbFilename }, useNullAsDefault: true });
 
 var versionFile = path.join(userDataPath, 'database/version.json')
 
@@ -96,11 +97,7 @@ async function migrateDB(version) {
 
 // ------------
 ipcRenderer.on('exportToXLS', async (event, message) => {
-  const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
-  // appDatabase = await connect(dbFilename);
-  // const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
-  // const usersModel = await appDatabase.model('users', usersSchema);
-  var knex = require('knex')({ client: 'sqlite3', connection: { filename: dbFilename }, useNullAsDefault: true });
+
   var query = "SELECT name FROM sqlite_master" +
     " WHERE type IN ('table','view') AND name NOT LIKE 'sqlite_%'" +
     " UNION ALL" +
@@ -209,16 +206,6 @@ ipcRenderer.on('importFromXLS', (event, file) => {
 
 // ------------
 ipcRenderer.on("getInvoices", async (event, model) => {
-  const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
-  // appDatabase = await connect(dbFilename); 
-  var knex = require('knex')({ client: 'sqlite3', connection: { filename: dbFilename }, useNullAsDefault: true });
-
-  // const query = appDatabase.knex('invoices').select('*').limit(10)
-  // appDatabase.raw(query, true).then(data => {
-  //   mainWindow.webContents.send("invoicesResults", data);
-  // })
-
-
   knex('invoices').select('*').limit(10).then(data => {
     mainWindow.webContents.send("invoicesResults", data);
   })
