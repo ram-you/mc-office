@@ -264,11 +264,12 @@ export default {
     },
     dialog(val) { val || this.close() }
   },
-  created() {
-    var vm = this
-    this.initialize();
-    dbWorkerWindow.webContents.send("getInvoices", 'invoices');
-    vm.isInvoicesDataLoaded = true
+  beforeCreate(){ 
+    dbWorkerWindow.webContents.send("getInvoices", 'invoices'); 
+  },
+  created() { 
+    this.initialize(); 
+    this.isInvoicesDataLoaded = true;
   },
   destroyed() {
     ipcRenderer.removeAllListeners("invoicesResults");
