@@ -46,7 +46,7 @@ export default {
   components: { MonthlyIncome },
   data() {
     return {
-      chartData1: [40, 39, 10, 40, 39, 80, 40],
+      chartData1: [40, 39, 55, 40, 39, 45, 40,50, 35,33,60,32],
     }
   },
 }
