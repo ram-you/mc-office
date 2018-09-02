@@ -107,6 +107,15 @@
           </v-list-tile-content>
         </v-list-tile>
 
+             <v-list-tile to="/charts">
+          <v-list-tile-action>
+            <v-icon class="blue white--text">mdi-chart-line</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>Charts</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+
       </v-list>
 
       <v-divider class="my-3"></v-divider>

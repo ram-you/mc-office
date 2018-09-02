@@ -62,7 +62,20 @@ export default new Router({
     meta: { transitionName: 'slide' },
     component: () => import('../views/billing/invoice/item')
   },
+
+  {
+    path: '/charts',
+    name: 'charts',
+    meta: { transitionName: 'slide' },
+    component: () => import('../views/charts/index')
+  },
+
+
+
   ],
+
+
+
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
       return savedPosition
