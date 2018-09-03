@@ -125,7 +125,7 @@ export default {
       }
     })
 
-    ipc.on('migrateApplicationData', function (event, message) {
+    ipc.on('migrateDatabase', function (event, message) {
       if (message.status == 'start') {
         vm.waitingResponse = true;
         vm.waitingMessage = "Migration des données, veuillez patienter... "

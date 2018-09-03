@@ -49,12 +49,9 @@ var migrateTableUsers = function() {
 
 function migrateDatabase() {
   return new Promise(
-    function(resolve, reject) {
-      // mainWindow.webContents.send("migrateApplicationData", 'start');
+    function(resolve, reject) { 
       var promises = Promise.all([migrateTableInvoices(), migrateTableUsers()]);
-      promises.then(function() {
-        console.log("done Users+Invoices")
-        // mainWindow.webContents.send("migrateApplicationData", 'finish');
+      promises.then(function() { 
         return resolve("done");
       });
     }

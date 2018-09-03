@@ -6,7 +6,7 @@ module.paths.push(path.resolve(__dirname, '..', '..', 'electron.asar', 'node_mod
 module.paths.push(path.resolve(__dirname, '..', '..', 'app', 'node_modules'));
 module.paths.push(path.resolve(__dirname, '..', '..', 'app.asar', 'node_modules'));
 
- 
+
 
 const fs = require('fs')
 const fse = require('fs-extra');
@@ -57,51 +57,31 @@ fs.exists(versionFile, function(exists) {
 
 
 
-async function migrateDB(version) {
-
-
+function migrateDB(version) {
   if (version.current == version.latest) {
-    var initData = require("./schema/" + version.current + "/initData.js");
-    //     const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
-    // const usersModel = await appDatabase.model('users', usersSchema);
-
+    require("./schema/" + version.current + "/initData.js");
   } else {
     var migrationFile = path.join(ASSETS, "database/schema/" + version.latest + "/migrate/" + version.current + ".js");
     fs.exists(migrationFile, function(exists) {
       if (exists) {
-        mainWindow.webContents.send("migrateApplicationData", {status:'start', current:version.current, latest:version.latest}); 
+        mainWindow.webContents.send("migrateDatabase", { status: 'start', current: version.current, latest: version.latest });
         var migrate = require(migrationFile);
         migrate.migrateDatabase().then((result) => {
-          // const invoicesModel = await appDatabase.model('invoices', invoicesSchema);
-          // const usersModel = await appDatabase.model('users', usersSchema);
-          //   migrate.importData(appDatabase);
           obj = { current: DB_VERSION, latest: DB_VERSION }
           var json = JSON.stringify(obj);
-          fs.writeFile(versionFile, json, () => { 
-            // alert("Migration de La base de données efféctuée avec succes.\nAncienne Version: " + version.current + "\nNouvelle Version: " + version.latest) 
-
-           
-         
-              console.log("done Users+Invoices")
-              mainWindow.webContents.send("migrateApplicationData",  {status:'finish', current:version.current, latest:version.latest});
-              
-            
-          
+          fs.writeFile(versionFile, json, () => {
+            console.log("Migration done.")
+            mainWindow.webContents.send("migrateDatabase", { status: 'finish', current: version.current, latest: version.latest });
           });
         });
       } else {
-        alert("NO NO \n" + path.join(migrationFile, "") + "\n" + migrationFile)
+        alert("No Migration File: \n \n" + migrationFile)
       }
     })
-
-
-
-
   }
-
 }
- 
- 
+
+
 
 
 
