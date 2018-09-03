@@ -32,7 +32,7 @@
               <v-icon class="mdi-18px mx-2">mdi-earth</v-icon>
               <v-list-tile-title :class="isDarkTheme?'white--text':''"> {{ $t('main.app.Application_Locale')}}</v-list-tile-title>
             </v-list-tile>
-            <v-list dense subheader >
+            <v-list dense subheader>
               <v-subheader style="border-bottom:1px solid"> {{ $t('main.app.Application_Locale')}}</v-subheader>
               <v-list-tile v-for="item in localesItems" :key="item.locale" @click="updateUserLocale(item)">
                 <v-list-tile-title v-text="item.name" class="mx-1" :class="(item.name==userLocale.name)? 'font-weight-bold': ''"></v-list-tile-title>
@@ -47,9 +47,9 @@
               <v-icon class="mdi-18px mx-2">mdi-theme-light-dark</v-icon>
               <v-list-tile-title :class="isDarkTheme?'white--text':''"> {{ $t('main.app.Color_theme')}}</v-list-tile-title>
             </v-list-tile>
-            <v-list dense subheader >
+            <v-list dense subheader>
               <v-subheader style="border-bottom:1px solid"> {{ $t('main.app.Color_theme')}}</v-subheader>
-              <v-list-tile v-for="item in themesItems" :key="item.theme" @click="updateUserTheme(item)" >
+              <v-list-tile v-for="item in themesItems" :key="item.theme" @click="updateUserTheme(item)">
                 <v-list-tile-title v-text="item.name" class="px-1" :class="(item.name==userTheme.name)?'font-weight-bold':''"></v-list-tile-title>
               </v-list-tile>
             </v-list>
@@ -111,7 +111,7 @@ export default {
     userLocale() { return this.localesItems.filter((item) => { return item.locale == this._userLocale; })[0] },
     _userTheme() { return this.$store.state.User.userTheme; },
     userTheme() { return this.themesItems.filter((item) => { return item.theme == this._userTheme; })[0] },
-      isDarkTheme() { return this.userTheme.theme == 'dark'; }
+    isDarkTheme() { return this.userTheme.theme == 'dark'; }
   },
   watch: {
 
@@ -120,7 +120,7 @@ export default {
     var vm = this
     ipcRenderer.send('update-menu')
     this.actualLocale = this.userLocale
-    this.actualTheme=this.userTheme
+    this.actualTheme = this.userTheme
     this.updateUserLocale(this.actualLocale)
     setTimeout(() => {
       vm.inited = true
@@ -169,7 +169,7 @@ export default {
 
 
           console.log(vm.actualLocale)
-           console.log(vm.actualTheme)
+          console.log(vm.actualTheme)
           vm.updateUserLocale(vm.actualLocale)
           vm.updateUserTheme(vm.actualTheme)
 

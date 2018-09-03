@@ -9,6 +9,14 @@
       </v-card>
     </v-dialog>
 
+    <v-snackbar v-model="snackbar_model" :color="snackbar_color" :multi-line="snackbar_mode === 'multi-line'"
+      :timeout="snackbar_timeout" :vertical="snackbar_mode === 'vertical'" :top="snackbar_top">
+      {{ snackbar_text }}
+      <v-btn dark flat @click="snackbar_model = false">
+        Fermer
+      </v-btn>
+    </v-snackbar>
+
     <header-section v-if="isConnected"></header-section>
 
     <v-content v-if="isConnected">
@@ -53,6 +61,13 @@ export default {
       waitingResponse: false,
       waitingMessage: '',
 
+      snackbar_model: false,
+      snackbar_color: '',
+      snackbar_mode: '',
+      snackbar_top: false,
+      snackbar_timeout: 6000,
+      snackbar_text: 'Traitement terminé',
+
       isHomePage: true,
 
     }
@@ -90,15 +105,41 @@ export default {
     })
 
 
-    ipc.on('initApplicationData', function (event, state) {
-      if (state=='start') {
+    ipc.on('initApplicationData', function (event, message) {
+      if (message == 'start') {
         vm.waitingResponse = true;
         vm.waitingMessage = "Initialisation des données, veuillez patienter... "
       } else {
+        vm.$store.dispatch('isConnected')
         vm.waitingResponse = false;
+        if (message == 'success') {
+          vm.snackbar_model = true;
+          vm.snackbar_color = 'blue';
+          vm.snackbar_top = true;
+          vm.snackbar_mode = 'multi-line';
+          vm.snackbar_timeout = 10000;
+          vm.snackbar_text = "La base de données a été initialisé avec succès.";
+        }
+        
 
       }
     })
+
+    ipc.on('migrateApplicationData', function (event, message) {
+      if (message.status == 'start') {
+        vm.waitingResponse = true;
+        vm.waitingMessage = "Migration des données, veuillez patienter... "
+      } else {
+        vm.waitingResponse = false;
+        vm.snackbar_model = true;
+        vm.snackbar_color = 'green';
+        vm.snackbar_top = true;
+        vm.snackbar_mode = 'multi-line';
+        vm.snackbar_timeout = 10000;
+        vm.snackbar_text = "Migration de la base de données effectuée avec succès. Ancienne Version: " + message.current + " Nouvelle Version: " + message.latest;
+      }
+    })
+
 
   },
   methods: {

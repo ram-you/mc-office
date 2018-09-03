@@ -109,8 +109,6 @@ const actions = {
   },
 
   getUsers({ commit }) {
-
- 
      Users.find({}, function (err, docs) {
       commit("setUsers", docs)
       return Promise.resolve();
@@ -121,8 +119,7 @@ const actions = {
     var userName = _store.get('users.' + connectedUserName + '.credential.name');
     var userPassword = _store.get('users.' + connectedUserName + '.credential.password');
     if (userName && userPassword) {
- 
-      Users.findOne({ username: userName, password: userPassword }, function (err, doc) {
+       Users.findOne({ username: userName, password: userPassword }, function (err, doc) {
         if (doc) {
           var user = { username: doc.username, connected: true }
           commit("setUser", user);

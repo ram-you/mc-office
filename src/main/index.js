@@ -110,7 +110,6 @@ function createMainWindow() {
 
 
 
-
   return mainWindow
 }
 
@@ -122,12 +121,12 @@ app.on('ready', async () => {
   userDataPath = app.getPath('userData') + path.sep;
 })
 
-// =====================DATABASE======================
+// =====================DATABASE============================================
 function createDataBaseWorkerWindow() {
   dbWorkerWindow = new BrowserWindow({
     parent: mainWindow,
     modal: true,
-    show: false,
+    show: isDevelopment ? true : false,
   });
   var dbWorkerPathname = ASSETS_GLOBAL + '/database/worker.html'; // isDevelopment ? (ASSETS_DIR + '/database/worker.html') : path.join(__dirname, '/../../../assets/database/worker.html')
   dbWorkerWindow.loadURL(formatUrl({ pathname: dbWorkerPathname, protocol: 'file', slashes: true }));
@@ -135,7 +134,7 @@ function createDataBaseWorkerWindow() {
   return dbWorkerWindow
 }
 
-// =====================~~~~~~~======================
+// =====================~~~~~~~============================================
 
 
 
