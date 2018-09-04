@@ -12,7 +12,7 @@
 
 
 
-module.exports = function invoice_items(table) {
+module.exports = function clients(table) {
   table.increments('id').primary();
   table.integer('account_id');
   table.string('notes');

@@ -16,7 +16,7 @@ module.exports = function invoices(table) {
   table.increments('id').primary();
   table.string('invoice_number').notNullable();
 
-  table.string('po_number');
+  table.string('po_number').comment('This is the Purchase Order Number');
   table.date('invoice_date');
   table.date('due_date');
 
@@ -31,9 +31,11 @@ module.exports = function invoices(table) {
   table.timestamps(true, true);
 
 
+  
 
 
-
+  table.integer('client_id').unsigned().notNullable();
+  table.foreign('client_id').references('id').inTable('clients');
 
 
   table.integer('account_id').unsigned().notNullable();

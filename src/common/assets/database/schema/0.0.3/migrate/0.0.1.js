@@ -13,8 +13,8 @@ let sep = path.sep
 const userDataPath = app.getPath('userData') + sep;
 
 
-let invoicesSchema = require("../Invoices")
-let usersSchema = require("../Users")
+let invoicesSchema = require("../invoices")
+let usersSchema = require("../users")
 
 const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
 var knex = require('knex')({ client: 'sqlite3', connection: { filename: dbFilename }, useNullAsDefault: true });

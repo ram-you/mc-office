@@ -118,7 +118,7 @@ function initUsersTable() {
 
     // ******************
     function createUsersData() {
-
+      mainWindow.webContents.send("initApplicationData", 'start');
       var j = 0
       initUsers(j)
 
@@ -162,7 +162,7 @@ function initUsersTable() {
 
 
 function initDatabase() {
-  mainWindow.webContents.send("initApplicationData", 'start');
+
   var promises = Promise.all([initInvoicesTable(), initUsersTable()]);
   promises.then(function(values) {
     console.log("done Users+Invoices",values)
