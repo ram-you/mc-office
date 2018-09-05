@@ -1,17 +1,6 @@
-
-//  module.exports = {
-//   id: 'increments', // special type, primary key
-//   invoiceClient: String,
-//   invoiceNumber: String,
-//   invoiceDate: Date,
-//   invoiceLines: Array,
-//   invoiceTotal: String,
-
-  
-//  };
-
- 
- 
+//  
+//  KNEX Schema Building
+//
 
 module.exports = function products(table) {
   table.increments('id').primary();
