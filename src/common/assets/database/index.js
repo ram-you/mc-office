@@ -37,23 +37,23 @@ var versionFile = path.join(userDataPath, 'database/version.json')
 
 
 
-var obj = { current: DB_VERSION, latest: DB_VERSION }
-fs.exists(versionFile, function(exists) {
-  if (exists) {
-    fs.readFile(versionFile, function readFileCallback(err, data) {
-      if (err) { console.log(err); } else {
-        obj = JSON.parse(data);
-        obj.latest = DB_VERSION
-        var json = JSON.stringify(obj);
-        fs.writeFile(versionFile, json, () => { migrateDB(obj) });
-      }
-    });
-  } else {
-    fse.ensureDirSync(path.join(userDataPath, 'database'))
-    var json = JSON.stringify(obj);
-    fs.writeFile(versionFile, json, () => { migrateDB(obj) });
-  }
-});
+// var obj = { current: DB_VERSION, latest: DB_VERSION }
+// fs.exists(versionFile, function(exists) {
+//   if (exists) {
+//     fs.readFile(versionFile, function readFileCallback(err, data) {
+//       if (err) { console.log(err); } else {
+//         obj = JSON.parse(data);
+//         obj.latest = DB_VERSION
+//         var json = JSON.stringify(obj);
+//         fs.writeFile(versionFile, json, () => { migrateDB(obj) });
+//       }
+//     });
+//   } else {
+//     fse.ensureDirSync(path.join(userDataPath, 'database'))
+//     var json = JSON.stringify(obj);
+//     fs.writeFile(versionFile, json, () => { migrateDB(obj) });
+//   }
+// });
 
 
 
@@ -82,7 +82,7 @@ function migrateDB(version) {
 }
 
 
-
+require("./schema/" +"0.0.3" + "/initData.js");
 
 
 
