@@ -20,8 +20,7 @@ const fse = require('fs-extra');
 
 
 
-let schemaModels = require("./models/index.js");
-console.log("schemaModels", schemaModels)
+let schemaModels = require("./models/index.js"); 
 
 const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
 var knex = require('knex')({ client: 'sqlite3', connection: { filename: dbFilename }, useNullAsDefault: true });
@@ -54,14 +53,13 @@ function initTable(tableName) {
     // ******************
     function importDataFromSqlFile(tableName) {
       var dataSqlFile = path.resolve(__dirname, "./data/" + tableName + ".sql");
-      console.log(tableName,"<==== dataSqlFile-------------->",dataSqlFile)
       fs.exists(dataSqlFile, function(exists) {
         if (exists) {
           mainWindow.webContents.send("initApplicationData", 'start');
-          fs.readFile(dataSqlFile, "utf8", function readFileCallback(err, sql) {
-            console.log(tableName,"<==== sql-------------->",sql)
-            knex.raw(sql).then(result => { resolve(true) })
-          });
+          var sql = fs.readFileSync(dataSqlFile).toString() 
+        
+          knex.raw(sql).then(result => { resolve(true) })
+
         } else {
           resolve(false)
         }
@@ -79,7 +77,6 @@ function initDatabase() {
   for (var i = 0; i < databaseModels.length; i++) {
     funcs.push(eval('initTable("' + databaseModels[i] + '")'))
   }
-  console.log("funcs*************", funcs)
   var promises = Promise.all(funcs);
   promises.then(function(values) {
     console.log(databaseModels, values)

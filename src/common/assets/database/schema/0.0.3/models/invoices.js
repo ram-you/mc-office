@@ -21,8 +21,7 @@ module.exports = function invoices(table) {
   table.integer('quote_invoice_id');
 
   table.text('terms');
-
-  table.text('invoice_footer');
+ 
 
   table.text('invoice_footer');
   
