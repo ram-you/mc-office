@@ -12,11 +12,11 @@
       </v-breadcrumbs>
       <v-spacer></v-spacer>
       <div class="mx-1">
-        <v-btn icon >
+        <v-btn icon>
           <v-icon class="grey--text text--darken-2">mdi-redo</v-icon>
         </v-btn>
 
-        <v-btn icon  >
+        <v-btn icon>
           <v-icon class="green--text text--lighten-1">mdi-check-all</v-icon>
         </v-btn>
       </div>
@@ -26,50 +26,70 @@
     <!-- ========================= -->
 
     <template>
-      <v-card class="pa-4 ma-4">
+      <v-card class="ma-4">
         <v-layout row wrap>
-          <v-flex xs12 sm4>
-            <v-card>
-              <v-autocomplete v-model="model" :items="items" :loading="isLoading" :search-input.sync="search" chips
-                clearable hide-details hide-selected item-text="name" item-value="symbol" label="Search for a coin..."
-                solo>
-                <template slot="no-data">
-                  <v-list-tile>
-                    <v-list-tile-title>
-                      Search for your favorite
-                      <strong>Cryptocurrency</strong>
-                    </v-list-tile-title>
-                  </v-list-tile>
-                </template>
-                <template slot="selection" slot-scope="{ item, selected }">
-                  <v-chip :selected="selected" color="blue-grey" class="white--text">
-                    <v-icon left>mdi-coin</v-icon>
-                    <span v-text="item.name"></span>
-                  </v-chip>
-                </template>
-                <template slot="item" slot-scope="{ item, tile }">
-                  <v-list-tile-avatar color="indigo" class="headline font-weight-light white--text">
-                    {{ item.name.charAt(0) }}
-                  </v-list-tile-avatar>
-                  <v-list-tile-content>
-                    <v-list-tile-title v-text="item.name"></v-list-tile-title>
-                    <v-list-tile-sub-title v-text="item.symbol"></v-list-tile-sub-title>
-                  </v-list-tile-content>
-                  <v-list-tile-action>
-                    <v-icon>mdi-coin</v-icon>
-                  </v-list-tile-action>
-                </template>
-              </v-autocomplete>
+          <v-flex xs12 md4>
+
+            <v-card class="ma-2">
+              <v-card-text>
+                <v-subheader class="pa-0">Where do you live?</v-subheader>
+                <v-autocomplete v-model="model" :search-input.sync="search" hint="Choisir un client" :items="items" :readonly="false"
+                  label="Choisir un client" persistent-hint item-text="name" item-value="symbol">
+                </v-autocomplete>
+              </v-card-text>
             </v-card>
+
           </v-flex>
-          <v-flex xs12 sm4>
-            <v-card>
+          <v-flex xs12 md4>
+            <v-card class="ma-2">
+              <v-card-text>
+                <v-subheader class="pa-0">Where do you live?</v-subheader>
+
+                <v-menu ref="invoiceDate" :close-on-content-click="false" v-model="invoiceDate" :nudge-right="40" :return-value.sync="date1"
+                  lazy transition="scale-transition" offset-y full-width min-width="290px">
+                  <v-text-field slot="activator" v-model="date1" label="Invoice Date" prepend-icon="mdi-calendar" readonly></v-text-field>
+                  <v-date-picker v-model="date1" @input="$refs.invoiceDate.save(date1)"></v-date-picker>
+                </v-menu>
+
+                <v-menu ref="dueDate" :close-on-content-click="false" v-model="dueDate" :nudge-right="40" :return-value.sync="date2"
+                  lazy transition="scale-transition" offset-y full-width min-width="290px">
+                  <v-text-field slot="activator" v-model="date2" label="Due Date" prepend-icon="mdi-calendar" readonly></v-text-field>
+                  <v-date-picker v-model="date2" @input="$refs.dueDate.save(date2)"></v-date-picker>
+                </v-menu>
+
+              </v-card-text>
 
             </v-card>
           </v-flex>
-          <v-flex xs12 sm4>
-            <v-card>
+          <v-flex xs12 md4>
+            <v-card class="ma-2">
+              <v-container grid-list-xl fluid>
+                <v-layout wrap>
+                  <v-flex xs12 sm6>
+                    <v-text-field v-model="form.first" :rules="rules.name" color="purple darken-2" label="First name" required></v-text-field>
+                  </v-flex>
+                  <v-flex xs12 sm6>
+                    <v-text-field v-model="form.last" :rules="rules.name" color="blue darken-2" label="Last name" required></v-text-field>
+                  </v-flex>
+                  <v-flex xs12>
+                    <v-textarea v-model="form.bio" color="teal">
+                      <div slot="label">
+                        Bio
+                        <small>(optional)</small>
+                      </div>
+                    </v-textarea>
+                  </v-flex>
+                  <v-flex xs12 sm6>
+                    <v-select v-model="form.favoriteAnimal" :items="animals" :rules="rules.animal" color="pink" label="Favorite animal"
+                      required></v-select>
+                  </v-flex>
+                  <v-flex xs12 sm6>
+                    <v-slider v-model="form.age" :rules="rules.age" color="orange" label="Age" hint="Be honest" min="1" max="100"
+                      thumb-label></v-slider>
+                  </v-flex>
 
+                </v-layout>
+              </v-container>
             </v-card>
           </v-flex>
         </v-layout>
@@ -86,11 +106,36 @@ export default {
 
   },
   data() {
+    const defaultForm = Object.freeze({
+      first: '',
+      last: '',
+      bio: '',
+      favoriteAnimal: '',
+      age: null,
+      terms: false
+    })
     return {
+      date1: null,
+       date2: null,
+      invoiceDate: false,
+      dueDate: false,
       isLoading: false,
       items: [],
       model: null,
-      search: null
+      search: null,
+
+      form: Object.assign({}, defaultForm),
+      rules: {
+        age: [
+          val => val < 10 || `I don't believe you!`
+        ],
+        animal: [val => (val || '').length > 0 || 'This field is required'],
+        name: [val => (val || '').length > 0 || 'This field is required']
+      },
+      animals: ['Dog', 'Cat', 'Rabbit', 'Turtle', 'Snake'],
+      snackbar: false,
+      terms: false,
+      defaultForm
 
     }
   },
@@ -110,7 +155,7 @@ export default {
         .catch(err => {
           console.log(err)
         })
-        // .finally(() => (this.isLoading = false))
+      // .finally(() => (this.isLoading = false))
     }
   },
   methods: {
