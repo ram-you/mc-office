@@ -1,164 +1,183 @@
 <template>
   <div>
+
     <v-navigation-drawer :value="drawerState" :clipped="isDesktop" app :right="$vuetify.rtl" :absolute="isDesktop"
       :mini-variant="miniVariant">
-      <v-list>
-        <v-list-tile to="/">
-          <v-list-tile-action>
-            <v-icon class="red white--text">mdi-home</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ $t('main.app.Home') }}</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+      <div class="py-2"></div>
+      <!-- ****************************** -->
+      <v-list-tile to="/">
+        <v-list-tile-action>
+          <v-icon class="brown--text brown lighten-3">mdi-home</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title class="font-weight-medium">{{ $t('main.app.Home') }}</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
 
-        <v-list-tile v-if="!isConnected" to="/login">
-          <v-list-tile-action>
-            <v-icon class="green white--text">mdi-login-variant</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ $t('main.app.Login') }}</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+      <v-list-tile to="/">
+        <v-list-tile-action>
+          <v-icon class="blue white--text">mdi-account-multiple</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title class="font-weight-medium">Clients</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
 
-        <v-list-tile v-else to="/login">
-          <v-list-tile-action>
-            <v-icon class="green white--text">mdi-logout-variant</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ $t('main.app.Logout') }}</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+      <v-list-tile to="/">
+        <v-list-tile-action>
+          <v-icon class="light-green white--text">mdi-package-variant</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title class="font-weight-medium">Products</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
 
-        <v-list-tile to="/about">
-          <v-list-tile-action>
-            <v-icon class="blue white--text">mdi-information-variant</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>
-              {{ $t('main.app.About') }}
-            </v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+      <v-list-tile to="/invoices">
+        <v-list-tile-action>
+          <v-icon class="green white--text">mdi-file-pdf</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title class="font-weight-medium">Invoices</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
 
-        <!-- Data Tables -->
-        <v-list-tile to="/data-tables">
-          <v-list-tile-action>
-            <v-icon class="orange white--text">mdi-table-large</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>Data table</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-        <!-- Data Tables -->
+      <v-list-tile to="/">
+        <v-list-tile-action>
+          <v-icon class="blue-grey white--text">mdi-file-document</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title class="font-weight-medium">Quotes</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
 
-        <!-- Actions  -->
-        <v-divider class="my-3"></v-divider>
-        <v-list-tile @click="openHomeDir()">
-          <v-list-tile-action>
-            <v-icon>mdi-folder-open</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>
-              Votre dossier personnel
-            </v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-        <v-list-tile @click="openAppDataDir()">
-          <v-list-tile-action>
-            <v-icon>mdi-folder-open</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>
-              Dossier Données de l'application
-            </v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-        <v-list-tile @click="printToPDF()">
-          <v-list-tile-action>
-            <v-icon>mdi-file-pdf</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>
-              Prendre une copie PDF
-            </v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-        <v-divider class="my-3"></v-divider>
-        <!-- ======== -->
+      <v-list-tile to="/">
+        <v-list-tile-action>
+          <v-icon class="deep-purple white--text">mdi-office-building</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title class="font-weight-medium">Vendors</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
 
-        <v-subheader class="mt-3">Billing</v-subheader>
+      <v-divider class="my-3"></v-divider>
+      <v-subheader class="mt-3">Billing</v-subheader>
 
-        <v-list-tile to="/invoices">
-          <v-list-tile-action>
-            <v-icon class="orange white--text">mdi-table-large</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>Invoices list</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+   
 
-        <v-list-tile to="/invoice/22/?number=FAC-2017-005">
-          <v-list-tile-action>
-            <v-icon class="green white--text">mdi-file-document-outline</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>Invoice</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+      <v-list-tile to="/invoice/22/?number=FAC-2017-005">
+        <v-list-tile-action>
+          <v-icon class="green white--text">mdi-file-document-outline</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title class="font-weight-medium">Invoice</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
 
-             <v-list-tile to="/charts">
-          <v-list-tile-action>
-            <v-icon class="blue white--text">mdi-chart-line</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>Charts</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+      <v-list-tile to="/charts">
+        <v-list-tile-action>
+          <v-icon class="blue white--text">mdi-chart-line</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title class="font-weight-medium">Charts</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
 
-      </v-list>
+      <!-- ****************************** -->
+      <!-- Actions  -->
+      <v-divider class="my-3"></v-divider>
+
+      <!-- ****************************** -->
+
+      <!-- Data Tables -->
+      <v-list-tile to="/data-tables">
+        <v-list-tile-action>
+          <v-icon class="orange white--text">mdi-table-large</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title class="font-weight-medium">Data table</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+      <!-- Data Tables -->
+      <!-- ****************************** -->
+
+      <v-list-tile @click="openHomeDir()">
+        <v-list-tile-action>
+          <v-icon>mdi-folder-open</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title class="font-weight-medium">
+            Votre dossier personnel
+          </v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+      <!-- ****************************** -->
+      <v-list-tile @click="openAppDataDir()">
+        <v-list-tile-action>
+          <v-icon>mdi-folder-open</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title class="font-weight-medium">
+            Dossier Données de l'application
+          </v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+      <!-- ****************************** -->
+      <v-list-tile @click="printToPDF()">
+        <v-list-tile-action>
+          <v-icon>mdi-file-pdf</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title class="font-weight-medium">
+            Prendre une copie PDF
+          </v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+
+      <!-- ======== -->
+      <!-- ****************************** -->
+
+      <!-- ****************************** -->
 
       <v-divider class="my-3"></v-divider>
 
-      <div :class="$vuetify.rtl?'text-xs-right':'text-xs-left'">
-        <v-menu offset-x open-on-hover transition="slide-x-transition" open-delay="500" close-delay="300">
-          <v-list-tile slot="activator">
-            <v-list-tile-action>
-              <v-icon>mdi-earth</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-title v-show="isDesktop?(drawer==1):true" :class="isDarkTheme?'white--text':''">
-              {{ $t('main.app.Application_Locale')}}</v-list-tile-title>
-          </v-list-tile>
-          <v-list dense subheader>
-            <v-subheader style="border-bottom:1px solid"> {{ $t('main.app.Application_Locale')}}</v-subheader>
-            <v-list-tile v-for="item in localesItems" :key="item.locale" @click="updateUserLocale(item)">
-              <v-list-tile-title v-text="item.name" :class="(item.name==userLocale.name)? getLocaleFontClass(item)+'font-weight-bold primary--text':getLocaleFontClass(item)"
-                style="overflow: unset;"></v-list-tile-title>
-            </v-list-tile>
-          </v-list>
-        </v-menu>
-      </div>
+      <v-list-tile to="/login">
+        <v-list-tile-action>
+          <v-icon>mdi-logout-variant</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title class="font-weight-medium">{{ $t('main.app.Logout') }}</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
 
-      <div :class="$vuetify.rtl?'text-xs-right':'text-xs-left'">
-        <v-menu offset-x open-on-hover transition="slide-x-transition" open-delay="500" close-delay="300">
-          <v-list-tile slot="activator">
-            <v-list-tile-action>
-              <v-icon>mdi-theme-light-dark</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-title v-show="isDesktop?(drawer==1):true" :class="isDarkTheme?'theme--dark':'theme--light'">
-              {{ $t('main.app.Color_theme')}}</v-list-tile-title>
-          </v-list-tile>
-          <v-list dense subheader   :class="isDarkTheme?'theme--dark':'theme--light'">
-            <v-subheader style="border-bottom:1px solid"> {{ $t('main.app.Color_theme')}}</v-subheader>
-            <v-list-tile v-for="item in themesItems" :key="item.theme" @click="updateUserTheme(item)"   :class="isDarkTheme?'theme--dark':'theme--light'">
-              <v-list-tile-title v-text="item.name" :class="(item.name==userTheme.name)?'font-weight-bold primary--text':''"
-                style="overflow: unset;"></v-list-tile-title>
-            </v-list-tile>
-          </v-list>
-        </v-menu>
-      </div>
+      <v-list-tile to="/about">
+        <v-list-tile-action>
+          <v-icon>mdi-information-variant</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title class="font-weight-medium">
+            {{ $t('main.app.About') }}
+          </v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+
+      <v-list-tile to="/settings">
+        <v-list-tile-action>
+          <v-icon class="red--text">mdi-settings-outline</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title class="font-weight-medium">
+            {{ $t('settings.header') }}
+          </v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+
+      <!-- ****************************** -->
+   <div class="py-4"></div>
     </v-navigation-drawer>
 
+    <!-- ***********           ************* -->
+    <!-- ***********  TOOLBAR  ************* -->
+    <!-- ***********           ************* -->
     <v-toolbar :dark="isDarkTheme" app fixed clipped-left :clipped-right="$vuetify.rtl">
       <v-toolbar-side-icon @click.stop="toggleMenuDrawer()" :style="{'margin-left':$vuetify.rtl?'0':'','margin-right':$vuetify.rtl?'-6px':''}"></v-toolbar-side-icon>
       <img src="../../common/assets/img/logo/32x32.png" alt="MC-Office" style="width:32px; height:32px;">
@@ -166,12 +185,43 @@
         <span class="title font-weight-bold light-blue--text text--darken-3">{{ $t('main.app.Title_Long') }} </span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-layout v-if="!isHomePage" row align-center style="max-width: 650px">
-        <v-text-field @click:append="() => {}" :placeholder="$t('main.app.Search')+'...'" single-line append-icon="mdi-magnify"
-          color="white" hide-details></v-text-field>
-      </v-layout>
-    </v-toolbar>
 
+      <v-menu open-delay="500" close-delay="300" :class="isDarkTheme?'theme--dark':'theme--light'">
+        <v-toolbar-title slot="activator">
+          <v-btn icon>
+            <v-icon class="grey--text">mdi-theme-light-dark</v-icon>
+          </v-btn>
+        </v-toolbar-title>
+        <v-list dense subheader :class="isDarkTheme?'theme--dark':'theme--light'">
+          <v-subheader> {{ $t('main.app.Color_theme')}}</v-subheader>
+          <v-list-tile v-for="item in themesItems" :key="item.theme" @click="updateUserTheme(item)" :class="isDarkTheme?'theme--dark':'theme--light'">
+            <v-list-tile-title v-text="item.name" :class="(item.name==userTheme.name)?'font-weight-bold primary--text':''"
+              style="overflow: unset;"></v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
+
+      <v-menu offset-x open-delay="500" close-delay="300">
+        <v-toolbar-title slot="activator">
+          <v-btn icon>
+            <v-icon class="grey--text">mdi-earth</v-icon>
+          </v-btn>
+        </v-toolbar-title>
+        <v-list dense subheader>
+          <v-subheader> {{ $t('main.app.Application_Locale')}}</v-subheader>
+          <v-list-tile v-for="item in localesItems" :key="item.locale" @click="updateUserLocale(item)">
+            <v-list-tile-title v-text="item.name" :class="(item.name==userLocale.name)? getLocaleFontClass(item)+'font-weight-bold primary--text':getLocaleFontClass(item)"
+              style="overflow: unset;"></v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
+
+      <v-btn icon to="/login">
+        <v-icon class="grey--text">mdi-logout</v-icon>
+      </v-btn>
+
+    </v-toolbar>
+    <!-- ****************************** -->
   </div>
 
 </template>
@@ -200,19 +250,6 @@ export default {
       localesItems: this.$localesItems,
       themesItems: this.$colorThemeItems,
 
-      items2: [
-        { picture: 28, text: 'Joseph', src: 'http://mediacept.com/images/logos/mediacept_128.png' },
-        { picture: 38, text: 'Apple', src: 'https://randomuser.me/api/portraits/men/38.jpg' },
-        { picture: 48, text: 'Xbox Ahoy', src: 'https://randomuser.me/api/portraits/men/48.jpg' },
-        { picture: 58, text: 'Nokia', src: 'https://randomuser.me/api/portraits/men/58.jpg' },
-        { picture: 78, text: 'MKBHD', src: 'https://randomuser.me/api/portraits/men/78.jpg' }
-      ],
-      items3: [
-        { title: 'Click Me' },
-        { title: 'Click Me' },
-        { title: 'Click Me' },
-        { title: 'Click Me 2' }
-      ]
     }
   },
   computed: {
@@ -238,25 +275,7 @@ export default {
       const { getCurrentWindow } = require('electron').remote;
       getCurrentWindow().reload()
     },
-    "$vuetify.lang.current": function () {
-      var vm = this
-      !function (d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) {
-          vm.removejscssfile("weatherwidget-io-js", "js")
-          setTimeout(() => {
-            js = d.createElement(s);
-            js.id = id; js.src = 'https://weatherwidget.io/js/widget.min.js';
-            fjs.parentNode.insertBefore(js, fjs);
-          }, 100);
-        } else {
-          js = d.createElement(s);
-          js.id = id; js.src = 'https://weatherwidget.io/js/widget.min.js';
-          fjs.parentNode.insertBefore(js, fjs);
-        }
-      }(document, 'script', 'weatherwidget-io-js');
 
-    },
 
     "isDesktop": function (val) {
       if (val) {
@@ -288,6 +307,9 @@ export default {
     });
   },
   methods: {
+    gotoPage(page) {
+      this.$router.push({ path: page });
+    },
     getLocaleFontClass(item) {
       return item.locale.substring(0, 2) + '-fontFamily ';
     },
@@ -313,22 +335,7 @@ export default {
         _store.set('users.' + connectedUserName + '.theme', theme);
       })
 
-      var vm = this
-      !function (d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) {
-          vm.removejscssfile("weatherwidget-io-js", "js")
-          setTimeout(() => {
-            js = d.createElement(s);
-            js.id = id; js.src = 'https://weatherwidget.io/js/widget.min.js';
-            fjs.parentNode.insertBefore(js, fjs);
-          }, 100);
-        } else {
-          js = d.createElement(s);
-          js.id = id; js.src = 'https://weatherwidget.io/js/widget.min.js';
-          fjs.parentNode.insertBefore(js, fjs);
-        }
-      }(document, 'script', 'weatherwidget-io-js');
+
     },
 
     toggleMenuDrawer() {
@@ -380,15 +387,8 @@ export default {
 
 
     },
-    removejscssfile(filename, filetype) {
-      var targetelement = (filetype == "js") ? "script" : (filetype == "css") ? "link" : "none" //determine element type to create nodelist from
-      var targetattr = (filetype == "js") ? "src" : (filetype == "css") ? "href" : "none" //determine corresponding attribute to test for
-      var allsuspects = document.getElementsByTagName(targetelement)
-      for (var i = allsuspects.length; i >= 0; i--) { //search backwards within nodelist for matching elements to remove
-        if (allsuspects[i] && allsuspects[i].getAttribute(targetattr) != null && allsuspects[i].getAttribute(targetattr).indexOf(filename) != -1)
-          allsuspects[i].parentNode.removeChild(allsuspects[i]) //remove element by calling parentNode.removeChild()
-      }
-    },
+
+
   },
 }
 </script>

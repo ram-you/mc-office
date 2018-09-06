@@ -11,7 +11,7 @@
           <v-subheader>Standard with focus</v-subheader>
         </v-flex>
         <v-flex xs6>
-          <v-select :items="items" v-model="e2" label="Select" class="input-group--focused" item-value="text"></v-select>
+          <v-select :items="states" v-model="e2" label="Select" class="input-group--focused" item-value="text"></v-select>
         </v-flex>
         <v-flex xs6>
           <v-subheader>Error</v-subheader>
@@ -61,25 +61,11 @@ export default {
         'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee',
         'Texas', 'Utah', 'Vermont', 'Virgin Island', 'Virginia',
         'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
-      ]
+      ],
     }
   },
-  created: function () {
-    this.$root.breadcrumbs = [
-      {
-        text: 'Dashboard',
-        disabled: false,
-        href: '/dashboard'
-      },
-      {
-        text: 'Form Inputs & Controls',
-        disabled: true
-      },
-      {
-        text: 'Select Boxes',
-        disabled: true
-      }
-    ]
+  created() {
+  
   }
 }
 </script>
