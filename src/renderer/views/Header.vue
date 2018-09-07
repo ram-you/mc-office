@@ -39,6 +39,11 @@
         <v-list-tile-content>
           <v-list-tile-title class="font-weight-medium">Invoices</v-list-tile-title>
         </v-list-tile-content>
+          <v-list-tile-action>
+              <v-btn icon ripple to="/invoice/new">
+                <v-icon color="green lighten-1" style="box-shadow: none !important; background: none !important;">mdi-plus-circle-outline</v-icon>
+              </v-btn>
+            </v-list-tile-action>
       </v-list-tile>
 
       <v-list-tile to="/">

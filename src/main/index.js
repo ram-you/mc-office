@@ -64,7 +64,7 @@ function createMainWindow() {
     backgroundColor: isDarkMode ? '#303030' : '#fff',
     show: false,
     icon: ASSETS_DIR + '/icons/64x64.png', // path.join(__dirname, '../common/assets/icons/64x64.png'),
-    webPreferences: { plugins: false }
+    webPreferences: { plugins: true }
 
   })
 
@@ -121,7 +121,7 @@ app.on('ready', async () => {
   userDataPath = app.getPath('userData') + path.sep;
 })
 
-// =====================DATABASE============================================
+// =====================DATABASE================DATABASE==========DATABASE==================
 function createDataBaseWorkerWindow() {
   dbWorkerWindow = new BrowserWindow({
     parent: mainWindow,

@@ -32,7 +32,7 @@
 
             <v-card class="ma-2">
               <v-card-text>
-                <v-subheader class="pa-0">Where do you live?</v-subheader>
+
                 <v-autocomplete v-model="model" :search-input.sync="search" hint="Choisir un client" :items="items" :readonly="false"
                   label="Choisir un client" persistent-hint item-text="name" item-value="symbol">
                 </v-autocomplete>
@@ -43,19 +43,23 @@
           <v-flex xs12 md4>
             <v-card class="ma-2">
               <v-card-text>
-                <v-subheader class="pa-0">Where do you live?</v-subheader>
 
                 <v-menu ref="invoiceDate" :close-on-content-click="false" v-model="invoiceDate" :nudge-right="40" :return-value.sync="date1"
                   lazy transition="scale-transition" offset-y full-width min-width="290px">
-                  <v-text-field slot="activator" v-model="date1" label="Invoice Date" prepend-icon="mdi-calendar" readonly></v-text-field>
+                  <v-text-field slot="activator" v-model="date1" label="Invoice Date" append-icon="mdi-calendar" readonly></v-text-field>
                   <v-date-picker v-model="date1" @input="$refs.invoiceDate.save(date1)"></v-date-picker>
                 </v-menu>
 
                 <v-menu ref="dueDate" :close-on-content-click="false" v-model="dueDate" :nudge-right="40" :return-value.sync="date2"
                   lazy transition="scale-transition" offset-y full-width min-width="290px">
-                  <v-text-field slot="activator" v-model="date2" label="Due Date" prepend-icon="mdi-calendar" readonly></v-text-field>
+                  <v-text-field slot="activator" v-model="date2" label="Due Date" append-icon="mdi-calendar" readonly></v-text-field>
                   <v-date-picker v-model="date2" @input="$refs.dueDate.save(date2)"></v-date-picker>
                 </v-menu>
+
+                <v-flex xs12>
+                  <v-text-field v-model="form.first" :rules="rules.name" color="purple darken-2" label="Partial/Deposit"  type="number"
+                    required></v-text-field>
+                </v-flex>
 
               </v-card-text>
 
@@ -63,33 +67,40 @@
           </v-flex>
           <v-flex xs12 md4>
             <v-card class="ma-2">
-              <v-container grid-list-xl fluid>
+              <v-card-text>
                 <v-layout wrap>
-                  <v-flex xs12 sm6>
-                    <v-text-field v-model="form.first" :rules="rules.name" color="purple darken-2" label="First name" required></v-text-field>
-                  </v-flex>
-                  <v-flex xs12 sm6>
-                    <v-text-field v-model="form.last" :rules="rules.name" color="blue darken-2" label="Last name" required></v-text-field>
+                  <v-flex xs12>
+                    <v-text-field v-model="form.first" :rules="rules.name" color="purple darken-2" label="Invoice #" required></v-text-field>
                   </v-flex>
                   <v-flex xs12>
-                    <v-textarea v-model="form.bio" color="teal">
-                      <div slot="label">
-                        Bio
-                        <small>(optional)</small>
-                      </div>
-                    </v-textarea>
+                    <v-text-field v-model="form.first" :rules="rules.name" color="purple darken-2" label="PO #" required></v-text-field>
                   </v-flex>
-                  <v-flex xs12 sm6>
-                    <v-select v-model="form.favoriteAnimal" :items="animals" :rules="rules.animal" color="pink" label="Favorite animal"
-                      required></v-select>
-                  </v-flex>
-                  <v-flex xs12 sm6>
-                    <v-slider v-model="form.age" :rules="rules.age" color="orange" label="Age" hint="Be honest" min="1" max="100"
-                      thumb-label></v-slider>
+
+                  <v-flex xs12>
+                    <v-text-field v-model="discountValue" label="Discount"  type="number">
+                      <v-fade-transition slot="append">
+                        <v-icon v-if="discountType=='Percent'" class="mdi-18px blue-grey--text" style="margin-top: 6px;">mdi-percent</v-icon>
+                        <v-icon v-else class="mdi-18px  blue-grey--text" style="margin-top: 6px;">mdi-cash-100</v-icon>
+                      </v-fade-transition>
+
+                      <v-menu slot="append-outer" style="top: -6px" offset-y>
+                        <v-btn slot="activator" flat   small color="blue-grey ">
+                          {{discountType}}
+                          <v-icon right>mdi-chevron-down</v-icon>
+                        </v-btn>
+
+                        <v-list>
+                          <v-list-tile v-for="(item, i) in selectDiscount" :key="i">
+                            <v-list-tile-title @click="selectDiscountMethod(item)"  style="cursor: pointer;">{{ item }}</v-list-tile-title>
+                          </v-list-tile>
+                        </v-list>
+
+                      </v-menu>
+                    </v-text-field>
                   </v-flex>
 
                 </v-layout>
-              </v-container>
+              </v-card-text>
             </v-card>
           </v-flex>
         </v-layout>
@@ -110,13 +121,13 @@ export default {
       first: '',
       last: '',
       bio: '',
-      favoriteAnimal: '',
+      favoriteDiscount: '',
       age: null,
       terms: false
     })
     return {
       date1: null,
-       date2: null,
+      date2: null,
       invoiceDate: false,
       dueDate: false,
       isLoading: false,
@@ -129,10 +140,12 @@ export default {
         age: [
           val => val < 10 || `I don't believe you!`
         ],
-        animal: [val => (val || '').length > 0 || 'This field is required'],
+        selectDiscount: [val => (val || '').length > 0 || 'This field is required'],
         name: [val => (val || '').length > 0 || 'This field is required']
       },
-      animals: ['Dog', 'Cat', 'Rabbit', 'Turtle', 'Snake'],
+      discountType: 'Percent',
+      discountValue: 0,
+      selectDiscount: ['Percent', 'Amount'],
       snackbar: false,
       terms: false,
       defaultForm
@@ -159,7 +172,9 @@ export default {
     }
   },
   methods: {
-
+    selectDiscountMethod(item) {
+      this.discountType = item
+    }
   },
 }
 </script>

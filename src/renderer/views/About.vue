@@ -1,75 +1,73 @@
 <template>
-<div>
-  <v-container fluid class="about-container">
-    <v-slide-y-transition mode="out-in">
+  <div>
+    <v-container fluid class="about-container">
+      <v-slide-y-transition mode="out-in">
 
-      <div>
-        <v-layout column align-center>
-          <img src="../../common/assets/img/logo/128x128.png" alt="mediacept.com" class="mb-2">
-          <blockquote>
-            <span class="display-2 font-weight-bold light-blue--text text--darken-3"> {{ $t('main.app.Title_Long') }}</span>
-            <footer>
-              <small>
-                <em class="subheading grey--text text--lighteen-1 font-weight-regular font-italic">The desktop application</em>
-              </small>
-            </footer>
-          </blockquote>
-        </v-layout>
+        <div>
+          <v-layout column align-center>
+            <img src="../../common/assets/img/logo/128x128.png" alt="mediacept.com" class="mb-2">
+            <blockquote>
+              <span class="display-2 font-weight-bold light-blue--text text--darken-3"> {{ $t('main.app.Title_Long') }}</span>
+              <footer>
+                <small>
+                  <em class="subheading grey--text text--lighteen-1 font-weight-regular font-italic">The desktop application</em>
+                </small>
+              </footer>
+            </blockquote>
+          </v-layout>
 
-        <v-layout column class="my-4">
+          <v-layout column class="my-4">
 
-          <v-card>
-            <v-card-title primary-title>
-              <v-list three-line style="width:100%">
-                <template v-for="(item, index) in items">
-                  <v-subheader v-if="item.header" :key="item.header">
-                    {{ item.header }}
-                  </v-subheader>
+            <v-card>
+              <v-card-title primary-title>
+                <v-list three-line style="width:100%">
+                  <template v-for="(item, index) in items">
+                    <v-subheader v-if="item.header" :key="item.header">
+                      {{ item.header }}
+                    </v-subheader>
 
-                  <v-divider v-else-if="item.divider" :inset="item.inset" :key="index"></v-divider>
+                    <v-divider v-else-if="item.divider" :inset="item.inset" :key="index"></v-divider>
 
-                  <v-list-tile v-else :key="item.title" avatar>
-                    <v-list-tile-avatar>
-                      <img :src="item.avatar">
-                    </v-list-tile-avatar>
+                    <v-list-tile v-else :key="item.title" avatar>
+                      <v-list-tile-avatar>
+                        <img :src="item.avatar">
+                      </v-list-tile-avatar>
 
-                    <v-list-tile-content>
-                      <v-list-tile-title v-html="item.title"></v-list-tile-title>
-                      <v-list-tile-sub-title v-html="item.subtitle"></v-list-tile-sub-title>
-                    </v-list-tile-content>
-                  </v-list-tile>
-                </template>
-              </v-list>
+                      <v-list-tile-content>
+                        <v-list-tile-title v-html="item.title"></v-list-tile-title>
+                        <v-list-tile-sub-title v-html="item.subtitle"></v-list-tile-sub-title>
+                      </v-list-tile-content>
+                    </v-list-tile>
+                  </template>
+                </v-list>
 
-            </v-card-title>
-          </v-card>
+              </v-card-title>
+            </v-card>
 
-        </v-layout>
+          </v-layout>
 
+        </div>
+      </v-slide-y-transition>
+    </v-container>
+    <v-layout column align-center class="mt-4">
+      <v-card class="weatherwidget">
+        <a class="weatherwidget-io" data-icons="Climacons Animated" :href="'https://forecast7.com/'+userShortLocale+'/35d8210d63/sousse/'"
+          data-label_1="Sousse" data-label_2="Tunisie" data-font="Ubuntu" :data-theme="(userTheme.theme=='dark')?'dark':'pure'">Sousse, Tunisie</a>
+      </v-card>
+    </v-layout>
 
-
-
-
-
-      </div>
-    </v-slide-y-transition>
-  </v-container>
-                <v-layout column align-center class="mt-4">
-          <v-card class="weatherwidget">
-            <a class="weatherwidget-io" data-icons="Climacons Animated" :href="'https://forecast7.com/'+userShortLocale+'/35d8210d63/sousse/'"
-              data-label_1="Sousse" data-label_2="Tunisie" data-font="Ubuntu" :data-theme="(userTheme.theme=='dark')?'dark':'pure'">Sousse, Tunisie</a>
-          </v-card>
-        </v-layout>
-
-        <v-layout column align-center class="mt-4">
-          <v-card class="elevation-1 pa-1">
-          <video style="display:block" src="../../common/assets/videos/big_buck_bunny.mp4"   controls></video>
-          </v-card>
-        </v-layout>
+    <v-layout column align-center class="mt-4">
+      <v-card class="elevation-1 pa-1">
+        <video style="display:block" src="../../common/assets/videos/big_buck_bunny.mp4" controls></video>
+      </v-card>
+    </v-layout>
   </div>
 </template> 
 
 <script>
+
+
+
 var _app = require('electron').remote.app
 const electronVersion = process.versions.electron
 const chromeVersion = process.versions.chrome
@@ -78,11 +76,14 @@ const nodeVersion = process.versions.node
 const os = require('os');
 const appPath = _app.getPath('exe')
 const appVersion = _app.getVersion()
+var sysInfos;
+
 export default {
   data() {
     var appTitle = this.$i18n.t('main.app.Title')
     return {
-       localesItems: [{ name: 'العربية', locale: 'ar-tn' }, { name: 'English', locale: 'en-gb' }, { name: 'Français', locale: 'fr-fr' }],
+      sysInfos: sysInfos,
+      localesItems: [{ name: 'العربية', locale: 'ar-tn' }, { name: 'English', locale: 'en-gb' }, { name: 'Français', locale: 'fr-fr' }],
       themesItems: this.$colorThemeItems,
       items: [
         { header: 'Installed Versions' },
@@ -126,13 +127,19 @@ export default {
           avatar: require("../../common/assets/img/data_floppy_disk-icon.png"),
           title: 'Application path',
           subtitle: appPath
-        }
+        },
+        { divider: true, inset: true },
+        // {
+        //   avatar: require("../../common/assets/img/data_floppy_disk-icon.png"),
+        //   title: 'System informations',
+        //   subtitle: sysInfos
+        // }
       ]
     }
   },
   computed: {
     appTitle() { return this.$i18n.t('main.app.Title') },
-       _userLocale() { return this.$store.state.User.userLocale; },
+    _userLocale() { return this.$store.state.User.userLocale; },
     userLocale() { return this.localesItems.filter((item) => { return item.locale == this._userLocale; })[0] },
     userShortLocale() { return (this._userLocale).substring(0, 2); },
 
@@ -141,7 +148,7 @@ export default {
 
   },
   mounted() {
-  var vm = this
+    var vm = this
     !function (d, s, id) {
       var js, fjs = d.getElementsByTagName(s)[0];
       if (d.getElementById(id)) {
@@ -157,8 +164,15 @@ export default {
         fjs.parentNode.insertBefore(js, fjs);
       }
     }(document, 'script', 'weatherwidget-io-js');
+
+
+ 
+
+
+ 
+
   },
-    methods: {
+  methods: {
     removejscssfile(filename, filetype) {
       var targetelement = (filetype == "js") ? "script" : (filetype == "css") ? "link" : "none" //determine element type to create nodelist from
       var targetattr = (filetype == "js") ? "src" : (filetype == "css") ? "href" : "none" //determine corresponding attribute to test for
