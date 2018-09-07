@@ -4,180 +4,179 @@
     <v-navigation-drawer :value="drawerState" :clipped="isDesktop" app :right="$vuetify.rtl" :absolute="isDesktop"
       :mini-variant="miniVariant">
       <div class="py-2"></div>
-      <!-- ****************************** -->
-      <v-list-tile to="/">
-        <v-list-tile-action>
-          <v-icon class="brown--text brown lighten-3">mdi-home</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title class="font-weight-medium">{{ $t('main.app.Home') }}</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-
-      <v-list-tile to="/">
-        <v-list-tile-action>
-          <v-icon class="blue white--text">mdi-account-multiple</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title class="font-weight-medium">Clients</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-
-      <v-list-tile to="/">
-        <v-list-tile-action>
-          <v-icon class="light-green white--text">mdi-package-variant</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title class="font-weight-medium">Products</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-
-      <v-list-tile to="/invoices">
-        <v-list-tile-action>
-          <v-icon class="green white--text">mdi-file-pdf</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title class="font-weight-medium">Invoices</v-list-tile-title>
-        </v-list-tile-content>
+      <v-list>
+        <!-- ****************************** -->
+        <v-list-tile to="/">
           <v-list-tile-action>
-              <v-btn icon ripple to="/invoice/new">
-                <v-icon color="green lighten-1" style="box-shadow: none !important; background: none !important;">mdi-plus-circle-outline</v-icon>
-              </v-btn>
-            </v-list-tile-action>
-      </v-list-tile>
+            <v-icon class="brown--text brown lighten-3">mdi-home</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title class="subheading">{{ $t('main.app.Home') }}</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
 
-      <v-list-tile to="/">
-        <v-list-tile-action>
-          <v-icon class="blue-grey white--text">mdi-file-document</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title class="font-weight-medium">Quotes</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
+        <v-list-tile to="/">
+          <v-list-tile-action>
+            <v-icon class="blue white--text">mdi-account-multiple</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title class="subheading">Clients</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
 
-      <v-list-tile to="/">
-        <v-list-tile-action>
-          <v-icon class="deep-purple white--text">mdi-office-building</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title class="font-weight-medium">Vendors</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
+        <v-list-tile to="/">
+          <v-list-tile-action>
+            <v-icon class="light-green white--text">mdi-package-variant</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title class="subheading">Products</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
 
-      <v-divider class="my-3"></v-divider>
-      <v-subheader class="mt-3">Billing</v-subheader>
+        <v-list-tile to="/invoices" @mouseover="invoice_new=true" @mouseleave="invoice_new=false" ripple>
+          <v-list-tile-action>
+            <v-icon class="green white--text">mdi-file-pdf</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title class="subheading">Invoices</v-list-tile-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-icon v-show="invoice_new" @click.prevent="gotoPage('/invoice/new')" style="box-shadow: none !important; background: none !important;"
+              class="mdi-18px">mdi-plus-circle-outline</v-icon>
+          </v-list-tile-action>
+        </v-list-tile>
 
-   
+        <v-list-tile to="/">
+          <v-list-tile-action>
+            <v-icon class="blue-grey white--text">mdi-file-document</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title class="subheading">Quotes</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
 
-      <v-list-tile to="/invoice/22/?number=FAC-2017-005">
-        <v-list-tile-action>
-          <v-icon class="green white--text">mdi-file-document-outline</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title class="font-weight-medium">Invoice</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
+        <v-list-tile to="/">
+          <v-list-tile-action>
+            <v-icon class="deep-purple white--text">mdi-office-building</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title class="subheading">Vendors</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
 
-      <v-list-tile to="/charts">
-        <v-list-tile-action>
-          <v-icon class="blue white--text">mdi-chart-line</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title class="font-weight-medium">Charts</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
+        <v-divider class="my-3"></v-divider>
+        <v-subheader class="mt-3">Billing</v-subheader>
 
-      <!-- ****************************** -->
-      <!-- Actions  -->
-      <v-divider class="my-3"></v-divider>
+        <v-list-tile to="/invoice/22/?number=FAC-2017-005">
+          <v-list-tile-action>
+            <v-icon class="green white--text">mdi-file-document-outline</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title class="subheading">Invoice</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
 
-      <!-- ****************************** -->
+        <v-list-tile to="/charts">
+          <v-list-tile-action>
+            <v-icon class="blue white--text">mdi-chart-line</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title class="subheading">Charts</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
 
-      <!-- Data Tables -->
-      <v-list-tile to="/data-tables">
-        <v-list-tile-action>
-          <v-icon class="orange white--text">mdi-table-large</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title class="font-weight-medium">Data table</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-      <!-- Data Tables -->
-      <!-- ****************************** -->
+        <!-- ****************************** -->
+        <!-- Actions  -->
+        <v-divider class="my-3"></v-divider>
 
-      <v-list-tile @click="openHomeDir()">
-        <v-list-tile-action>
-          <v-icon>mdi-folder-open</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title class="font-weight-medium">
-            Votre dossier personnel
-          </v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-      <!-- ****************************** -->
-      <v-list-tile @click="openAppDataDir()">
-        <v-list-tile-action>
-          <v-icon>mdi-folder-open</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title class="font-weight-medium">
-            Dossier Données de l'application
-          </v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-      <!-- ****************************** -->
-      <v-list-tile @click="printToPDF()">
-        <v-list-tile-action>
-          <v-icon>mdi-file-pdf</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title class="font-weight-medium">
-            Prendre une copie PDF
-          </v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
+        <!-- ****************************** -->
 
-      <!-- ======== -->
-      <!-- ****************************** -->
+        <!-- Data Tables -->
+        <v-list-tile to="/data-tables">
+          <v-list-tile-action>
+            <v-icon class="indigo white--text">mdi-table-large</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title class="subheading">Data table</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <!-- Data Tables -->
+        <!-- ****************************** -->
 
-      <!-- ****************************** -->
+        <v-list-tile @click="openHomeDir()">
+          <v-list-tile-action>
+            <v-icon>mdi-folder-open</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title class="subheading">
+              Votre dossier personnel
+            </v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <!-- ****************************** -->
+        <v-list-tile @click="openAppDataDir()">
+          <v-list-tile-action>
+            <v-icon>mdi-folder-open</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title class="subheading">
+              Dossier Données de l'application
+            </v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <!-- ****************************** -->
+        <v-list-tile @click="printToPDF()">
+          <v-list-tile-action>
+            <v-icon>mdi-file-pdf</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title class="subheading">
+              Prendre une copie PDF
+            </v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
 
-      <v-divider class="my-3"></v-divider>
+        <!-- ======== -->
+        <!-- ****************************** -->
 
-      <v-list-tile to="/login">
-        <v-list-tile-action>
-          <v-icon>mdi-logout-variant</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title class="font-weight-medium">{{ $t('main.app.Logout') }}</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
+        <!-- ****************************** -->
 
-      <v-list-tile to="/about">
-        <v-list-tile-action>
-          <v-icon>mdi-information-variant</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title class="font-weight-medium">
-            {{ $t('main.app.About') }}
-          </v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
+        <v-divider class="my-3"></v-divider>
 
-      <v-list-tile to="/settings">
-        <v-list-tile-action>
-          <v-icon class="red--text">mdi-settings-outline</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title class="font-weight-medium">
-            {{ $t('settings.header') }}
-          </v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
+        <v-list-tile to="/login">
+          <v-list-tile-action>
+            <v-icon>mdi-logout-variant</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title class="subheading">{{ $t('main.app.Logout') }}</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
 
-      <!-- ****************************** -->
-   <div class="py-4"></div>
+        <v-list-tile to="/about">
+          <v-list-tile-action>
+            <v-icon>mdi-information-variant</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title class="subheading">
+              {{ $t('main.app.About') }}
+            </v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+
+        <v-list-tile to="/settings">
+          <v-list-tile-action>
+            <v-icon class="red--text">mdi-settings-outline</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title class="subheading">
+              {{ $t('settings.header') }}
+            </v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+
+        <!-- ****************************** -->
+        <div class="py-4"></div>
+      </v-list>
     </v-navigation-drawer>
 
     <!-- ***********           ************* -->
@@ -248,6 +247,7 @@ export default {
   components: { TransitionSlideUp, },
   data() {
     return {
+      invoice_new: false,
       isHomePage: this.$route.name == "home",
       miniVariant: false,
       drawerState: false,
