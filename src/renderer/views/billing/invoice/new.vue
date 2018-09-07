@@ -32,10 +32,11 @@
 
             <v-card class="ma-2">
               <v-card-text>
-
-                <v-autocomplete v-model="model" :search-input.sync="search" hint="Choisir un client" :items="items" :readonly="false"
-                  label="Choisir un client" persistent-hint item-text="name" item-value="symbol">
+ 
+                <v-autocomplete v-model="modelClient" :search-input.sync="search" hint="Choisir un client" :items="items" :readonly="false"
+                  label="Choisir un client" persistent-hint item-text="name" item-value="name">
                 </v-autocomplete>
+                   <v-btn  @click="clientDialog=true" color="primary" dark class="mb-2">New Item</v-btn>
               </v-card-text>
             </v-card>
 
@@ -57,8 +58,8 @@
                 </v-menu>
 
                 <v-flex xs12>
-                  <v-text-field v-model="form.first" :rules="rules.name" color="purple darken-2" label="Partial/Deposit"  type="number"
-                    required></v-text-field>
+                  <v-text-field v-model="form.first" :rules="rules.name" color="purple darken-2" label="Partial/Deposit"
+                    type="number" required></v-text-field>
                 </v-flex>
 
               </v-card-text>
@@ -77,21 +78,25 @@
                   </v-flex>
 
                   <v-flex xs12>
-                    <v-text-field v-model="discountValue" label="Discount"  type="number">
+                    <v-text-field v-model="discountValue" label="Discount" type="number">
                       <v-fade-transition slot="append">
-                        <v-icon v-if="discountType=='Percent'" class="mdi-18px blue-grey--text" style="margin-top: 6px;">mdi-percent</v-icon>
-                        <v-icon v-else class="mdi-18px  blue-grey--text" style="margin-top: 6px;">mdi-cash-100</v-icon>
+                        <v-icon v-if="discountType=='Percent'" class="mdi-18px" style="margin-top: 6px;">mdi-percent</v-icon>
+                        <v-icon v-else class="mdi-18px" style="margin-top: 6px;">mdi-cash-100</v-icon>
                       </v-fade-transition>
 
                       <v-menu slot="append-outer" style="top: -6px" offset-y>
-                        <v-btn slot="activator" flat   small color="blue-grey ">
+                        <v-btn slot="activator" flat small>
                           {{discountType}}
                           <v-icon right>mdi-chevron-down</v-icon>
                         </v-btn>
 
                         <v-list>
-                          <v-list-tile v-for="(item, i) in selectDiscount" :key="i">
-                            <v-list-tile-title @click="selectDiscountMethod(item)"  style="cursor: pointer;">{{ item }}</v-list-tile-title>
+                          <v-list-tile v-for="(item, i) in selectDiscount" :key="i" @click="selectDiscountMethod(item)">
+                            <v-list-tile-action style="min-width: 24px;">
+                              <v-icon v-if="item=='Percent'" class="mdi-18px">mdi-percent</v-icon>
+                              <v-icon v-else class="mdi-18px">mdi-cash-100</v-icon>
+                            </v-list-tile-action>
+                            <v-list-tile-title>{{ item }}</v-list-tile-title>
                           </v-list-tile>
                         </v-list>
 
@@ -106,12 +111,55 @@
         </v-layout>
       </v-card>
     </template>
-
+            <v-dialog v-model="clientDialog" max-width="500px">
+           
+              <v-card>
+                <v-card-title>
+                  <span class="headline">Nouveau client </span>
+                </v-card-title>
+                <v-card-text>
+                  <v-container grid-list-md>
+                    <v-layout wrap>
+                      <v-flex xs12 >
+                        <v-text-field v-model="form.client.name" label="Client Name"></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 sm6  >
+                        <v-text-field v-model="form.client.contact.first_name" label="Fist Name"></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 sm6  >
+                        <v-text-field v-model="form.client.contact.last_name" label="Last Name"></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 sm6 >
+                        <v-text-field v-model="form.client.contact.email" label="Email"></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 sm6  >
+                        <v-text-field v-model="form.client.contact.phone" label="Phone"></v-text-field>
+                      </v-flex>
+                    </v-layout>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" flat @click.native="closeClientDialog">Cancel</v-btn>
+                  <v-btn color="blue darken-1" flat @click.native="saveClientDialog">Save</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
   </div>
 </template>
 
 <script>
-var axios = require("axios")
+var axios = require("axios");
+
+var path = require('path');
+var electron = require("electron")
+const remote = electron.remote;
+const app = remote.app;
+let sep = path.sep
+const userDataPath = app.getPath('userData') + sep;
+const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
+var knex = require('knex')({ client: 'sqlite3', connection: { filename: dbFilename }, useNullAsDefault: true });
+
 export default {
   components: {
 
@@ -122,17 +170,19 @@ export default {
       last: '',
       bio: '',
       favoriteDiscount: '',
+      client:{contact:{}},
       age: null,
       terms: false
     })
     return {
+      clientDialog:false,
       date1: null,
       date2: null,
       invoiceDate: false,
       dueDate: false,
       isLoading: false,
       items: [],
-      model: null,
+      modelClient: null,
       search: null,
 
       form: Object.assign({}, defaultForm),
@@ -167,14 +217,37 @@ export default {
         })
         .catch(err => {
           console.log(err)
-        })
-      // .finally(() => (this.isLoading = false))
+        }) 
     }
   },
+
+  beforeCreate(){  
+  },
+  created() {  
+  },
+  destroyed() { 
+  },
+  mounted() {
+
+  
+  },
+
+
   methods: {
     selectDiscountMethod(item) {
       this.discountType = item
-    }
+    },
+        closeClientDialog() {
+      this.clientDialog = false
+      
+    },
+
+    saveClientDialog() {
+      // this.modelClient=this.form.client
+      this.search=this.form.client.name
+      console.log(this.form.client)
+      this.closeClientDialog()
+    },
   },
 }
 </script>
