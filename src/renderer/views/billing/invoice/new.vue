@@ -27,129 +27,69 @@
 
     <template>
       <v-card class="ma-4">
-        <v-layout row wrap>
-          <v-flex xs12 md4>
 
-            <v-card class="ma-2">
-              <v-card-text>
- 
-                <v-autocomplete v-model="modelClient" :search-input.sync="search" hint="Choisir un client" :items="items" :readonly="false"
-                  label="Choisir un client" persistent-hint item-text="name" item-value="name">
-                </v-autocomplete>
-                   <v-btn  @click="clientDialog=true" color="primary" dark class="mb-2">New Item</v-btn>
-              </v-card-text>
-            </v-card>
-
-          </v-flex>
-          <v-flex xs12 md4>
-            <v-card class="ma-2">
-              <v-card-text>
-
-                <v-menu ref="invoiceDate" :close-on-content-click="false" v-model="invoiceDate" :nudge-right="40" :return-value.sync="date1"
-                  lazy transition="scale-transition" offset-y full-width min-width="290px">
-                  <v-text-field slot="activator" v-model="date1" label="Invoice Date" append-icon="mdi-calendar" readonly></v-text-field>
-                  <v-date-picker v-model="date1" @input="$refs.invoiceDate.save(date1)"></v-date-picker>
-                </v-menu>
-
-                <v-menu ref="dueDate" :close-on-content-click="false" v-model="dueDate" :nudge-right="40" :return-value.sync="date2"
-                  lazy transition="scale-transition" offset-y full-width min-width="290px">
-                  <v-text-field slot="activator" v-model="date2" label="Due Date" append-icon="mdi-calendar" readonly></v-text-field>
-                  <v-date-picker v-model="date2" @input="$refs.dueDate.save(date2)"></v-date-picker>
-                </v-menu>
-
-                <v-flex xs12>
-                  <v-text-field v-model="form.first" :rules="rules.name" color="purple darken-2" label="Partial/Deposit"
-                    type="number" required></v-text-field>
-                </v-flex>
-
-              </v-card-text>
-
-            </v-card>
-          </v-flex>
-          <v-flex xs12 md4>
-            <v-card class="ma-2">
-              <v-card-text>
-                <v-layout wrap>
-                  <v-flex xs12>
-                    <v-text-field v-model="form.first" :rules="rules.name" color="purple darken-2" label="Invoice #" required></v-text-field>
-                  </v-flex>
-                  <v-flex xs12>
-                    <v-text-field v-model="form.first" :rules="rules.name" color="purple darken-2" label="PO #" required></v-text-field>
-                  </v-flex>
-
-                  <v-flex xs12>
-                    <v-text-field v-model="discountValue" label="Discount" type="number">
-                      <v-fade-transition slot="append">
-                        <v-icon v-if="discountType=='Percent'" class="mdi-18px" style="margin-top: 6px;">mdi-percent</v-icon>
-                        <v-icon v-else class="mdi-18px" style="margin-top: 6px;">mdi-cash-100</v-icon>
-                      </v-fade-transition>
-
-                      <v-menu slot="append-outer" style="top: -6px" offset-y>
-                        <v-btn slot="activator" flat small>
-                          {{discountType}}
-                          <v-icon right>mdi-chevron-down</v-icon>
-                        </v-btn>
-
-                        <v-list>
-                          <v-list-tile v-for="(item, i) in selectDiscount" :key="i" @click="selectDiscountMethod(item)">
-                            <v-list-tile-action style="min-width: 24px;">
-                              <v-icon v-if="item=='Percent'" class="mdi-18px">mdi-percent</v-icon>
-                              <v-icon v-else class="mdi-18px">mdi-cash-100</v-icon>
-                            </v-list-tile-action>
-                            <v-list-tile-title>{{ item }}</v-list-tile-title>
-                          </v-list-tile>
-                        </v-list>
-
-                      </v-menu>
-                    </v-text-field>
-                  </v-flex>
-
-                </v-layout>
-              </v-card-text>
+        <v-layout row wrap id="invoice-header" style="overflow-x: auto;">
+          <v-flex xs12>
+            <v-card class="ma-2 my-4" flat>
+              <invoice-header/>
             </v-card>
           </v-flex>
         </v-layout>
+
+<v-divider></v-divider>
+        <!-- ~~~~~~~~~~ -->
+
+        <v-layout row wrap id="invoice-items" style="overflow-x: auto;">
+          <v-flex xs12>
+            <v-card class="ma-2 my-4" flat>
+              <invoice-items/>
+            </v-card>
+          </v-flex>
+        </v-layout>
+
+<v-divider></v-divider>
+                <!-- ~~~~~~~~~~ -->
+
+        <v-layout row wrap id="invoice-footer" style="overflow-x: auto;">
+          <v-flex xs12>
+            <v-card class="ma-2 my-4" flat>
+              <invoice-footer/>
+            </v-card>
+          </v-flex>
+        </v-layout>
+
       </v-card>
     </template>
-            <v-dialog v-model="clientDialog" max-width="500px">
-           
-              <v-card>
-                <v-card-title>
-                  <span class="headline">Nouveau client </span>
-                </v-card-title>
-                <v-card-text>
-                  <v-container grid-list-md>
-                    <v-layout wrap>
-                      <v-flex xs12 >
-                        <v-text-field v-model="form.client.name" label="Client Name"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 sm6  >
-                        <v-text-field v-model="form.client.contact.first_name" label="Fist Name"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 sm6  >
-                        <v-text-field v-model="form.client.contact.last_name" label="Last Name"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 sm6 >
-                        <v-text-field v-model="form.client.contact.email" label="Email"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 sm6  >
-                        <v-text-field v-model="form.client.contact.phone" label="Phone"></v-text-field>
-                      </v-flex>
-                    </v-layout>
-                  </v-container>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" flat @click.native="closeClientDialog">Cancel</v-btn>
-                  <v-btn color="blue darken-1" flat @click.native="saveClientDialog">Save</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+
+    <template>
+
+      <v-card flat class="ma-4 py-4" style="background: transparent;">
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn color="blue-grey" class="white--text" @click="onSaveDraftClick()">
+            Sauvegarder le brouillon
+            <v-icon right dark>mdi-content-save</v-icon>
+          </v-btn>
+
+          <v-btn color="green" class="white--text" @click="onMarkSentClick()">
+            Marquer comme envoyé
+            <v-icon right dark>mdi-content-save</v-icon>
+          </v-btn>
+
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+
+    </template>
+
   </div>
 </template>
 
 <script>
 var axios = require("axios");
+
+var format = require('date-fns/format')
 
 var path = require('path');
 var electron = require("electron")
@@ -160,30 +100,40 @@ const userDataPath = app.getPath('userData') + sep;
 const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
 var knex = require('knex')({ client: 'sqlite3', connection: { filename: dbFilename }, useNullAsDefault: true });
 
-export default {
-  components: {
+import invoiceHeader from "./invoiceHeader"
+import invoiceItems from "./invoiceItems"
+import invoiceFooter from "./invoiceFooter"
 
-  },
+export default {
+  components: { invoiceHeader, invoiceItems,invoiceFooter },
   data() {
     const defaultForm = Object.freeze({
-      first: '',
+      invoice_number: '',
+      po_number: '',
+      invoice_date: format(new Date(), 'YYYY-MM-DD'),
+      due_date: format(new Date(), 'YYYY-MM-DD'),
+      partial: 0,
+      discount: 0,
+      is_amount_discount: 0,
       last: '',
       bio: '',
       favoriteDiscount: '',
-      client:{contact:{}},
+
+      client: { contact: {} },
       age: null,
       terms: false
     })
     return {
-      clientDialog:false,
-      date1: null,
-      date2: null,
+      clientDialog: false,
+
+
+
       invoiceDate: false,
       dueDate: false,
       isLoading: false,
-      items: [],
+      clientsItems: [],
       modelClient: null,
-      search: null,
+      searchClient: null,
 
       form: Object.assign({}, defaultForm),
       rules: {
@@ -203,50 +153,60 @@ export default {
     }
   },
   watch: {
-    search(val) {
+    searchClient(val) {
       // Items have already been loaded
-      if (this.items.length > 0) return
+      if (this.clientsItems.length > 0) return
 
       this.isLoading = true
 
       // Lazily load input items
       axios.get('https://api.coinmarketcap.com/v2/listings/')
         .then(res => {
-          this.items = res.data.data
+          this.clientsItems = res.data.data
           this.isLoading = false
         })
         .catch(err => {
           console.log(err)
-        }) 
+        })
     }
   },
 
-  beforeCreate(){  
+  beforeCreate() {
   },
-  created() {  
+  created() {
   },
-  destroyed() { 
+  destroyed() {
   },
   mounted() {
 
-  
+
   },
 
 
   methods: {
     selectDiscountMethod(item) {
       this.discountType = item
+      this.form.is_amount_discount = (item == 'Percent') ? 0 : 1
     },
-        closeClientDialog() {
+    closeClientDialog() {
       this.clientDialog = false
-      
+
     },
 
     saveClientDialog() {
-      // this.modelClient=this.form.client
-      this.search=this.form.client.name
-      console.log(this.form.client)
+      var vm = this
+      if (this.clientsItems.length == 0) this.clientsItems.push(this.form.client);
+      setTimeout(() => {
+        vm.searchClient = vm.form.client.name
+      }, 100);
+
       this.closeClientDialog()
+    },
+    onSaveDraftClick() {
+
+    },
+    onMarkSentClick() {
+
     },
   },
 }

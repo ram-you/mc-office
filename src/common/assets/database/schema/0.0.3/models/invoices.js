@@ -10,12 +10,13 @@ module.exports = function invoices(table) {
   table.date('invoice_date');
   table.date('due_date');
 
-
+  table.decimal('partial', 13, 2);
 
 
   table.decimal('amount', 13, 2);
   table.decimal('discount', 13, 2);
-  table.integer('is_amount_discount');
+  // table.integer('is_amount_discount');
+  table.specificType('is_amount_discount', 'tinyint(1)').defaultTo('0');
 
   table.integer('quote_id');
   table.integer('quote_invoice_id');
