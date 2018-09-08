@@ -38,8 +38,8 @@
         <!-- ~~~~~~~~~~ -->
 
         <v-layout row wrap id="invoice-items" style="overflow-x: auto;">
-          <v-flex xs12>
-            <v-card class="ma-2 my-4" flat>
+          <v-flex xs12 >
+            <v-card class="ma-2 my-4" flat style="display: inline-table;">
               <invoice-items/>
             </v-card>
           </v-flex>
