@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-card flat style="height: auto !important;">
     <v-toolbar flat style="border-bottom:1px solid rgba(150, 150, 150, 0.23);">
       <v-breadcrumbs divider="/">
         <v-breadcrumbs-item to="/invoices">
@@ -34,9 +34,7 @@
               <invoice-header/>
             </v-card>
           </v-flex>
-        </v-layout>
-
-<v-divider></v-divider>
+        </v-layout> 
         <!-- ~~~~~~~~~~ -->
 
         <v-layout row wrap id="invoice-items" style="overflow-x: auto;">
@@ -46,9 +44,8 @@
             </v-card>
           </v-flex>
         </v-layout>
-
-<v-divider></v-divider>
-                <!-- ~~~~~~~~~~ -->
+ 
+        <!-- ~~~~~~~~~~ -->
 
         <v-layout row wrap id="invoice-footer" style="overflow-x: auto;">
           <v-flex xs12>
@@ -83,7 +80,7 @@
 
     </template>
 
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -105,7 +102,7 @@ import invoiceItems from "./invoiceItems"
 import invoiceFooter from "./invoiceFooter"
 
 export default {
-  components: { invoiceHeader, invoiceItems,invoiceFooter },
+  components: { invoiceHeader, invoiceItems, invoiceFooter },
   data() {
     const defaultForm = Object.freeze({
       invoice_number: '',
