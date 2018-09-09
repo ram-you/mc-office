@@ -199,7 +199,6 @@ function createPdfViewerWindow(file) {
     pdfViewerWindow.show()
     pdfViewerWindow.focus()
   })
-
   return pdfViewerWindow
 }
 
@@ -213,8 +212,8 @@ function createPrintWorkerWindow() {
   return printWorkerWindow
 }
 
-ipcMain.on("printPDF", (event, ID, content, theme) => {
-  printWorkerWindow.webContents.send("printPDF", ID, content, theme);
+ipcMain.on("printPDF", (event, ID, content, theme, silent = false) => {
+  printWorkerWindow.webContents.send("printPDF", ID, content, theme, silent);
 });
 
 ipcMain.on("print", (event, ID, content, theme, printer) => {
@@ -222,7 +221,7 @@ ipcMain.on("print", (event, ID, content, theme, printer) => {
 });
 
 
-ipcMain.on("readyToPrintPDF", (event, ID) => {
+ipcMain.on("readyToPrintPDF", (event, ID, silent = false) => {
   let pdfPathFolder = userDataPath + 'billing' + path.sep + 'invoices' + path.sep
   fse.ensureDirSync(pdfPathFolder)
   const pdfPath = pdfPathFolder + 'invoice-' + ID + '.pdf';
@@ -236,15 +235,18 @@ ipcMain.on("readyToPrintPDF", (event, ID) => {
   }
   printWorkerWindow.webContents.printToPDF(printOptions, function(error, data) {
     if (error) throw error
-    fs.writeFile(pdfPath, data, function(error) {
-      if (error) {
-        throw error
-      }
 
-      // shell.openItem(pdfPath)
-      pdfViewerWindow = createPdfViewerWindow(pdfPath)
-      mainWindow.send('wrote-pdf', pdfPath)
-    })
+    if (silent) {
+      mainWindow.send('data-pdf', data)
+    } else {
+      fs.writeFile(pdfPath, data, function(error) {
+        if (error) { throw error }
+        // shell.openItem(pdfPath)
+        pdfViewerWindow = createPdfViewerWindow(pdfPath)
+        mainWindow.send('wrote-pdf', pdfPath)
+      })
+    }
+
   })
 });
 

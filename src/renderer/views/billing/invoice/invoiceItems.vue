@@ -23,8 +23,8 @@
 
     <transition-group name="scale-transition" tag="div" style="width:100%">
 
-      <v-layout v-for="item in items" :key='item.id' style="overflow-x: auto;min-width: 1200px; "
-        class="mx-2 py-2" @mouseover="item.overed=true" @mouseleave="item.overed=false">
+      <v-layout v-for="item in items" :key='item.id' style="overflow-x: auto;min-width: 1200px; " class="mx-2 py-2"
+        @mouseover="item.overed=true" @mouseleave="item.overed=false">
 
         <v-text-field label="Item" :value="item.item" solo hide-details flat class="px-2" style="width:15%;"></v-text-field>
         <v-text-field label="Description" :value="item.description" solo hide-details flat class="px-2" style="width:50%;"></v-text-field>
@@ -40,19 +40,22 @@
       </v-layout>
     </transition-group>
 
-    <v-layout row wrap style="width: 100%">
-      <v-btn @click="addNewLine()"> New Line</v-btn> grandTotal= {{grandTotal}}
+    <v-layout row wrap style="width: 100%" class="pa-4">
+      <v-btn @click="addNewLine()" dark color="orange"> New Line</v-btn>
     </v-layout>
   </v-layout>
 </template>
 
 <script>
 export default {
+  props: {
+    form: { type: Object, required: false, default: {} }
+  },
   data() {
 
     return {
+      childData: {},
       items: [],
-      grandTotal: 0,
       emptyItem: {
         id: 0,
         item: '',
@@ -73,9 +76,12 @@ export default {
   },
   destroyed() {
   },
+  beforeMount() {
+    this.childData = Object.assign({}, this.form)
+  },
   mounted() {
-
-
+    var vm = this;
+    this.$root.$on("updateChilds", function (data) { vm.childData = Object.assign({}, data); vm.updateGrandTotal(true) });
   },
   methods: {
     addNewLine() {
@@ -98,12 +104,21 @@ export default {
 
       this.updateGrandTotal()
     },
-    updateGrandTotal() {
-      var grandTotal = 0
+    updateGrandTotal(oneTime = false) {
+      var subtotal = 0
       for (var i = 0; i < this.items.length; i++) {
-        grandTotal += this.items[i].line_total
+        subtotal += this.items[i].line_total
       }
-      this.grandTotal = grandTotal
+      this.childData.totals.subtotal = subtotal;
+      if (this.childData.is_amount_discount == 1) {
+        this.childData.totals.discount = this.childData.discount;
+      } else {
+        this.childData.totals.discount = this.childData.discount * subtotal / 100;
+      }
+      this.childData.totals.total = subtotal - this.childData.totals.discount;
+
+      if (!oneTime)
+        this.$emit('interface', this.childData)
     }
   }
 }

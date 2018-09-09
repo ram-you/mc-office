@@ -519,12 +519,13 @@ export default {
       ]
     },
     createPDF(item) {
+      var vm=this;
       this.selectedInvoiceID = item.id;
       this.selectedInvoiceNumber = item.number;
 
       setTimeout(() => {
         var content = document.getElementById("billing-container").parentNode.innerHTML
-        ipcRenderer.send("printPDF", item.number, content, this.theme);
+        ipcRenderer.send("printPDF", item.number, content, vm.theme, false);
       }, 100);
 
 

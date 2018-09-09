@@ -19,17 +19,15 @@
 
     <header-section v-if="isConnected"></header-section>
 
-    <v-content v-if="isConnected">
-      <!-- <transition-slide-up :duration="300"> -->
-      <transition-page>
-        <router-view/>
-      </transition-page>
-      <!-- </transition-slide-up> -->
+    <v-content>
 
-    </v-content>
+      <v-container style="padding: 0 0 24px 0 !important; max-width: 100% !important;">
+        <transition-page>
+          <router-view v-if="isConnected" />
+        </transition-page>
+        <login-form v-if="!isConnected && isAppInited" />
+      </v-container>
 
-    <v-content v-else>
-      <login-form v-if="isAppInited" />
     </v-content>
 
     <footer-section></footer-section>
@@ -120,7 +118,7 @@ export default {
           vm.snackbar_timeout = 10000;
           vm.snackbar_text = "La base de données a été initialisé avec succès.";
         }
-        
+
 
       }
     })
@@ -168,13 +166,6 @@ export default {
 
 
 <style>
-::before,
-::after {
-  vertical-align: unset;
-}
-.v-breadcrumbs__item--disabled {
-  color: inherit;
-}
 .application {
   -webkit-font-smoothing: antialiased;
   text-align: center;
@@ -194,6 +185,19 @@ export default {
 .v-card {
   text-align: initial;
 }
+
+::before,
+::after {
+  vertical-align: unset;
+}
+.v-breadcrumbs__item--disabled {
+  color: inherit;
+}
+
+.heightAuto {
+  height: auto !important;
+}
+
 .hidden-div {
   display: none !important;
   height: 0px !important;

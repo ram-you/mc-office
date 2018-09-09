@@ -1,5 +1,6 @@
 <template>
-  <v-card flat style="height: auto !important;">
+  <div class="heightAuto">
+
     <v-toolbar flat style="border-bottom:1px solid rgba(150, 150, 150, 0.23);">
       <v-breadcrumbs divider="/">
         <v-breadcrumbs-item to="/invoices">
@@ -25,70 +26,76 @@
 
     <!-- ========================= -->
 
-    <template>
-      <v-card class="ma-4">
+    <v-card class="ma-4">
 
-        <v-layout row wrap id="invoice-header" style="overflow-x: auto;">
-          <v-flex xs12>
-            <v-card class="ma-2 my-4" flat>
-              <invoice-header/>
-            </v-card>
-          </v-flex>
-        </v-layout> 
-        <!-- ~~~~~~~~~~ -->
+      <v-layout row wrap id="invoice-header" style="overflow-x: auto;">
+        <v-flex xs12>
+          <v-card class="ma-2 my-4" flat>
+            <invoice-header :form="form" @interface="handleFcAfterDataBack" />
+          </v-card>
+        </v-flex>
+      </v-layout>
+      <!-- ~~~~~~~~~~ -->
 
-        <v-layout row wrap id="invoice-items" style="overflow-x: auto;">
-          <v-flex xs12 >
-            <v-card class="ma-2 my-4" flat style="display: inline-table;">
-              <invoice-items/>
-            </v-card>
-          </v-flex>
-        </v-layout>
- 
-        <!-- ~~~~~~~~~~ -->
+      <v-layout row wrap id="invoice-items" style="overflow-x: auto;">
+        <v-flex xs12>
+          <v-card class="ma-2 my-4" flat style="display: inline-table;">
+            <invoice-items :form="form" @interface="handleFcAfterDataBack" />
+          </v-card>
+        </v-flex>
+      </v-layout>
 
-        <v-layout row wrap id="invoice-footer" style="overflow-x: auto;">
-          <v-flex xs12>
-            <v-card class="ma-2 my-4" flat>
-              <invoice-footer/>
-            </v-card>
-          </v-flex>
-        </v-layout>
+      <!-- ~~~~~~~~~~ -->
 
-      </v-card>
-    </template>
+      <v-layout row wrap id="invoice-footer" style="overflow-x: auto;">
+        <v-flex xs12>
+          <v-card class="ma-2 my-4" flat>
+            <invoice-footer :form="form" @interface="handleFcAfterDataBack" />
+          </v-card>
+        </v-flex>
+      </v-layout>
 
-    <template>
+    </v-card>
 
-      <v-card flat class="ma-4 py-4" style="background: transparent;">
-        <v-card-actions>
-          <v-spacer></v-spacer>
+    <v-card flat class="ma-4 py-4" style="background: transparent;">
+      <v-card-actions>
+        <v-spacer></v-spacer>
 
-          <v-btn color="blue-grey" class="white--text" @click="onSaveDraftClick()">
-            Sauvegarder le brouillon
-            <v-icon right dark>mdi-content-save</v-icon>
-          </v-btn>
+        <v-btn color="blue-grey" class="white--text" @click="onSaveDraftClick()">
+          Sauvegarder le brouillon
+          <v-icon right dark>mdi-content-save</v-icon>
+        </v-btn>
 
-          <v-btn color="green" class="white--text" @click="onMarkSentClick()">
-            Marquer comme envoyé
-            <v-icon right dark>mdi-content-save</v-icon>
-          </v-btn>
+        <v-btn color="green" class="white--text" @click="onMarkSentClick()">
+          Marquer comme envoyé
+          <v-icon right dark>mdi-content-save</v-icon>
+        </v-btn>
 
-          <v-spacer></v-spacer>
-        </v-card-actions>
-      </v-card>
+        <v-spacer></v-spacer>
+      </v-card-actions>
+    </v-card>
+    <!-- ========================================= -->
+    <div class="hidden-div">
+      <invoice-detail :id="1" :number="form.invoice_number"></invoice-detail>
+    </div>
+    <v-card class="ma-4 pa-1">
 
-    </template>
+      <webview id="foo" :src="'data:application/pdf;base64, ' + (pdfString)" style="display:inline-flex; width:100%; height:100vh"
+        disablewebsecurity plugins></webview>
 
-  </v-card>
+    </v-card>
+  </div>
 </template>
 
 <script>
 var axios = require("axios");
+const Store = require('electron-store');
+const _store = new Store();
 
 var format = require('date-fns/format')
 
 var path = require('path');
+const { ipcRenderer } = require('electron')
 var electron = require("electron")
 const remote = electron.remote;
 const app = remote.app;
@@ -101,8 +108,24 @@ import invoiceHeader from "./invoiceHeader"
 import invoiceItems from "./invoiceItems"
 import invoiceFooter from "./invoiceFooter"
 
+import InvoiceDetail from "./detail.vue"
+
+function Uint8ToBase64(u8Arr) {
+  var CHUNK_SIZE = 0x8000; //arbitrary number
+  var index = 0;
+  var length = u8Arr.length;
+  var result = '';
+  var slice;
+  while (index < length) {
+    slice = u8Arr.subarray(index, Math.min(index + CHUNK_SIZE, length));
+    result += String.fromCharCode.apply(null, slice);
+    index += CHUNK_SIZE;
+  }
+  return btoa(result);
+}
+
 export default {
-  components: { invoiceHeader, invoiceItems, invoiceFooter },
+  components: { invoiceHeader, invoiceItems, invoiceFooter, InvoiceDetail },
   data() {
     const defaultForm = Object.freeze({
       invoice_number: '',
@@ -115,7 +138,8 @@ export default {
       last: '',
       bio: '',
       favoriteDiscount: '',
-
+      lines: [],
+      totals: {},
       client: { contact: {} },
       age: null,
       terms: false
@@ -123,7 +147,7 @@ export default {
     return {
       clientDialog: false,
 
-
+      pdfString: '',
 
       invoiceDate: false,
       dueDate: false,
@@ -145,26 +169,25 @@ export default {
       selectDiscount: ['Percent', 'Amount'],
       snackbar: false,
       terms: false,
-      defaultForm
+      defaultForm,
+      theme: 'default',
 
     }
   },
+  computed: {
+    connectedUserName() { return this.$store.state.User.user ? this.$store.state.User.user.username : null; },
+
+
+  },
   watch: {
     searchClient(val) {
-      // Items have already been loaded
       if (this.clientsItems.length > 0) return
-
       this.isLoading = true
+      axios.get('https://api.coinmarketcap.com/v2/listings/').then(res => {
+        this.clientsItems = res.data.data
+        this.isLoading = false
+      }).catch(err => { console.log(err) });
 
-      // Lazily load input items
-      axios.get('https://api.coinmarketcap.com/v2/listings/')
-        .then(res => {
-          this.clientsItems = res.data.data
-          this.isLoading = false
-        })
-        .catch(err => {
-          console.log(err)
-        })
     }
   },
 
@@ -175,36 +198,40 @@ export default {
   destroyed() {
   },
   mounted() {
+    var vm = this
+    var connectedUserName = this.connectedUserName;
+    var userTheme = _store.get('users.' + connectedUserName + '.invoice.theme') || 'default'
+    this.theme = userTheme;
 
+    setTimeout(() => {
+      var content = document.getElementById("billing-container").parentNode.innerHTML
+      ipcRenderer.send("printPDF", vm.form.invoice_number, content, vm.theme, true);
+    }, 100);
+
+
+    ipcRenderer.on("data-pdf", (event, data) => {
+      console.log(" PDF DATA regenerated.....");
+      vm.pdfString = Uint8ToBase64(data)
+    });
 
   },
 
 
   methods: {
-    selectDiscountMethod(item) {
-      this.discountType = item
-      this.form.is_amount_discount = (item == 'Percent') ? 0 : 1
-    },
-    closeClientDialog() {
-      this.clientDialog = false
+    handleFcAfterDataBack(data) {
+      var vm = this;
+      this.form = Object.assign({}, data);
+      console.log(" this.form", this.form);
+      this.$root.$emit("updateChilds", data);
 
-    },
-
-    saveClientDialog() {
-      var vm = this
-      if (this.clientsItems.length == 0) this.clientsItems.push(this.form.client);
       setTimeout(() => {
-        vm.searchClient = vm.form.client.name
+        var content = document.getElementById("billing-container").parentNode.innerHTML
+        ipcRenderer.send("printPDF", vm.form.invoice_number, content, vm.theme, true);
       }, 100);
 
-      this.closeClientDialog()
-    },
-    onSaveDraftClick() {
+    }
 
-    },
-    onMarkSentClick() {
-
-    },
   },
 }
 </script>
+ 

@@ -26,7 +26,7 @@
       }
     }
 
-    ipcRenderer.on("printPDF", (event, ID, content, theme) => {
+    ipcRenderer.on("printPDF", (event, ID, content, theme, silent) => {
       document.body.innerHTML = content;
 
       let assetsFolder = isDevelopment ? ('./theme/' + theme + '/') : ('/../../../assets/billing/theme/' + theme + '/')
@@ -44,7 +44,7 @@
         document.getElementsByTagName("head")[0].appendChild(element);
       }, 100);
       setTimeout(() => {
-        ipcRenderer.send("readyToPrintPDF", ID);
+        ipcRenderer.send("readyToPrintPDF", ID, silent);
       }, 200);
 
     });
