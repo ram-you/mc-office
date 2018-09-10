@@ -23,14 +23,14 @@
 
     <transition-group name="scale-transition" tag="div" style="width:100%">
 
-      <v-layout v-for="item in items" :key='item.id' style="overflow-x: auto;min-width: 1200px; " class="mx-2 py-2"
-        @mouseover="item.overed=true" @mouseleave="item.overed=false">
+      <v-layout v-for="item in childData.invoice_items" :key='item.id' style="overflow-x: auto;min-width: 1200px; "
+        class="mx-2 py-2" @mouseover="item.overed=true" @mouseleave="item.overed=false">
 
-        <v-text-field label="Item" :value="item.item" solo hide-details flat class="px-2" style="width:15%;"></v-text-field>
-        <v-text-field label="Description" :value="item.description" solo hide-details flat class="px-2" style="width:50%;"></v-text-field>
-        <v-text-field label="Unit Cost" type="number" v-model="item.unit_cost" @input="updateLine(item)" solo
+        <v-text-field label="Item" v-model="item.item"  @input="updateLine($event, item)" solo hide-details flat class="px-2" style="width:15%;"></v-text-field>
+        <v-text-field label="Description" v-model="item.description"  @input="updateLine($event, item)" solo hide-details flat class="px-2" style="width:50%;" ></v-text-field>
+        <v-text-field label="Unit Cost" type="number" v-model="item.unit_cost" @input="updateLine($event, item)" solo  
           hide-details flat class="px-2" style="width:12%;"></v-text-field>
-        <v-text-field label="Quantity" type="number" v-model="item.quantity" @input="updateLine(item)" solo hide-details
+        <v-text-field label="Quantity" type="number" v-model="item.quantity" @input="updateLine($event, item)" solo   hide-details
           flat class="px-2" style="width:10%;"></v-text-field>
         <v-text-field label="Line Total" type="number" :value="item.line_total" readonly solo hide-details flat
           class="px-2 align-right" style="width:13%;"></v-text-field>
@@ -47,6 +47,8 @@
 </template>
 
 <script>
+
+import debounce from "lodash/debounce";
 export default {
   props: {
     form: { type: Object, required: false, default: {} }
@@ -55,7 +57,6 @@ export default {
 
     return {
       childData: {},
-      items: [],
       emptyItem: {
         id: 0,
         item: '',
@@ -72,12 +73,14 @@ export default {
 
   },
   created() {
+    this.childData = Object.assign({}, this.form)
+    console.log(" this.childData================>", this.childData)
     this.addNewLine()
   },
   destroyed() {
   },
   beforeMount() {
-    this.childData = Object.assign({}, this.form)
+
   },
   mounted() {
     var vm = this;
@@ -86,28 +89,36 @@ export default {
   methods: {
     addNewLine() {
       var newItem = Object.assign({}, this.emptyItem)
-      newItem.id = this.items.length + 1
-      this.items.push(newItem)
+      newItem.id = this.childData.invoice_items.length + 1
+      this.childData.invoice_items.push(newItem)
     },
     deleteLine(id) {
       var vm = this
-      this.items = this.items.filter(function (obj) {
+      this.childData.invoice_items = this.childData.invoice_items.filter(function (obj) {
         return obj.id !== id;
       });
       this.updateGrandTotal();
       setTimeout(() => {
-        if (vm.items.length == 0) vm.addNewLine()
+        if (vm.childData.invoice_items.length == 0) vm.addNewLine()
       }, 100);
     },
-    updateLine(item) {
-      item.line_total = item.quantity * item.unit_cost;
+    // updateLine(item) {
+    //   item.line_total = item.quantity * item.unit_cost;
 
-      this.updateGrandTotal()
-    },
+    //   this.updateGrandTotal()
+    // },
+
+   updateLine: debounce(function (event,item) {
+      var vm = this; 
+       item.line_total = item.quantity * item.unit_cost;
+
+      vm.updateGrandTotal()
+    }, 500),
+
     updateGrandTotal(oneTime = false) {
       var subtotal = 0
-      for (var i = 0; i < this.items.length; i++) {
-        subtotal += this.items[i].line_total
+      for (var i = 0; i < this.childData.invoice_items.length; i++) {
+        subtotal += this.childData.invoice_items[i].line_total
       }
       this.childData.totals.subtotal = subtotal;
       if (this.childData.is_amount_discount == 1) {

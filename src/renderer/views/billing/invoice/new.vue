@@ -76,12 +76,26 @@
     </v-card>
     <!-- ========================================= -->
     <div class="hidden-div">
-      <invoice-detail :id="1" :number="form.invoice_number"></invoice-detail>
+      <invoice-detail :invoiceData="form"></invoice-detail>
     </div>
-    <v-card class="ma-4 pa-1">
+    <v-card class="ma-4 pb-2">
 
-      <webview id="foo" :src="'data:application/pdf;base64, ' + (pdfString)" style="display:inline-flex; width:100%; height:100vh"
-        disablewebsecurity plugins></webview>
+      <v-toolbar flat style="border-bottom:1px solid rgba(150, 150, 150, 0.23);">
+        <span class="subheading">Aperçu (Preview) </span>
+        <v-spacer></v-spacer>
+        <div class="mx-1">
+          <v-btn icon :disabled="isRenderingPdf">
+            <v-icon class="grey--text text--darken-2" @click="toPDF()">mdi-reload</v-icon>
+          </v-btn>
+          <v-btn icon>
+            <v-icon class="grey--text text--darken-2" @click="toPrinter()">mdi-printer</v-icon>
+          </v-btn>
+        </div>
+
+      </v-toolbar>
+
+      <webview id="pdf-viewer" :src="'data:application/pdf;base64, ' + (pdfString)" style="display:flex; width:100%; height:100vh"
+        autosize plugins></webview>
 
     </v-card>
   </div>
@@ -108,7 +122,7 @@ import invoiceHeader from "./invoiceHeader"
 import invoiceItems from "./invoiceItems"
 import invoiceFooter from "./invoiceFooter"
 
-import InvoiceDetail from "./detail.vue"
+import InvoiceDetail from "./itemDetails"
 
 function Uint8ToBase64(u8Arr) {
   var CHUNK_SIZE = 0x8000; //arbitrary number
@@ -138,7 +152,7 @@ export default {
       last: '',
       bio: '',
       favoriteDiscount: '',
-      lines: [],
+      invoice_items: [],
       totals: {},
       client: { contact: {} },
       age: null,
@@ -148,7 +162,7 @@ export default {
       clientDialog: false,
 
       pdfString: '',
-
+      isRenderingPdf: false,
       invoiceDate: false,
       dueDate: false,
       isLoading: false,
@@ -210,6 +224,7 @@ export default {
 
 
     ipcRenderer.on("data-pdf", (event, data) => {
+      vm.isRenderingPdf = false;
       console.log(" PDF DATA regenerated.....");
       vm.pdfString = Uint8ToBase64(data)
     });
@@ -224,12 +239,45 @@ export default {
       console.log(" this.form", this.form);
       this.$root.$emit("updateChilds", data);
 
+      vm.toPDF()
+    },
+
+
+
+    getSystemPrinters(event) {
+      const win = remote.getCurrentWindow()
+      return map(win.webContents.getPrinters().slice(0), (p) => {
+        var p2 = Object.assign({}, p);
+        delete p2.options
+        return p2
+      });
+    },
+
+    getSystemDefaultPrinter(event) {
+      const printers = this.getSystemPrinters()
+      return Object.assign({}, printers.find(obj => { return obj.isDefault }));
+    },
+
+    getUserDefaultPrinter() {
+      var connectedUserName = this.connectedUserName
+      var defaultPrinter = _store.get('users.' + connectedUserName + '.settings.defaults.printer') || _store.get('global.settings.defaults.printer')
+      return defaultPrinter || this.getSystemDefaultPrinter()
+    },
+
+    toPDF() {
+      var vm = this
+      this.isRenderingPdf = true
       setTimeout(() => {
         var content = document.getElementById("billing-container").parentNode.innerHTML
         ipcRenderer.send("printPDF", vm.form.invoice_number, content, vm.theme, true);
       }, 100);
 
-    }
+    },
+    toPrinter() {
+      var content = document.getElementById("billing-container").parentNode.innerHTML;
+      var printer = this.getUserDefaultPrinter() || { name: '' }
+      ipcRenderer.send("print", this.form.invoice_number, content, this.theme, printer.name);
+    },
 
   },
 }

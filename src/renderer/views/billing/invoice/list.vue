@@ -188,7 +188,7 @@ import { remote } from 'electron'
 const app = remote.app
 let dbWorkerWindow = remote.getGlobal('dbWorkerWindow');
 
-import InvoiceDetail from "./detail.vue"
+import InvoiceDetail from "./itemDetails"
 import UploadButton from 'vuetify-upload-button';
 export default {
   components: { 'upload-btn': UploadButton, InvoiceDetail },

@@ -6,11 +6,11 @@
         <img :src="base64">
       </div>
       <div id="company">
-        <h2 class="name">Company Name</h2>
-        <div>455 Foggy Heights, AZ 85004, US</div>
-        <div>(602) 519-0450</div>
+        <h2 class="name">MEDIACEPT Technology</h2>
+        <div>Boulevard des Palmiers, Sousse-Khézama, Sousse</div>
+        <div>+216 73 274 987</div>
         <div>
-          <a href="mailto:company@example.com">company@example.com</a>
+          <a href="mailto:contact@mediacept.com">contact@mediacept.com</a>
         </div>
       </div>
 
@@ -19,39 +19,44 @@
       <div id="details" class="clearfix">
         <div id="client">
           <div class="to">INVOICE TO:</div>
-          <h2 class="name">John Doe</h2>
-          <div class="address">796 Silver Harbour, TX 79273, US</div>
+          <h2 class="name">{{invoice.client.name}}</h2>
+          <div class="address">{{invoice.client.address1}} {{invoice.client.address2}} {{invoice.client.city}} {{invoice.client.state}}
+            {{invoice.client.postal_code}}
+          </div>
           <div class="email">
-            <a href="mailto:john@example.com">john@example.com</a>
+            <a :href="'mailto:'+invoice.client.contact.email">{{invoice.client.contact.email}}</a>
           </div>
         </div>
         <div id="invoice">
-          <h1>INVOICE {{invoice.number}}</h1>
-          <div class="date">Date of Invoice: {{invoice.date}}</div>
-          <div class="date">Due Date: {{invoice.due}}</div>
+          <h1>INVOICE {{invoice.invoice_number}}</h1>
+          <div class="date">Date of Invoice: {{invoice.invoice_date}}</div>
+          <div class="date">Due Date: {{invoice.due_date}}</div>
         </div>
       </div>
       <table border="0" cellspacing="0" cellpadding="0">
+        <!-- === -->
         <thead>
           <tr>
             <th class="no">#</th>
+             <th class="item">ARTICLE</th>
             <th class="desc">DESCRIPTION</th>
             <th class="unit">UNIT PRICE</th>
             <th class="qty">QUANTITY</th>
             <th class="total">TOTAL</th>
           </tr>
         </thead>
+        <!-- === -->
         <tbody>
-          <tr>
-            <td class="no">01</td>
-            <td class="desc">
-              <h3>Website Design</h3>Creating a recognizable design solution based on the company's existing
-              visual identity</td>
-            <td class="unit">$40.00</td>
-            <td class="qty">30</td>
-            <td class="total">$1,200.00</td>
+          <tr v-for="(item,id) in invoice.invoice_items " :key="id">
+            <td class="no">{{id}}</td>
+              <td class="item"> {{item.item}}</td>
+            <td class="desc"> {{item.description}}</td>
+            <td class="unit">{{item.unit_cost}}</td>
+            <td class="qty">{{item.quantity}}</td>
+            <td class="total">{{item.line_total}}</td>
           </tr>
-          <tr>
+
+          <!-- <tr>
             <td class="no">02</td>
             <td class="desc">
               <h3>Website Development</h3>Developing a Content Management System-based Website</td>
@@ -66,25 +71,27 @@
             <td class="unit">$40.00</td>
             <td class="qty">20</td>
             <td class="total">$800.00</td>
-          </tr>
+          </tr> -->
         </tbody>
+        <!-- === -->
         <tfoot>
           <tr>
-            <td colspan="2"></td>
+            <td colspan="3"></td>
             <td colspan="2">SUBTOTAL</td>
-            <td>$5,200.00</td>
+            <td>{{invoice.totals.subtotal}}</td>
           </tr>
           <tr>
-            <td colspan="2"></td>
+            <td colspan="3"></td>
             <td colspan="2">TAX 25%</td>
             <td>$1,300.00</td>
           </tr>
           <tr>
-            <td colspan="2"></td>
+            <td colspan="3"></td>
             <td colspan="2">GRAND TOTAL</td>
-            <td>$6,500.00</td>
+            <td>{{invoice.totals.total}}</td>
           </tr>
         </tfoot>
+        <!-- === -->
       </table>
       <div id="thanks">Thank you!</div>
       <div id="notices">
@@ -101,12 +108,12 @@
 const Store = require('electron-store');
 const _store = new Store();
 
-const fs = require('fs')
-const path = require('path')
-const isDevelopment = process.env.NODE_ENV !== 'production';
+
 
 export default {
-  props: ['id', 'number',],
+  props: {
+    invoiceData: { type: Object, required: false, default: {} }
+  },
   data() {
     return {
       url2pdf: false,
@@ -121,28 +128,24 @@ export default {
 
   },
   watch: {
-    id() {
-      this.invoice.id = this.id
+    invoiceData() {
+      this.invoice = Object.assign({}, this.invoiceData)
     },
-    number() {
-      this.invoice.number = this.number
-    },
+
 
 
   },
+  beforeMount() {
+    this.invoice = Object.assign({}, this.invoiceData)
+  },
   mounted() {
     var vm = this
-    this.invoice = {
-      id: this.id,
-      number: this.number,
-      date: "2018.07.20",
-      due: "2018.07.21",
-    }
+
     var connectedUserName = this.connectedUserName;
     var invoiceUserTheme = _store.get('users.' + connectedUserName + '.invoice.theme') || 'default'
     this.theme = invoiceUserTheme
     require("../../../../common/assets/billing/theme/" + invoiceUserTheme + "/index.css")
-    this.generateBase64() 
+    this.generateBase64()
 
   },
   methods: {
@@ -165,7 +168,7 @@ export default {
       }
     },
 
- 
+
 
   },
 

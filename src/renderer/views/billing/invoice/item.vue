@@ -54,7 +54,7 @@ const path = require('path')
 const { shell, ipcRenderer, ipcMain } = require('electron')
 const remote = require("electron").remote
 
-import InvoiceDetail from "./detail.vue"
+import InvoiceDetail from "./itemDetails"
 import InvoiceSetup from "./setup.vue"
 import { setTimeout } from 'timers';
 
@@ -62,15 +62,11 @@ export default {
   components: { InvoiceSetup, InvoiceDetail },
   data() {
     return {
-      drawer: true,
-      items: [
-        { title: 'Home', icon: 'dashboard' },
-        { title: 'About', icon: 'question_answer' }
-      ],
-      right: null,
+    
+     
+     
 
-
-      url2pdf: false,
+ 
       theme: 'default',
       invoice: {},
       invoiceID: this.$route.params.id,

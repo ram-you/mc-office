@@ -49,7 +49,8 @@
           <v-card-text>
             <v-layout wrap>
               <v-flex xs12>
-                <v-text-field v-model="childData.invoice_number" :rules="rules.name" label="Invoice #" @input="emitFormChange()" required></v-text-field>
+                <v-text-field v-model="childData.invoice_number" :rules="rules.name" label="Invoice #" @input="emitFormChange()"
+                  required></v-text-field>
               </v-flex>
               <v-flex xs12>
                 <v-text-field v-model="childData.po_number" :rules="rules.name" label="PO #" required></v-text-field>
@@ -127,7 +128,7 @@
 
 <script>
 var axios = require("axios");
-
+import debounce from "lodash/debounce";
 var format = require('date-fns/format')
 
 var path = require('path');
@@ -204,14 +205,18 @@ export default {
     this.childData = Object.assign({}, this.form)
   },
   mounted() {
- 
+
   },
 
 
   methods: {
-    emitFormChange() {
-      this.$emit('interface', this.childData)
-    },
+
+
+    emitFormChange: debounce(function (event) {
+      var vm = this;
+      vm.$emit('interface', vm.childData)
+    }, 500),
+    
     selectDiscountMethod(item) {
       this.discountType = item
       this.childData.is_amount_discount = (item == 'Percent') ? 0 : 1;

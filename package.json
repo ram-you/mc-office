@@ -108,8 +108,7 @@
     "directories": {
       "output": "dist_electron"
     },
-    "extraResources": [
-      {
+    "extraResources": [{
         "from": "./src/common/locales",
         "to": "locales"
       },
@@ -121,14 +120,12 @@
     "copyright": "Copyright © 2018 MEDIACEPT Technology",
     "win": {
       "icon": "./src/common/assets/icons/icon.ico",
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "ia32"
-          ]
-        }
-      ]
+      "target": [{
+        "target": "nsis",
+        "arch": [
+          "ia32"
+        ]
+      }]
     },
     "nsis": {
       "allowToChangeInstallationDirectory": true,
@@ -143,8 +140,7 @@
       "icon": "./src/common/assets/icons",
       "category": "Office",
       "artifactName": "${productName}-${version}.${ext}",
-      "target": [
-        {
+      "target": [{
           "target": "deb",
           "arch": [
             "x64"

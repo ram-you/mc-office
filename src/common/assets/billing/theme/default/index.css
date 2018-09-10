@@ -124,10 +124,17 @@
   color: #FFFFFF;
   font-size: 1.6em;
   background: #57B223;
+  width:10%;
+}
+
+.billing-container table .item {
+  text-align: left;
+  background: #DDDDDD;
 }
 
 .billing-container table .desc {
   text-align: left;
+  width:50%;
 }
 
 .billing-container table .unit {
