@@ -11,22 +11,25 @@ module.exports = function invoices(table) {
   table.date('due_date');
 
   table.decimal('partial', 13, 2);
+  table.date('partial_due_date');
+  table.date('start_date');
 
 
   table.decimal('amount', 13, 2);
-  table.decimal('discount', 13, 2);
-  // table.integer('is_amount_discount');
+  table.decimal('discount', 13, 2); 
   table.specificType('is_amount_discount', 'tinyint(1)').defaultTo('0');
 
   table.integer('quote_id');
   table.integer('quote_invoice_id');
 
-  table.text('terms');
+
  
 
   table.text('invoice_footer');
-  
+  table.text('terms');
   table.text('private_notes');
+  table.text('public_notes');
+
 
   table.timestamps(true, true);
 

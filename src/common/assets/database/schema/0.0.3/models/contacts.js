@@ -5,8 +5,8 @@
 
 module.exports = function contacts(table) {
   table.increments('id').primary();
-
-  table.integer('is_primary').defaultTo('0');
+ 
+  table.specificType('is_primary', 'tinyint(1)').defaultTo('0');
   table.string('first_name');
   table.string('last_name');
   table.string('email');

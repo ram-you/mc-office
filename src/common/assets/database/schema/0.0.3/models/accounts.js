@@ -3,19 +3,41 @@
 //
 
 module.exports = function accounts(table) {
-  table.increments('id').primary();
-  table.string('invoice_number').notNullable();
+  table.increments('id').primary(); 
+  table.string('id_number');
+  table.string('vat_number');
+  
+ 
 
-  table.string('po_number').comment('This is the Purchase Order Number');
-  table.date('invoice_date');
-  table.date('due_date');
 
-  table.integer('is_amount_discount');
+  table.string('name');
+  table.string('address1');
+  table.string('address2');
+  table.string('city');
+  table.string('state');
+  table.string('postal_code');
+
+
+  table.string('work_phone');
+  table.text('private_notes');
+  table.string('website');
+
+  table.integer('size_id');
+
+  table.integer('is_deleted').defaultTo('0');
+
+  table.string('shipping_address1');
+  table.string('shipping_address2');
+  table.string('shipping_city');
+  table.string('shipping_state');
+  table.string('shipping_postal_code');
+
+  table.string('website');
+
+  table.text('custom_messages');
+
   table.text('invoice_footer');
-
-  table.decimal('amount', 13, 2);
-
-
+  table.text('invoice_labels');
   
 
   table.timestamps(true, true);
@@ -24,14 +46,12 @@ module.exports = function accounts(table) {
   
 
 
-  table.integer('client_id').unsigned().notNullable();
-  table.foreign('client_id').references('id').inTable('clients');
+  table.integer('language_id').unsigned().notNullable();
+  table.foreign('language_id').references('id').inTable('languages');
 
 
 
   table.integer('currency_id').unsigned().notNullable();
   table.foreign('currency_id').references('id').inTable('currencies');
 
-  table.integer('user_id').unsigned().notNullable();
-  table.foreign('user_id').references('id').inTable('users');
 }

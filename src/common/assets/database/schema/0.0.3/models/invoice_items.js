@@ -5,7 +5,7 @@
  module.exports = function invoice_items(table) {
    table.increments('id').primary();
    table.integer('account_id');
-   table.string('notes');
+
    table.decimal('cost', 15, 4);
    table.decimal('qty', 15, 4).defaultTo('0.0000');
 
@@ -20,6 +20,7 @@
 
    table.text('custom_value1');
    table.text('custom_value2');
+   table.string('notes');
 
    table.timestamps(true, true);
 

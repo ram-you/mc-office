@@ -80,7 +80,7 @@
     </div>
     <v-card class="ma-4 pb-2">
 
-      <v-toolbar flat style="border-bottom:1px solid rgba(150, 150, 150, 0.23);">
+      <v-toolbar flat dense style="border-bottom:1px solid rgba(150, 150, 150, 0.23);">
         <span class="subheading">Aperçu (Preview) </span>
         <v-spacer></v-spacer>
         <div class="mx-1">

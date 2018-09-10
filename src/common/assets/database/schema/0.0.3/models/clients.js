@@ -5,6 +5,8 @@
 
 module.exports = function clients(table) {
   table.increments('id').primary();
+  table.string('id_number');
+  table.string('vat_number');
 
   table.string('name');
   table.string('address1');
@@ -12,6 +14,7 @@ module.exports = function clients(table) {
   table.string('city');
   table.string('state');
   table.string('postal_code');
+
 
   table.string('work_phone');
   table.text('private_notes');
@@ -27,15 +30,13 @@ module.exports = function clients(table) {
   table.string('shipping_state');
   table.string('shipping_postal_code');
 
+  table.string('website');
+
   table.text('custom_messages');
 
 
+ table.specificType('is_deleted', 'tinyint(1)').defaultTo('0');
 
-
-  table.decimal('cost', 15, 4);
-  table.decimal('qty', 15, 4).defaultTo('0.0000');
-
-  table.decimal('discount', 13, 2);
 
 
 
