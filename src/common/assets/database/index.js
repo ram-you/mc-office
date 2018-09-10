@@ -27,8 +27,7 @@ let mainWindow = remote.getGlobal('mainWindow');
 let DB_VERSION = remote.getGlobal('DB_VERSION')
 let ASSETS = remote.getGlobal('ASSETS_GLOBAL')
 
-let invoicesSchema = require("./schema/" + DB_VERSION + "/Invoices")
-let usersSchema = require("./schema/" + DB_VERSION + "/Users")
+
 
 const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
 var knex = require('knex')({ client: 'sqlite3', connection: { filename: dbFilename }, useNullAsDefault: true });
@@ -37,28 +36,28 @@ var versionFile = path.join(userDataPath, 'database/version.json')
 
 
 
-// var obj = { current: DB_VERSION, latest: DB_VERSION }
-// fs.exists(versionFile, function(exists) {
-//   if (exists) {
-//     fs.readFile(versionFile, function readFileCallback(err, data) {
-//       if (err) { console.log(err); } else {
-//         obj = JSON.parse(data);
-//         obj.latest = DB_VERSION
-//         var json = JSON.stringify(obj);
-//         fs.writeFile(versionFile, json, () => { migrateDB(obj) });
-//       }
-//     });
-//   } else {
-//     fse.ensureDirSync(path.join(userDataPath, 'database'))
-//     var json = JSON.stringify(obj);
-//     fs.writeFile(versionFile, json, () => { migrateDB(obj) });
-//   }
-// });
+var obj = { current: DB_VERSION, latest: DB_VERSION }
+fs.exists(versionFile, function(exists) {
+  if (exists) {
+    fs.readFile(versionFile, function readFileCallback(err, data) {
+      if (err) { console.log(err); } else {
+        obj = JSON.parse(data);
+        obj.latest = DB_VERSION
+        var json = JSON.stringify(obj);
+        fs.writeFile(versionFile, json, () => { migrateDB(obj) });
+      }
+    });
+  } else {
+    fse.ensureDirSync(path.join(userDataPath, 'database'))
+    var json = JSON.stringify(obj);
+    fs.writeFile(versionFile, json, () => { migrateDB(obj) });
+  }
+});
 
 
 
 function migrateDB(version) {
-  if (version.current == version.latest) {
+  if (version.current == version.latest) { 
     require("./schema/" + version.current + "/initData.js");
   } else {
     var migrationFile = path.join(ASSETS, "database/schema/" + version.latest + "/migrate/" + version.current + ".js");
@@ -82,7 +81,7 @@ function migrateDB(version) {
 }
 
 
-require("./schema/" +"0.0.3" + "/initData.js");
+// require("./schema/" +"0.0.3" + "/initData.js");
 
 
 

@@ -22,7 +22,7 @@ module.exports = function clients(table) {
 
   table.integer('size_id');
 
-  table.integer('is_deleted').defaultTo('0');
+ 
 
   table.string('shipping_address1');
   table.string('shipping_address2');
@@ -30,8 +30,7 @@ module.exports = function clients(table) {
   table.string('shipping_state');
   table.string('shipping_postal_code');
 
-  table.string('website');
-
+  
   table.text('custom_messages');
 
 

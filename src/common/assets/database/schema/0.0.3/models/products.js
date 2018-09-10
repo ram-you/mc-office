@@ -9,7 +9,7 @@ module.exports = function products(table) {
   table.text('notes');
   table.decimal('cost', 15, 4);
   table.decimal('qty', 15, 4).defaultTo('0.0000');
-  table.integer('is_deleted').defaultTo('0');
+  table.specificType('is_deleted', 'tinyint(1)').defaultTo('0');
   table.text('custom_value1');
   table.text('custom_value2');
 

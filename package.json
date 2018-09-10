@@ -1,7 +1,7 @@
 {
   "name": "mc-office",
-  "version": "0.3.9",
-  "db_version": "0.0.2",
+  "version": "0.3.12",
+  "db_version": "0.0.3",
   "license": "MIT",
   "description": "A MEDIACEPT Technology creation",
   "author": {
@@ -59,18 +59,18 @@
     "@babel/preset-env": "^7.0.0",
     "@babel/register": "^7.0.0",
     "@babel/runtime": "^7.0.0",
-    "babel-preset-minify": "^0.4.3",
-    "babel-plugin-transform-imports": "^1.5.1",
     "babel-loader": "^8.0.2",
+    "babel-plugin-transform-imports": "^1.5.1",
+    "babel-preset-minify": "^0.4.3",
     "copy-webpack-plugin": "^4.5.2",
     "cross-env": "^5.2.0",
     "css-loader": "^1.0.0",
     "del": "^3.0.0",
     "devtron": "^1.4.0",
-    "electron": "^2.0.8",
+    "electron": "^2.0.9",
     "electron-builder": "^20.28.4",
-    "electron-rebuild": "^1.8.2",
     "electron-debug": "^2.0.0",
+    "electron-rebuild": "^1.8.2",
     "file-loader": "^2.0.0",
     "html-webpack-plugin": "^3.2.0",
     "inject-loader": "^4.0.1",
@@ -93,7 +93,7 @@
     "vue-loader": "^15.4.1",
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.5.17",
-    "webpack": "^4.17.2",
+    "webpack": "^4.18.0",
     "webpack-cli": "^3.1.0",
     "webpack-dev-server": "3.1.8",
     "webpack-hot-middleware": "^2.23.1"
@@ -108,7 +108,8 @@
     "directories": {
       "output": "dist_electron"
     },
-    "extraResources": [{
+    "extraResources": [
+      {
         "from": "./src/common/locales",
         "to": "locales"
       },
@@ -120,12 +121,14 @@
     "copyright": "Copyright © 2018 MEDIACEPT Technology",
     "win": {
       "icon": "./src/common/assets/icons/icon.ico",
-      "target": [{
-        "target": "nsis",
-        "arch": [
-          "ia32"
-        ]
-      }]
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "ia32"
+          ]
+        }
+      ]
     },
     "nsis": {
       "allowToChangeInstallationDirectory": true,
@@ -140,7 +143,8 @@
       "icon": "./src/common/assets/icons",
       "category": "Office",
       "artifactName": "${productName}-${version}.${ext}",
-      "target": [{
+      "target": [
+        {
           "target": "deb",
           "arch": [
             "x64"

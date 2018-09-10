@@ -32,7 +32,7 @@ module.exports = function accounts(table) {
   table.string('shipping_state');
   table.string('shipping_postal_code');
 
-  table.string('website');
+   
 
   table.text('custom_messages');
 
