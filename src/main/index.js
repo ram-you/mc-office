@@ -254,7 +254,7 @@ ipcMain.on("readyToPrint", (event, ID, printer) => {
   const printOptions = {
     deviceName: printer,
     pageSize: 'A4',
-    marginsType: 0,
+    marginsType: 2,
     printBackground: true,
     printSelectionOnly: false,
     landscape: false

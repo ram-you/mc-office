@@ -26,7 +26,7 @@
 
     <!-- ========================= -->
 
-    <v-card class="ma-4">
+    <v-card class="pa-4" style="zoom:85%">
 
       <v-layout row wrap id="invoice-header" style="overflow-x: auto;">
         <v-flex xs12>
@@ -61,6 +61,11 @@
       <v-card-actions>
         <v-spacer></v-spacer>
 
+        <v-btn color="red" class="white--text" @click="onGenerateTenItemsClick(10)">
+          Générer des exemples (10)
+          <v-icon right dark>mdi-plus</v-icon>
+        </v-btn>
+
         <v-btn color="blue-grey" class="white--text" @click="onSaveDraftClick()">
           Sauvegarder le brouillon
           <v-icon right dark>mdi-content-save</v-icon>
@@ -94,8 +99,7 @@
 
       </v-toolbar>
 
-      <webview id="pdf-viewer" :src="'data:application/pdf;base64, ' + (pdfString)" style="display:flex; width:100%; height:100vh"
-        autosize plugins></webview>
+      <webview id="pdf-viewer" :src="pdfString" style="display:flex; width:100%; height:100vh" autosize plugins></webview>
 
     </v-card>
   </div>
@@ -160,6 +164,7 @@ export default {
     })
     return {
       clientDialog: false,
+      logoImg: require("../../../../common/assets/img/logo/256x256.png"),
 
       pdfString: '',
       isRenderingPdf: false,
@@ -226,7 +231,8 @@ export default {
     ipcRenderer.on("data-pdf", (event, data) => {
       vm.isRenderingPdf = false;
       console.log(" PDF DATA regenerated.....");
-      vm.pdfString = Uint8ToBase64(data)
+
+      vm.pdfString = 'data:application/pdf;base64, ' + (Uint8ToBase64(data))
     });
 
   },
@@ -266,11 +272,12 @@ export default {
 
     toPDF() {
       var vm = this
-      this.isRenderingPdf = true
+      this.isRenderingPdf = true;
+      this.pdfString = "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="
       setTimeout(() => {
         var content = document.getElementById("billing-container").parentNode.innerHTML
         ipcRenderer.send("printPDF", vm.form.invoice_number, content, vm.theme, true);
-      }, 100);
+      }, 1000);
 
     },
     toPrinter() {
@@ -278,6 +285,24 @@ export default {
       var printer = this.getUserDefaultPrinter() || { name: '' }
       ipcRenderer.send("print", this.form.invoice_number, content, this.theme, printer.name);
     },
+    onGenerateTenItemsClick(n) {
+      for (var i = 0; i < n; i++) {
+        var emptyItem = {
+          id: 0,
+          item: '',
+          description: '',
+          unit_cost: (Math.random() * 100).toFixed(3),
+          quantity: Math.floor(Math.random() * 100) + 1,
+          line_total: 0,
+          overed: false
+        }
+        var newItem = Object.assign({}, emptyItem)
+        newItem.id = this.form.invoice_items.length + 1
+        this.form.invoice_items.push(newItem)
+
+      }
+
+    }
 
   },
 }

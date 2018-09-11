@@ -3,10 +3,18 @@
   src: url('SourceSansPro-Regular.ttf');
 }
 
+ 
+  .pagebreak {
+    page-break-before: always; height: 100%; display: block;
+  }
+
+ 
+
 .billing-container ,
 .billing-container *{ 
   font-family: "invoiceFont" !important ; 
 }
+
 .billing-container .clearfix:after {
   content: "";
   display: table;
@@ -93,8 +101,10 @@
   width: 100%;
   border-collapse: collapse;
   border-spacing: 0;
-  margin-bottom: 20px;
+  margin-bottom: 20px; 
 }
+
+ 
 
 .billing-container table th,
 .billing-container table td {
@@ -201,10 +211,12 @@
   color: #777777;
   width: 100%;
   /* height: 30px; */
-  position: absolute;
+  position: fixed;
   bottom: 0;
   border-top: 1px solid #AAAAAA;
   padding: 8px 0;
-  text-align: center;
+  text-align: center; 
+  
 }
 
+ 

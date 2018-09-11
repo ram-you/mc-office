@@ -2,10 +2,13 @@
   <v-layout row wrap class="ma-2 pb-4 elevation-2" style="background: rgba(128, 128, 128, 0.14);">
 
     <v-layout style="overflow-x: auto; font-weight: 700; min-width: 1200px;" class="mx-2">
+      <div class="px-2 py-3" style="flex: 1 1 auto; width: 3%;padding: 14px 4px 0;text-align: center;">
+        <div class="pb-2" style="border-bottom:2px solid orange"> #</div>
+      </div>
       <div class="px-2 py-3" style="flex: 1 1 auto; width:15%;">
         <div class="pb-2" style="border-bottom:2px solid orange"> Item</div>
       </div>
-      <div class="px-2 py-3" style="flex: 1 1 auto; width:50%;">
+      <div class="px-2 py-3" style="flex: 1 1 auto; width:47%;">
         <div class="pb-2" style="border-bottom:2px solid orange"> Description</div>
       </div>
       <div class="px-2 py-3" style="flex: 1 1 auto; width:12%;">
@@ -23,11 +26,12 @@
 
     <transition-group name="scale-transition" tag="div" style="width:100%">
 
-      <v-layout v-for="item in childData.invoice_items" :key='item.id' style="overflow-x: auto;min-width: 1200px; "
+      <v-layout v-for="(item, index) in childData.invoice_items" :key='index' style="overflow-x: auto;min-width: 1200px; "
         class="mx-2 py-2" @mouseover="item.overed=true" @mouseleave="item.overed=false">
 
-        <v-text-field label="Item" v-model="item.item"  @input="updateLine($event, item)" solo hide-details flat class="px-2" style="width:15%;"></v-text-field>
-        <v-text-field label="Description" v-model="item.description"  @input="updateLine($event, item)" solo hide-details flat class="px-2" style="width:50%;" ></v-text-field>
+        <div style="width: 3%;padding: 14px 4px 0;text-align: center;">{{index+1}}</div>
+        <v-text-field label="Item" v-model="item.item"   @input="updateLine($event, item)" solo hide-details flat class="px-2" style="width:15%;"></v-text-field>
+        <v-text-field label="Description" v-model="item.description"  @input="updateLine($event, item)" solo hide-details flat class="px-2" style="width:47%;" ></v-text-field>
         <v-text-field label="Unit Cost" type="number" v-model="item.unit_cost" @input="updateLine($event, item)" solo  
           hide-details flat class="px-2" style="width:12%;"></v-text-field>
         <v-text-field label="Quantity" type="number" v-model="item.quantity" @input="updateLine($event, item)" solo   hide-details
@@ -61,8 +65,8 @@ export default {
         id: 0,
         item: '',
         description: '',
-        unit_cost: 0,
-        quantity: 1,
+        unit_cost: (Math.random() * 100).toFixed(3),
+        quantity: Math.floor(Math.random() * 100) + 1,
         line_total: 0,
         overed: false
       }
