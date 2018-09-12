@@ -61,8 +61,8 @@
       <v-card-actions>
         <v-spacer></v-spacer>
 
-        <v-btn color="red" class="white--text" @click="onGenerateTenItemsClick(10)">
-          Générer des exemples (10)
+        <v-btn color="red" class="white--text" @click="onGenerateTenItemsClick(9)">
+          Générer des exemples (9)
           <v-icon right dark>mdi-plus</v-icon>
         </v-btn>
 
@@ -287,17 +287,19 @@ export default {
     },
     onGenerateTenItemsClick(n) {
       for (var i = 0; i < n; i++) {
+        var unit_cost =parseFloat ((Math.random() * 100).toFixed(3).replace(",","."));
+        var quantity = Math.floor(Math.random() * 100) + 1;
+        var line_total = quantity * unit_cost;
         var emptyItem = {
-          id: 0,
-          item: '',
-          description: '',
-          unit_cost: (Math.random() * 100).toFixed(3),
-          quantity: Math.floor(Math.random() * 100) + 1,
-          line_total: 0,
+          id: this.form.invoice_items.length + 1,
+          item: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
+          description: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
+          unit_cost: unit_cost,
+          quantity: quantity,
+          line_total: parseFloat(line_total.toFixed(3).replace(",",".")),
           overed: false
         }
-        var newItem = Object.assign({}, emptyItem)
-        newItem.id = this.form.invoice_items.length + 1
+        var newItem = Object.assign({}, emptyItem);
         this.form.invoice_items.push(newItem)
 
       }

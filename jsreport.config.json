@@ -1,0 +1,49 @@
+{
+  "httpPort": 5488,
+  "store": {
+    "provider": "fs"
+  },
+  "blobStorage": {
+    "provider": "fs"
+  },
+  "logger": {
+    "console": {
+      "transport": "console",
+      "level": "debug"
+    },
+    "file": {
+      "transport": "file",
+      "level": "info",
+      "filename": "./logs/reporter.log"
+    },
+    "error": {
+      "transport": "file",
+      "level": "error",
+      "filename": "./logs/error.log"
+    }
+  },
+  "allowLocalFilesAccess": true,
+  "templatingEngines": {
+    "timeout": 10000,
+    "strategy": "http-server"
+  },
+  "chrome": {
+    "timeout": 40000
+  },
+  "extensions": {
+    "electron-pdf": {
+      "strategy": "electron-ipc",
+      "numberOfWorkers": 2,
+      "pingTimeout": 100,
+      "timeout": 5000,
+      "portLeftBoundary": 1000,
+      "portRightBoundary": 2000,
+      "host": "127.0.0.1",
+      "chromeComandLineSwitches": {
+        "disable-http-cache": null
+      },
+      "allowLocalFilesAccess": false,
+      "maxLogEntrySize": 1000
+    }
+  }
+}

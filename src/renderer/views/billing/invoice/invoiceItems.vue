@@ -30,13 +30,15 @@
         class="mx-2 py-2" @mouseover="item.overed=true" @mouseleave="item.overed=false">
 
         <div style="width: 3%;padding: 14px 4px 0;text-align: center;">{{index+1}}</div>
-        <v-text-field label="Item" v-model="item.item"   @input="updateLine($event, item)" solo hide-details flat class="px-2" style="width:15%;"></v-text-field>
-        <v-text-field label="Description" v-model="item.description"  @input="updateLine($event, item)" solo hide-details flat class="px-2" style="width:47%;" ></v-text-field>
-        <v-text-field label="Unit Cost" type="number" v-model="item.unit_cost" @input="updateLine($event, item)" solo  
-          hide-details flat class="px-2" style="width:12%;"></v-text-field>
-        <v-text-field label="Quantity" type="number" v-model="item.quantity" @input="updateLine($event, item)" solo   hide-details
-          flat class="px-2" style="width:10%;"></v-text-field>
-        <v-text-field label="Line Total" type="number" :value="item.line_total" readonly solo hide-details flat
+        <v-text-field label="Item" v-model="item.item" @input="updateLine($event, item)" solo hide-details flat
+          class="px-2" style="width:15%;"></v-text-field>
+        <v-text-field label="Description" v-model="item.description" @input="updateLine($event, item)" solo hide-details
+          flat class="px-2" style="width:47%;"></v-text-field>
+        <v-text-field label="Unit Cost" type="number" v-model="item.unit_cost" @input="updateLine($event, item)"
+          solo hide-details flat class="px-2" style="width:12%;"></v-text-field>
+        <v-text-field label="Quantity" type="number" v-model="item.quantity" @input="updateLine($event, item)"
+          solo hide-details flat class="px-2" style="width:10%;"></v-text-field>
+        <v-text-field label="Line Total" type="number" v-model="item.line_total" readonly solo hide-details flat
           class="px-2 align-right" style="width:13%;"></v-text-field>
 
         <v-icon @click="deleteLine(item.id)" :class="item.overed?'red--text':'transparent--text'" class="px-1 mdi-18px">mdi-minus-circle</v-icon>
@@ -112,9 +114,9 @@ export default {
     //   this.updateGrandTotal()
     // },
 
-   updateLine: debounce(function (event,item) {
-      var vm = this; 
-       item.line_total = item.quantity * item.unit_cost;
+    updateLine: debounce(function (event, item) {
+      var vm = this;
+      item.line_total = item.quantity * item.unit_cost;
 
       vm.updateGrandTotal()
     }, 500),

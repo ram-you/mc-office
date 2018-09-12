@@ -1,14 +1,18 @@
+<!DOCTYPE html>
+<!-- This is My Awesome Template -->
 <html>
-
+    <meta charset="utf-8">
 <head>
   <style>
-    body   { 
-      page-break-before:always;
-    }
+   
   </style>
 </head>
 
 <body>
+    <div id="container" >
+        
+    </div>
+
   <script>
     const fs = require('fs')
     const os = require('os')
@@ -27,7 +31,8 @@
     }
 
     ipcRenderer.on("printPDF", (event, ID, content, theme, silent) => {
-      document.body.innerHTML = content;
+      var container= document.getElementById("container");
+      container.innerHTML = content;
 
       let assetsFolder = isDevelopment ? ('./theme/' + theme + '/') : ('/../../../assets/billing/theme/' + theme + '/')
       let indexCss = path.join(__dirname, assetsFolder + 'index.css')
@@ -44,14 +49,15 @@
         document.getElementsByTagName("head")[0].appendChild(element);
       }, 100);
       setTimeout(() => {
-        ipcRenderer.send("readyToPrintPDF", ID, silent);
+        ipcRenderer.send("readyToPrintPDF", ID, silent); 
       }, 200);
 
     });
 
     // ===
     ipcRenderer.on("print", (event, ID, content, theme, printer) => {
-      document.body.innerHTML = content;
+      var container= document.getElementById("container");
+      container.innerHTML = content;
 
       let assetsFolder = isDevelopment ? ('./theme/' + theme + '/') : ('/../../../assets/billing/theme/' + theme + '/')
       let indexCss = path.join(__dirname, assetsFolder + 'index.css')
@@ -74,6 +80,9 @@
 
     });
   </script>
+
+
+
 </body>
 
 </html>

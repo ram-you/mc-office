@@ -15,81 +15,74 @@
       </div>
 
     </div>
-    <div style="padding: 0 0 0px;  ">
-      <div v-for="(it,page) in pages " :key="page" :class="(page >0 && page!=(pages.length-1) )?'pagebreak':''">
-        <p>page {{page+1}}/{{pages.length }}</p>
-        <div id="details" class="clearfix">
-          <div id="client">
-            <div class="to">INVOICE TO:</div>
-            <h2 class="name">{{invoice.client.name}}</h2>
-            <div class="address">{{invoice.client.address1}} {{invoice.client.address2}} {{invoice.client.city}} {{invoice.client.state}}
-              {{invoice.client.postal_code}}
-            </div>
-            <div class="email">
-              <a :href="'mailto:'+invoice.client.contact.email">{{invoice.client.contact.email}}</a>
-            </div>
+    <div style="padding: 0 0 0px;  padding-bottom: 40px; ">
+
+      <div id="details" class="clearfix">
+        <div id="client">
+          <div class="to">INVOICE TO:</div>
+          <h2 class="name">{{invoice.client.name}}</h2>
+          <div class="address">{{invoice.client.address1}} {{invoice.client.address2}} {{invoice.client.city}} {{invoice.client.state}}
+            {{invoice.client.postal_code}}
           </div>
-          <div id="invoice">
-            <h1>INVOICE {{invoice.invoice_number}}</h1>
-            <div class="date">Date of Invoice: {{invoice.invoice_date}}</div>
-            <div class="date">Due Date: {{invoice.due_date}}</div>
+          <div class="email">
+            <a :href="'mailto:'+invoice.client.contact.email">{{invoice.client.contact.email}}</a>
           </div>
         </div>
-        <table border="0" cellspacing="0" cellpadding="0">
-          <!-- === -->
-          <thead>
-
-            <tr>
-              <th class="no">#</th>
-              <th class="item">ARTICLE</th>
-              <th class="desc">DESCRIPTION</th>
-              <th class="unit">UNIT PRICE</th>
-              <th class="qty">QUANTITY</th>
-              <th class="total">TOTAL</th>
-            </tr>
-
-          </thead>
-          <!-- === -->
-          <tbody>
-
-            <tr v-for="(item,index) in invoice.invoice_items " :key="index">
-              <td class="no">{{index+1}}</td>
-              <td class="item"> {{item.item}}</td>
-              <td class="desc"> {{item.description}}</td>
-              <td class="unit">{{item.unit_cost}}</td>
-              <td class="qty">{{item.quantity}}</td>
-              <td class="total">{{item.line_total}}</td>
-            </tr>
-
-          </tbody>
-
-        </table>
+        <div id="invoice">
+          <h1>INVOICE {{invoice.invoice_number}}</h1>
+          <div class="date">Date of Invoice: {{invoice.invoice_date}}</div>
+          <div class="date">Due Date: {{invoice.due_date}}</div>
+        </div>
       </div>
-      <div>
-          <table border="0" cellspacing="0" cellpadding="0">
+      <table border="0" cellspacing="0" cellpadding="0" style="padding-bottom: 40px;">
+        <!-- === -->
+        <thead>
 
-          <!-- === -->
-          <tfoot>
-            <tr>
-              <td colspan="3"></td>
-              <td colspan="2">SUBTOTAL</td>
-              <td>{{invoice.totals.subtotal}}</td>
-            </tr>
-            <tr>
-              <td colspan="3"></td>
-              <td colspan="2">TAX 25%</td>
-              <td>$1,300.00</td>
-            </tr>
-            <tr>
-              <td colspan="3"></td>
-              <td colspan="2">GRAND TOTAL</td>
-              <td>{{invoice.totals.total}}</td>
-            </tr>
-          </tfoot>
-          <!-- === -->
+          <tr>
+            <th class="no">#</th>
+            <th class="item">ARTICLE</th>
+            <th class="desc">DESCRIPTION</th>
+            <th class="unit">UNIT PRICE</th>
+            <th class="qty">QUANTITY</th>
+            <th class="total">TOTAL</th>
+          </tr>
 
-        </table>
-      </div>
+        </thead>
+        <!-- === -->
+        <tbody>
+
+          <tr v-for="(item,index) in invoice.invoice_items " :key="index" data-iterate="item">
+            <td class="no">{{index+1}}</td>
+            <td class="item"> {{item.item}}</td>
+            <td class="desc"> {{item.description}}</td>
+            <td class="unit">{{item.unit_cost}}</td>
+            <td class="qty">{{item.quantity}}</td>
+            <td class="total">{{item.line_total}}</td>
+          </tr>
+
+        </tbody>
+
+        <!-- === -->
+        <tfoot>
+          <tr>
+            <td colspan="3"></td>
+            <td colspan="2">SUBTOTAL</td>
+            <td>{{invoice.totals.subtotal}}</td>
+          </tr>
+          <tr>
+            <td colspan="3"></td>
+            <td colspan="2">TAX 25%</td>
+            <td>$1,300.00</td>
+          </tr>
+          <tr>
+            <td colspan="3"></td>
+            <td colspan="2">GRAND TOTAL</td>
+            <td>{{invoice.totals.total}}</td>
+          </tr>
+        </tfoot>
+        <!-- === -->
+
+      </table>
 
       <div id="thanks">Thank you!</div>
       <div id="notices">
@@ -99,7 +92,10 @@
     </div>
     <footer>
       Invoice was created on a computer and is valid without the signature and seal.
-    </footer>
+    </footer> 
+    
+ <div class="footer">Page: <span class="pagenum"></span></div>
+
   </div>
 </template>
 <script>

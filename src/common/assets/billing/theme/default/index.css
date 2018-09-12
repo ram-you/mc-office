@@ -4,10 +4,12 @@
 }
 
  
-  .pagebreak {
-    page-break-before: always; height: 100%; display: block;
+ 
+  body   { 
+    page-break-before:always;
   }
 
+ 
  
 
 .billing-container ,
@@ -29,12 +31,13 @@
 .billing-container {
   position: relative;
   width: 21cm;  
-  height: 29.7cm; 
+  /* height: 29.7cm;  */
   margin: 0 auto; 
   color: rgb(74, 74, 74);
   background: #FFFFFF;  
   font-size: 14px;  
   text-align: initial;
+   
 }
 
 
@@ -101,10 +104,17 @@
   width: 100%;
   border-collapse: collapse;
   border-spacing: 0;
-  margin-bottom: 20px; 
+  margin-bottom: 20px;  
 }
 
- 
+@media print {
+  table tbody tr td:before,
+  table tbody tr td:after {
+      content : "" ;
+      height : 4px ;
+      display : block ;
+  }
+}
 
 .billing-container table th,
 .billing-container table td {
@@ -218,5 +228,9 @@
   text-align: center; 
   
 }
+
+p { page-break-after: always; }
+.footer { position: fixed; bottom: 0px; }
+.pagenum:before { counter-increment: page; content: counter(page); } 
 
  

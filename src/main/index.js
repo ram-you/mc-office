@@ -203,12 +203,10 @@ function createPdfViewerWindow(file) {
 }
 
 function createPrintWorkerWindow() {
-  printWorkerWindow = new BrowserWindow({ show: false });
+  printWorkerWindow = new BrowserWindow({ show: true });
   var printWorkerPathname = ASSETS_GLOBAL + '/billing/worker.html'; // isDevelopment ? (ASSETS_DIR + '/billing/worker.html') : path.join(__dirname, '/../../../assets/billing/' + 'worker.html')
   printWorkerWindow.loadURL(formatUrl({ pathname: printWorkerPathname, protocol: 'file', slashes: true }))
-  if (!isDevelopment && process.argv.indexOf('--debug') !== -1) {
-    printWorkerWindow.webContents.openDevTools();
-  }
+  printWorkerWindow.webContents.openDevTools();
   return printWorkerWindow
 }
 
@@ -216,12 +214,24 @@ ipcMain.on("printPDF", (event, ID, content, theme, silent = false) => {
   printWorkerWindow.webContents.send("printPDF", ID, content, theme, silent);
 });
 
+
+
+
+
+
+
+
+
+
+
 ipcMain.on("print", (event, ID, content, theme, printer) => {
   printWorkerWindow.webContents.send("print", ID, content, theme, printer);
 });
 
 
-ipcMain.on("readyToPrintPDF", (event, ID, silent = false) => {
+
+
+ipcMain.on("readyToPrintPDF",  (event, ID, silent = false) => {
   let pdfPathFolder = userDataPath + 'billing' + path.sep + 'invoices' + path.sep
   fse.ensureDirSync(pdfPathFolder)
   const pdfPath = pdfPathFolder + 'invoice-' + ID + '.pdf';
@@ -229,26 +239,35 @@ ipcMain.on("readyToPrintPDF", (event, ID, silent = false) => {
   const printOptions = {
     pageSize: 'A4',
     marginsType: 0,
-    printBackground: true,
+    printBackground: true, 
     printSelectionOnly: false,
     landscape: false
   }
-  printWorkerWindow.webContents.printToPDF(printOptions, function(error, data) {
+  printWorkerWindow.webContents.printToPDF(printOptions,async function(error, data) {
     if (error) throw error
 
     if (silent) {
-      mainWindow.send('data-pdf', data)
+      mainWindow.send('data-pdf', data);
     } else {
-      fs.writeFile(pdfPath, data, function(error) {
-        if (error) { throw error }
+      try {
+        await fs.writeFileSync(pdfPath, data);
         // shell.openItem(pdfPath)
         pdfViewerWindow = createPdfViewerWindow(pdfPath)
         mainWindow.send('wrote-pdf', pdfPath)
-      })
+      } catch (error) {
+        console.log(error)
+      }
     }
-
   })
-});
+
+
+
+
+})
+
+
+
+
 
 ipcMain.on("readyToPrint", (event, ID, printer) => {
   const printOptions = {
