@@ -105,7 +105,8 @@
   </div>
 </template>
 
-<script>
+<script>  
+
 var axios = require("axios");
 const Store = require('electron-store');
 const _store = new Store();
@@ -222,10 +223,10 @@ export default {
     var userTheme = _store.get('users.' + connectedUserName + '.invoice.theme') || 'default'
     this.theme = userTheme;
 
-    setTimeout(() => {
-      var content = document.getElementById("billing-container").parentNode.innerHTML
-      ipcRenderer.send("printPDF", vm.form.invoice_number, content, vm.theme, true);
-    }, 100);
+    // setTimeout(() => {
+    //   var content = document.getElementById("billing-container").parentNode.innerHTML
+    //   ipcRenderer.send("printPDF", vm.form.invoice_number, content, vm.theme, true);
+    // }, 100);
 
 
     ipcRenderer.on("data-pdf", (event, data) => {
@@ -269,7 +270,7 @@ export default {
       var defaultPrinter = _store.get('users.' + connectedUserName + '.settings.defaults.printer') || _store.get('global.settings.defaults.printer')
       return defaultPrinter || this.getSystemDefaultPrinter()
     },
-
+    
     toPDF() {
       var vm = this
       this.isRenderingPdf = true;
@@ -287,7 +288,7 @@ export default {
     },
     onGenerateTenItemsClick(n) {
       for (var i = 0; i < n; i++) {
-        var unit_cost =parseFloat ((Math.random() * 100).toFixed(3).replace(",","."));
+        var unit_cost = parseFloat((Math.random() * 100).toFixed(3).replace(",", "."));
         var quantity = Math.floor(Math.random() * 100) + 1;
         var line_total = quantity * unit_cost;
         var emptyItem = {
@@ -296,7 +297,7 @@ export default {
           description: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
           unit_cost: unit_cost,
           quantity: quantity,
-          line_total: parseFloat(line_total.toFixed(3).replace(",",".")),
+          line_total: parseFloat(line_total.toFixed(3).replace(",", ".")),
           overed: false
         }
         var newItem = Object.assign({}, emptyItem);

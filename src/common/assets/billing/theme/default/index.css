@@ -3,18 +3,20 @@
   src: url('SourceSansPro-Regular.ttf');
 }
 
- 
- 
-  body   { 
-    page-break-before:always;
-  }
 
- 
- 
 
-.billing-container ,
-.billing-container *{ 
-  font-family: "invoiceFont" !important ; 
+body {
+  page-break-before: always;
+}
+
+
+table {
+  page-break-before: avoid;
+}
+
+.billing-container,
+.billing-container * {
+  font-family: "invoiceFont" !important;
 }
 
 .billing-container .clearfix:after {
@@ -30,14 +32,14 @@
 
 .billing-container {
   position: relative;
-  width: 21cm;  
+  width: 21cm;
   /* height: 29.7cm;  */
-  margin: 0 auto; 
+  margin: 0 auto;
   color: rgb(74, 74, 74);
-  background: #FFFFFF;  
-  font-size: 14px;  
+  background: #FFFFFF;
+  font-size: 14px;
   text-align: initial;
-   
+
 }
 
 
@@ -92,7 +94,7 @@
   font-size: 2.4em;
   line-height: 1em;
   font-weight: normal;
-  margin: 0  0 10px 0;
+  margin: 0 0 10px 0;
 }
 
 .billing-container #invoice .date {
@@ -104,15 +106,15 @@
   width: 100%;
   border-collapse: collapse;
   border-spacing: 0;
-  margin-bottom: 20px;  
+  margin-bottom: 20px;
 }
 
 @media print {
   table tbody tr td:before,
   table tbody tr td:after {
-      content : "" ;
-      height : 4px ;
-      display : block ;
+    content: "";
+    height: 4px;
+    display: block;
   }
 }
 
@@ -125,7 +127,7 @@
 }
 
 .billing-container table th {
-  white-space: nowrap;        
+  white-space: nowrap;
   font-weight: normal;
 }
 
@@ -133,7 +135,7 @@
   text-align: right;
 }
 
-.billing-container table td h3{
+.billing-container table td h3 {
   color: #57B223;
   font-size: 1.2em;
   font-weight: normal;
@@ -144,7 +146,7 @@
   color: #FFFFFF;
   font-size: 1.6em;
   background: #57B223;
-  width:10%;
+  width: 10%;
 }
 
 .billing-container table .item {
@@ -154,7 +156,7 @@
 
 .billing-container table .desc {
   text-align: left;
-  width:50%;
+  width: 50%;
 }
 
 .billing-container table .unit {
@@ -184,18 +186,18 @@
   background: #FFFFFF;
   border-bottom: none;
   font-size: 1.2em;
-  white-space: nowrap; 
-  border-top: 1px solid #AAAAAA; 
+  white-space: nowrap;
+  border-top: 1px solid #AAAAAA;
 }
 
 .billing-container table tfoot tr:first-child td {
-  border-top: none; 
+  border-top: none;
 }
 
 .billing-container table tfoot tr:last-child td {
   color: #57B223;
   font-size: 1.4em;
-  border-top: 1px solid #57B223; 
+  border-top: 1px solid #57B223;
 
 }
 
@@ -203,14 +205,14 @@
   border: none;
 }
 
-.billing-container #thanks{
+.billing-container #thanks {
   font-size: 2em;
   margin-bottom: 50px;
 }
 
-.billing-container #notices{
+.billing-container #notices {
   padding-left: 6px;
-  border-left: 6px solid #0087C3;  
+  border-left: 6px solid #0087C3;
 }
 
 .billing-container #notices .notice {
@@ -225,12 +227,28 @@
   bottom: 0;
   border-top: 1px solid #AAAAAA;
   padding: 8px 0;
-  text-align: center; 
-  
+  text-align: center;
+
 }
 
-p { page-break-after: always; }
-.footer { position: fixed; bottom: 0px; }
-.pagenum:before { counter-increment: page; content: counter(page); } 
+
+
+.footer {
+  position: fixed;
+  bottom: 0px;
+}
+.pagenum:before {
+  counter-increment: page;
+  content: counter(page);
+}
+ 
 
  
+ 
+
+
+
+
+
+
+

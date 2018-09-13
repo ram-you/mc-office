@@ -1,5 +1,5 @@
 <template>
-  <div id="billing-container" class="billing-container my-2">
+  <div id="billing-container" class="billing-container my-2 page">
 
     <div class="clearfix header" style="padding: 0 0 20px;">
       <div id="logo">
@@ -92,9 +92,11 @@
     </div>
     <footer>
       Invoice was created on a computer and is valid without the signature and seal.
-    </footer> 
-    
- <div class="footer">Page: <span class="pagenum"></span></div>
+    </footer>
+
+    <div class="footer">Page:
+      <span class="pagenum"></span>
+    </div>
 
   </div>
 </template>
