@@ -18,10 +18,7 @@ import ar_tn from '../common/locales/ar-tn/';
 import en_gb from '../common/locales/en-gb/';
 import fr_fr from '../common/locales/fr-fr/';
 
-
-// import db from './db/models' 
-// Vue.prototype.$db = db 
-
+ 
  
 Vue.prototype.$localesItems= [{ name: 'العربية', locale: 'ar-tn' }, { name: 'English', locale: 'en-gb' }, { name: 'Français', locale: 'fr-fr' }]
 Vue.prototype.$colorThemeItems= [{ name: 'Dark (black)', theme: 'dark' }, { name: 'Light (white)', theme: 'light' }]
