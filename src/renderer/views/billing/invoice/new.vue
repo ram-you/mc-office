@@ -98,8 +98,7 @@
         </div>
 
       </v-toolbar>
-      <canvas id="the-canvas"></canvas>
-      <webview id="pdf-viewer" :src="pdfString" style="display:flex; width:100%; height:100vh" autosize plugins></webview>
+      <webview id="pdf-viewer" :src="pdfString" style="display:flex; width:100%; height:100vh" autosize></webview>
 
     </v-card>
   </div>
@@ -126,6 +125,7 @@ let sep = path.sep
 const userDataPath = app.getPath('userData') + sep;
 const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
 var knex = require('knex')({ client: 'sqlite3', connection: { filename: dbFilename }, useNullAsDefault: true });
+
 
 import invoiceHeader from "./invoiceHeader"
 import invoiceItems from "./invoiceItems"
@@ -195,7 +195,7 @@ export default {
       terms: false,
       defaultForm,
       theme: 'default',
-
+      webview: ""
     }
   },
   computed: {
@@ -239,6 +239,12 @@ export default {
 
       vm.pdfString = 'data:application/pdf;base64, ' + (Uint8ToBase64(data))
     });
+
+    const PDFWindow = require('electron-pdf-window')
+
+    this.webview = document.querySelector('webview')
+    this.webview.webContents = this.webview.getWebContents()
+    PDFWindow.addSupport(this.webview)
 
   },
 
@@ -322,49 +328,22 @@ export default {
 
       }
 
+
+
       const pdfDocGenerator = pdfMake.createPdf(docDefinition);
       pdfDocGenerator.getBase64((pdfData) => {
-        vm.pdfString = 'data:application/pdf;base64, ' + pdfData;
+        // vm.pdfString = 'data:application/pdf;base64, ' + pdfData;
 
-        var pdfjsLib = require("pdfjs-dist/build/pdf")
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdfjs-dist/build/pdf.worker.js';
-        //  var pdfjsLib = window['pdfjs-dist/build/pdf'];
-        var loadingTask = pdfjsLib.getDocument({ data: atob(pdfData) });
-        loadingTask.promise.then(function (pdf) {
-          console.log('PDF loaded');
+        const fs = require('fs')
+        var os = require('os');
 
-          // Fetch the first page
-          var pageNumber = 1;
-          pdf.getPage(pageNumber).then(function (page) {
-            console.log('Page loaded');
+        var tempPdfFile = os.tmpdir() + '/tmp_invoice.pdf'
 
-            var scale = 1.5;
-            var viewport = page.getViewport(scale);
+        fs.writeFileSync(tempPdfFile, pdfData, 'base64');
+        this.webview.loadURL(tempPdfFile);
 
-            // Prepare canvas using PDF page dimensions
-            var canvas = document.getElementById('the-canvas');
-            var context = canvas.getContext('2d');
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-
-            // Render PDF page into canvas context
-            var renderContext = {
-              canvasContext: context,
-              viewport: viewport
-            };
-            var renderTask = page.render(renderContext);
-            renderTask.then(function () {
-              console.log('Page rendered');
-            });
-          });
-        }, function (reason) {
-          // PDF loading error
-          console.error(reason);
-        });
 
       });
-
-
     },
 
 
@@ -387,9 +366,18 @@ export default {
 
 
     toPrinter() {
-      var content = document.getElementById("billing-container").parentNode.innerHTML;
-      var printer = this.getUserDefaultPrinter() || { name: '' }
-      ipcRenderer.send("print", this.form.invoice_number, content, this.theme, printer.name);
+      // var content = document.getElementById("billing-container").parentNode.innerHTML;
+      // var printer = this.getUserDefaultPrinter() || { name: '' }
+      // ipcRenderer.send("print", this.form.invoice_number, content, this.theme, printer.name);
+
+
+
+
+      let code = `var button = document.getElementById("print");
+            button.click()`;
+      this.webview.getWebContents().executeJavaScript(code);
+
+
     },
     onGenerateTenItemsClick(n) {
       for (var i = 0; i < n; i++) {
