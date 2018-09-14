@@ -124,9 +124,11 @@ app.on('ready', async () => {
 // =====================DATABASE================DATABASE==========DATABASE==================
 function createDataBaseWorkerWindow() {
   dbWorkerWindow = new BrowserWindow({
+    title: "MC-OFFICE Database",
     parent: mainWindow,
     modal: true,
     show: isDevelopment ? true : false,
+    icon: ASSETS_DIR + '/icons/64x64.png',
   });
   var dbWorkerPathname = ASSETS_GLOBAL + '/database/worker.html'; // isDevelopment ? (ASSETS_DIR + '/database/worker.html') : path.join(__dirname, '/../../../assets/database/worker.html')
   dbWorkerWindow.loadURL(formatUrl({ pathname: dbWorkerPathname, protocol: 'file', slashes: true }));
@@ -188,10 +190,12 @@ ipcMain.on('update-window-size', (event) => {
 
 function createPdfViewerWindow(file) {
   pdfViewerWindow = new BrowserWindow({
+    title: "MC-FFICE PDF Viewer",
     // parent: mainWindow, modal: true,
     show: false,
     icon: ASSETS_DIR + '/icons/pdf.png', //path.join(__dirname, '../common/assets/icons/pdf.png'),
     webPreferences: { plugins: true, },
+    icon: ASSETS_DIR + '/icons/64x64.png',
   });
   pdfViewerWindow.setMenu(null)
   pdfViewerWindow.loadURL(formatUrl({ pathname: file, protocol: 'file', slashes: true }))
@@ -203,7 +207,7 @@ function createPdfViewerWindow(file) {
 }
 
 function createPrintWorkerWindow() {
-  printWorkerWindow = new BrowserWindow({ show: true });
+  printWorkerWindow = new BrowserWindow({   title: "MC-FFICE Print Worker",show: isDevelopment ? true : false,  icon: ASSETS_DIR + '/icons/64x64.png', });
   var printWorkerPathname = ASSETS_GLOBAL + '/billing/worker.html'; // isDevelopment ? (ASSETS_DIR + '/billing/worker.html') : path.join(__dirname, '/../../../assets/billing/' + 'worker.html')
   printWorkerWindow.loadURL(formatUrl({ pathname: printWorkerPathname, protocol: 'file', slashes: true }))
   printWorkerWindow.webContents.openDevTools();
