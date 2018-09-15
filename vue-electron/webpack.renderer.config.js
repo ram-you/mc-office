@@ -49,17 +49,7 @@ const rendererConfig = {
         use: ['vue-style-loader', 'css-loader', 'less-loader']
       },
 
-
-
-      //    {
-      //   test: /\.styl$/,
-      //   loader: ['style-loader', 'css-loader', 'stylus-loader']
-      // },
-      // {
-      //   test: /\.css$/,
-      //   use: ['vue-style-loader', 'css-loader']
-      // },
-
+ 
 
       {
         test: /\.css$/,

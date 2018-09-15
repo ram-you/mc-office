@@ -125,7 +125,7 @@ let sep = path.sep
 const userDataPath = app.getPath('userData') + sep;
 const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
 var knex = require('knex')({ client: 'sqlite3', connection: { filename: dbFilename }, useNullAsDefault: true });
-
+let ASSETS = remote.getGlobal('ASSETS_GLOBAL')
 
 import invoiceHeader from "./invoiceHeader"
 import invoiceItems from "./invoiceItems"
@@ -170,7 +170,7 @@ export default {
     return {
       clientDialog: false,
       logoImg: require("../../../../common/assets/img/logo/256x256.png"),
-
+      logoImgBase64: "",
       pdfString: '',
       isRenderingPdf: false,
       invoiceDate: false,
@@ -232,6 +232,7 @@ export default {
     //   ipcRenderer.send("printPDF", vm.form.invoice_number, content, vm.theme, true);
     // }, 100);
 
+    this.generateBase64(this.logoImg)
 
     ipcRenderer.on("data-pdf", (event, data) => {
       vm.isRenderingPdf = false;
@@ -283,30 +284,88 @@ export default {
 
     toPDF() {
       var vm = this
-
+     
       var docDefinition = {
+        pageSize: 'A4',
+        pageOrientation: 'portrait',
+        pageMargins: [40, 60, 40, 60],
+        
         content: [
           {
+            image: 'logoImage',
+            width: 64,
+            height: 64
+          },
+          {
+            style: "tableStyle",
             table: {
-              // headers are automatically repeated if the table spans over multiple pages
-              // you can declare how many rows should be treated as headers
               headerRows: 1,
               widths: ['*', 'auto', 100, '*'],
 
               body: [
-                ['First', 'Second', 'Third', 'The last one'],
+                [{ text: 'First', style: 'header' }, 'Second', 'Third', 'The last one'],
                 ['Value 1', 'Value 2', 'Value 3', 'Value 4'],
                 [{ text: 'Bold value', bold: true }, 'Val 2', 'Val 3', 'Val 4']
               ]
+            },
+            layout: {
+              hLineWidth: function (i, node) {
+                return (i === 0 || i === node.table.body.length) ? 1 : 1;
+              },
+              vLineWidth: function (i, node) {
+                return (i === 0 || i === node.table.widths.length) ? 1 : 1;
+              },
+              hLineColor: function (i, node) {
+                return (i === 0 || i === node.table.body.length) ? 'gray' : 'light-gray';
+              },
+              vLineColor: function (i, node) {
+                return (i === 0 || i === node.table.widths.length) ? 'light-gray' : 'light-gray';
+              },
+              // paddingLeft: function(i, node) { return 4; },
+              // paddingRight: function(i, node) { return 4; },
+              // paddingTop: function(i, node) { return 2; },
+              // paddingBottom: function(i, node) { return 2; },
+              // fillColor: function (i, node) { return null; }
             }
+
+          },
+
+        ],
+        images: {
+          logoImage: this.logoImgBase64
+        },
+        styles: {
+          header: {
+            fontSize: 13,
+            color: '#1E90FF',
+            bold: true,
+            alignment: 'left',
+          },
+          tableStyle: {
+            fontSize: 13,
+            fillColor: 'white',
+          },
+          cellLeft: {
+            fontSize: 13,
+            fillColor: 'gray',
+            alignment: 'left'
+          },
+          cellCenter: {
+            fontSize: 13,
+            fillColor: 'gray',
+            alignment: 'center'
+          },
+          cellRight: {
+            fontSize: 13,
+            fillColor: 'gray',
+            alignment: 'right'
           }
-        ]
+        }
       }
 
 
-
-      const pdfDocGenerator = pdfMake.createPdf(docDefinition);
-      pdfDocGenerator.getBase64((pdfData) => {
+      var doc = pdfMake.createPdf(docDefinition);
+      doc.getBase64((pdfData) => {
         // vm.pdfString = 'data:application/pdf;base64, ' + pdfData;
 
         const fs = require('fs')
@@ -315,14 +374,15 @@ export default {
         var tempPdfFile = os.tmpdir() + '/tmp_invoice.pdf'
 
         fs.writeFileSync(tempPdfFile, pdfData, 'base64');
-        this.webview.loadURL(tempPdfFile);
+        this.webview.loadURL("file://" + tempPdfFile);
+
 
 
       });
     },
 
 
-
+  
 
 
 
@@ -373,6 +433,24 @@ export default {
 
       }
 
+    },
+    generateBase64(src) {
+      let canvas = document.createElement('CANVAS')
+      let img = document.createElement('img')
+      img.src = src
+      img.onload = () => {
+        canvas.height = img.height
+        canvas.width = img.width
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        var base64 = canvas.toDataURL('image/png')
+        canvas = null;
+        this.logoImgBase64 = base64
+      }
+
+      img.onerror = error => {
+        this.error = 'Could not load image, please check that the file is accessible and an image!'
+      }
     },
 
 
