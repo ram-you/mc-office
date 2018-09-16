@@ -45,6 +45,9 @@
         element.href = indexCss;
         document.getElementsByTagName("head")[0].appendChild(element);
       }, 100);
+ 
+
+
       setTimeout(() => {
         ipcRenderer.send("readyToPrintPDF", ID, silent);
       }, 200);

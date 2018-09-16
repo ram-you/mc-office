@@ -51,13 +51,14 @@
         <!-- === -->
         <tbody>
 
-          <tr v-for="(item,index) in invoice.invoice_items " :key="index" data-iterate="item">
+          <tr v-for="(item,index) in invoice.invoice_items " :key="index">
             <td class="no">{{index+1}}</td>
             <td class="item"> {{item.item}}</td>
             <td class="desc"> {{item.description}}</td>
             <td class="unit">{{item.unit_cost}}</td>
             <td class="qty">{{item.quantity}}</td>
             <td class="total">{{item.line_total}}</td>
+            
           </tr>
 
         </tbody>
@@ -94,9 +95,7 @@
       Invoice was created on a computer and is valid without the signature and seal.
     </footer>
 
-    <div class="footer">Page:
-      <span class="pagenum"></span>
-    </div>
+   
 
   </div>
 </template>
@@ -143,6 +142,8 @@ export default {
     this.theme = invoiceUserTheme
     require("../../../../common/assets/billing/theme/" + invoiceUserTheme + "/index.css")
     this.generateBase64()
+
+   
 
   },
   methods: {

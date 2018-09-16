@@ -106,11 +106,14 @@
 
 <script>  
 
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-var axios = require("axios");
+const fs = require('fs')
+const os = require('os');
+const PDFWindow = require('electron-pdf-window');
+
+const { PDFDocumentFactory, PDFDocumentWriter, drawText, drawLinesOfText, drawImage, drawRectangle, } = require('pdf-lib');
+
+const got = require('got');
 const Store = require('electron-store');
 const _store = new Store();
 
@@ -169,8 +172,6 @@ export default {
     })
     return {
       clientDialog: false,
-      logoImg: require("../../../../common/assets/img/logo/256x256.png"),
-      logoImgBase64: "",
       pdfString: '',
       isRenderingPdf: false,
       invoiceDate: false,
@@ -207,10 +208,22 @@ export default {
     searchClient(val) {
       if (this.clientsItems.length > 0) return
       this.isLoading = true
-      axios.get('https://api.coinmarketcap.com/v2/listings/').then(res => {
-        this.clientsItems = res.data.data
-        this.isLoading = false
-      }).catch(err => { console.log(err) });
+
+
+
+
+        (async () => {
+          try {
+            const response = await got('https://api.coinmarketcap.com/v2/listings/');
+            console.log(response.body);
+            this.clientsItems = res.data.data
+            this.isLoading = false
+          } catch (error) {
+            console.log(error.response.body);
+          }
+        })();
+
+
 
     }
   },
@@ -227,25 +240,84 @@ export default {
     var userTheme = _store.get('users.' + connectedUserName + '.invoice.theme') || 'default'
     this.theme = userTheme;
 
-    // setTimeout(() => {
-    //   var content = document.getElementById("billing-container").parentNode.innerHTML
-    //   ipcRenderer.send("printPDF", vm.form.invoice_number, content, vm.theme, true);
-    // }, 100);
+    this.webview = document.querySelector('webview')
+    this.webview.webContents = this.webview.getWebContents()
+    PDFWindow.addSupport(this.webview);
 
-    this.generateBase64(this.logoImg)
 
-    ipcRenderer.on("data-pdf", (event, data) => {
+
+    ipcRenderer.on("data-pdf", (event, pdfData) => {
       vm.isRenderingPdf = false;
       console.log(" PDF DATA regenerated.....");
 
-      vm.pdfString = 'data:application/pdf;base64, ' + (Uint8ToBase64(data))
+      // vm.pdfString = 'data:application/pdf;base64, ' + (Uint8ToBase64(pdfData))
+
+
+
+
+
+
+      const existingPdfDocBytes = pdfData
+
+      const pdfDoc = PDFDocumentFactory.load(existingPdfDocBytes);
+      const assets = {
+        invoiceFontBytes: fs.readFileSync(ASSETS + '/billing/theme/default/SourceSansPro-Regular.ttf'),
+      };
+      const INVOICE_FONT = 'InvoiceFont';
+      const [invoiceFontRef] = pdfDoc.embedFont(assets.invoiceFontBytes);
+
+      const pages = pdfDoc.getPages();
+      const PURPLE = [119 / 255, 41 / 255, 83 / 255];
+      const ORANGE = [224 / 255, 90 / 255, 43 / 255];
+      const GREY = [117 / 255, 117 / 255, 117 / 255];
+      const COURIER_FONT = 'Courier';
+      const [courierFontRef] = pdfDoc.embedStandardFont('Courier');
+
+      for (var i = 0; i < pages.length; i++) {
+
+        var page = pages[i];
+        const existingPage = page.addFontDictionary(INVOICE_FONT, invoiceFontRef);
+        const PAGE_WIDTH = (existingPage.get('MediaBox').array[2]).number;
+        const PAGE_HEIGHT = (existingPage.get('MediaBox').array[3]).number;
+        console.log(PAGE_WIDTH, PAGE_HEIGHT)
+        var contentStream1 = pdfDoc.createContentStream(
+          drawLinesOfText(
+            ['Page: ' + (i + 1).toString() + '/' + (pages.length).toString()],
+            { x: 34, y: 31, size: 8, font: INVOICE_FONT, colorRgb: GREY, },
+          ),
+        );
+
+        existingPage.addContentStreams(pdfDoc.register(contentStream1));
+
+
+
+      }
+
+      const pdfBytes = PDFDocumentWriter.saveToBytes(pdfDoc);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      var tempPdfFile = os.tmpdir() + '/tmp_invoice.pdf'
+
+      fs.writeFileSync(tempPdfFile, pdfBytes);
+      this.webview.loadURL("file://" + tempPdfFile);
     });
 
-    const PDFWindow = require('electron-pdf-window')
+    setTimeout(() => { vm.toPDF() }, 100);
 
-    this.webview = document.querySelector('webview')
-    this.webview.webContents = this.webview.getWebContents()
-    PDFWindow.addSupport(this.webview)
+
 
   },
 
@@ -282,112 +354,8 @@ export default {
       return defaultPrinter || this.getSystemDefaultPrinter()
     },
 
+
     toPDF() {
-      var vm = this
-     
-      var docDefinition = {
-        pageSize: 'A4',
-        pageOrientation: 'portrait',
-        pageMargins: [40, 60, 40, 60],
-        
-        content: [
-          {
-            image: 'logoImage',
-            width: 64,
-            height: 64
-          },
-          {
-            style: "tableStyle",
-            table: {
-              headerRows: 1,
-              widths: ['*', 'auto', 100, '*'],
-
-              body: [
-                [{ text: 'First', style: 'header' }, 'Second', 'Third', 'The last one'],
-                ['Value 1', 'Value 2', 'Value 3', 'Value 4'],
-                [{ text: 'Bold value', bold: true }, 'Val 2', 'Val 3', 'Val 4']
-              ]
-            },
-            layout: {
-              hLineWidth: function (i, node) {
-                return (i === 0 || i === node.table.body.length) ? 1 : 1;
-              },
-              vLineWidth: function (i, node) {
-                return (i === 0 || i === node.table.widths.length) ? 1 : 1;
-              },
-              hLineColor: function (i, node) {
-                return (i === 0 || i === node.table.body.length) ? 'gray' : 'light-gray';
-              },
-              vLineColor: function (i, node) {
-                return (i === 0 || i === node.table.widths.length) ? 'light-gray' : 'light-gray';
-              },
-              // paddingLeft: function(i, node) { return 4; },
-              // paddingRight: function(i, node) { return 4; },
-              // paddingTop: function(i, node) { return 2; },
-              // paddingBottom: function(i, node) { return 2; },
-              // fillColor: function (i, node) { return null; }
-            }
-
-          },
-
-        ],
-        images: {
-          logoImage: this.logoImgBase64
-        },
-        styles: {
-          header: {
-            fontSize: 13,
-            color: '#1E90FF',
-            bold: true,
-            alignment: 'left',
-          },
-          tableStyle: {
-            fontSize: 13,
-            fillColor: 'white',
-          },
-          cellLeft: {
-            fontSize: 13,
-            fillColor: 'gray',
-            alignment: 'left'
-          },
-          cellCenter: {
-            fontSize: 13,
-            fillColor: 'gray',
-            alignment: 'center'
-          },
-          cellRight: {
-            fontSize: 13,
-            fillColor: 'gray',
-            alignment: 'right'
-          }
-        }
-      }
-
-
-      var doc = pdfMake.createPdf(docDefinition);
-      doc.getBase64((pdfData) => {
-        // vm.pdfString = 'data:application/pdf;base64, ' + pdfData;
-
-        const fs = require('fs')
-        var os = require('os');
-
-        var tempPdfFile = os.tmpdir() + '/tmp_invoice.pdf'
-
-        fs.writeFileSync(tempPdfFile, pdfData, 'base64');
-        this.webview.loadURL("file://" + tempPdfFile);
-
-
-
-      });
-    },
-
-
-  
-
-
-
-
-    _toPDF() {
       var vm = this
       this.isRenderingPdf = true;
       this.pdfString = "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="
@@ -408,8 +376,7 @@ export default {
 
 
 
-      let code = `var button = document.getElementById("print");
-            button.click()`;
+      let code = `var button = document.getElementById("print");button.click()`;
       this.webview.getWebContents().executeJavaScript(code);
 
 
@@ -434,24 +401,7 @@ export default {
       }
 
     },
-    generateBase64(src) {
-      let canvas = document.createElement('CANVAS')
-      let img = document.createElement('img')
-      img.src = src
-      img.onload = () => {
-        canvas.height = img.height
-        canvas.width = img.width
-        var ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0);
-        var base64 = canvas.toDataURL('image/png')
-        canvas = null;
-        this.logoImgBase64 = base64
-      }
 
-      img.onerror = error => {
-        this.error = 'Could not load image, please check that the file is accessible and an image!'
-      }
-    },
 
 
   },

@@ -8,8 +8,7 @@
 body {
   page-break-before: always;
 }
-
-
+ 
 table {
   page-break-before: avoid;
 }
@@ -237,10 +236,7 @@ table {
   position: fixed;
   bottom: 0px;
 }
-.pagenum:before {
-  counter-increment: page;
-  content: counter(page);
-}
+ 
  
 
  
