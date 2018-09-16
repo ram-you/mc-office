@@ -244,39 +244,21 @@ export default {
     this.webview.webContents = this.webview.getWebContents()
     PDFWindow.addSupport(this.webview);
 
-
-
     ipcRenderer.on("data-pdf", (event, pdfData) => {
-      vm.isRenderingPdf = false;
       console.log(" PDF DATA regenerated.....");
-
       // vm.pdfString = 'data:application/pdf;base64, ' + (Uint8ToBase64(pdfData))
 
-
-
-
-
-
-      const existingPdfDocBytes = pdfData
-
-      const pdfDoc = PDFDocumentFactory.load(existingPdfDocBytes);
-      const assets = {
-        invoiceFontBytes: fs.readFileSync(ASSETS + '/billing/theme/default/SourceSansPro-Regular.ttf'),
-      };
+      const pdfDoc = PDFDocumentFactory.load(pdfData);
+      const invoiceFontBytes = fs.readFileSync(ASSETS + '/billing/theme/default/SourceSansPro-Regular.ttf');
       const INVOICE_FONT = 'InvoiceFont';
-      const [invoiceFontRef] = pdfDoc.embedFont(assets.invoiceFontBytes);
-
+      const [invoiceFontRef] = pdfDoc.embedFont(invoiceFontBytes);
       const pages = pdfDoc.getPages();
       const PURPLE = [119 / 255, 41 / 255, 83 / 255];
       const ORANGE = [224 / 255, 90 / 255, 43 / 255];
-      const GREY = [117 / 255, 117 / 255, 117 / 255];
-      const COURIER_FONT = 'Courier';
-      const [courierFontRef] = pdfDoc.embedStandardFont('Courier');
+      const GREY = [117 / 255, 117 / 255, 117 / 255]; 
 
-      for (var i = 0; i < pages.length; i++) {
-
-        var page = pages[i];
-        const existingPage = page.addFontDictionary(INVOICE_FONT, invoiceFontRef);
+      for (var i = 0; i < pages.length; i++) { 
+        const existingPage = pages[i].addFontDictionary(INVOICE_FONT, invoiceFontRef);
         const PAGE_WIDTH = (existingPage.get('MediaBox').array[2]).number;
         const PAGE_HEIGHT = (existingPage.get('MediaBox').array[3]).number;
         console.log(PAGE_WIDTH, PAGE_HEIGHT)
@@ -288,31 +270,14 @@ export default {
         );
 
         existingPage.addContentStreams(pdfDoc.register(contentStream1));
-
-
-
       }
 
       const pdfBytes = PDFDocumentWriter.saveToBytes(pdfDoc);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       var tempPdfFile = os.tmpdir() + '/tmp_invoice.pdf'
-
       fs.writeFileSync(tempPdfFile, pdfBytes);
-      this.webview.loadURL("file://" + tempPdfFile);
+      vm.isRenderingPdf = false;
+      vm.webview.loadURL("file://" + tempPdfFile);
     });
 
     setTimeout(() => { vm.toPDF() }, 100);
@@ -358,7 +323,8 @@ export default {
     toPDF() {
       var vm = this
       this.isRenderingPdf = true;
-      this.pdfString = "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="
+      // this.pdfString = "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
+         this.webview.loadURL("file://" + ASSETS+"/billing/blank.pdf");
       setTimeout(() => {
         var content = document.getElementById("billing-container").parentNode.innerHTML
         ipcRenderer.send("printPDF", vm.form.invoice_number, content, vm.theme, true);
