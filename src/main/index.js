@@ -247,14 +247,14 @@ ipcMain.on("readyToPrintPDF",  (event, ID, silent = false) => {
     printSelectionOnly: false,
     landscape: false
   }
-  printWorkerWindow.webContents.printToPDF(printOptions,async function(error, data) {
+  printWorkerWindow.webContents.printToPDF(printOptions,  function(error, data) {
     if (error) throw error
 
     if (silent) {
       mainWindow.send('data-pdf', data);
     } else {
       try {
-        await fs.writeFileSync(pdfPath, data);
+          fs.writeFileSync(pdfPath, data);
         // shell.openItem(pdfPath)
         pdfViewerWindow = createPdfViewerWindow(pdfPath)
         mainWindow.send('wrote-pdf', pdfPath)

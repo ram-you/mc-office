@@ -101,19 +101,25 @@
       <webview id="pdf-viewer" :src="pdfString" style="display:flex; width:100%; height:100vh" autosize></webview>
 
     </v-card>
+
+    <v-dialog v-model="isRenderingPdf" persistent width="300">
+      <v-card color="primary" dark>
+        <v-card-text> {{waitingMessage}}
+          <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>  
 
 
-const fs = require('fs')
+const fs = require('fs');
 const os = require('os');
 const PDFWindow = require('electron-pdf-window');
-
 const { PDFDocumentFactory, PDFDocumentWriter, drawText, drawLinesOfText, drawImage, drawRectangle, } = require('pdf-lib');
 
-const got = require('got');
 const Store = require('electron-store');
 const _store = new Store();
 
@@ -125,16 +131,19 @@ var electron = require("electron")
 const remote = electron.remote;
 const app = remote.app;
 let sep = path.sep
-const userDataPath = app.getPath('userData') + sep;
-const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
-var knex = require('knex')({ client: 'sqlite3', connection: { filename: dbFilename }, useNullAsDefault: true });
+// const userDataPath = app.getPath('userData') + sep;
+// const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
+// var knex = require('knex')({ client: 'sqlite3', connection: { filename: dbFilename }, useNullAsDefault: true });
 let ASSETS = remote.getGlobal('ASSETS_GLOBAL')
+
+
 
 import invoiceHeader from "./invoiceHeader"
 import invoiceItems from "./invoiceItems"
 import invoiceFooter from "./invoiceFooter"
 
 import InvoiceDetail from "./itemDetails"
+import { setTimeout } from 'timers';
 
 function Uint8ToBase64(u8Arr) {
   var CHUNK_SIZE = 0x8000; //arbitrary number
@@ -171,8 +180,10 @@ export default {
       terms: false
     })
     return {
+      waitingMessage: 'Mise à jour de la Facture',
+      showInvoiceData: false,
       clientDialog: false,
-      pdfString: '',
+      pdfString: 'about:blank',
       isRenderingPdf: false,
       invoiceDate: false,
       dueDate: false,
@@ -205,27 +216,7 @@ export default {
 
   },
   watch: {
-    searchClient(val) {
-      if (this.clientsItems.length > 0) return
-      this.isLoading = true
 
-
-
-
-        (async () => {
-          try {
-            const response = await got('https://api.coinmarketcap.com/v2/listings/');
-            console.log(response.body);
-            this.clientsItems = res.data.data
-            this.isLoading = false
-          } catch (error) {
-            console.log(error.response.body);
-          }
-        })();
-
-
-
-    }
   },
 
   beforeCreate() {
@@ -240,36 +231,48 @@ export default {
     var userTheme = _store.get('users.' + connectedUserName + '.invoice.theme') || 'default'
     this.theme = userTheme;
 
-    this.webview = document.querySelector('webview')
-    this.webview.webContents = this.webview.getWebContents()
-    PDFWindow.addSupport(this.webview);
+    const invoiceFontBytes = fs.readFileSync(ASSETS + '/billing/theme/default/SourceSansPro-Regular.ttf');
+    const PURPLE = [119 / 255, 41 / 255, 83 / 255];
+    const ORANGE = [224 / 255, 90 / 255, 43 / 255];
+    const GREY = [117 / 255, 117 / 255, 117 / 255];
+    const INVOICE_FONT = 'InvoiceFont';
+
+    function ready() {
+      setTimeout(() => {
+        vm.webview = document.querySelector('webview')
+        vm.webview.webContents = vm.webview.getWebContents()
+        PDFWindow.addSupport(vm.webview);
+      }, 100);
+      setTimeout(() => { vm.toPDF() }, 300);
+    }
+
+    let stateCheck = setInterval(() => {
+      if (document.readyState === 'complete') {
+        clearInterval(stateCheck);
+        ready()
+      }
+    }, 100);
 
     ipcRenderer.on("data-pdf", (event, pdfData) => {
       console.log(" PDF DATA regenerated.....");
       // vm.pdfString = 'data:application/pdf;base64, ' + (Uint8ToBase64(pdfData))
 
       const pdfDoc = PDFDocumentFactory.load(pdfData);
-      const invoiceFontBytes = fs.readFileSync(ASSETS + '/billing/theme/default/SourceSansPro-Regular.ttf');
-      const INVOICE_FONT = 'InvoiceFont';
+
       const [invoiceFontRef] = pdfDoc.embedFont(invoiceFontBytes);
       const pages = pdfDoc.getPages();
-      const PURPLE = [119 / 255, 41 / 255, 83 / 255];
-      const ORANGE = [224 / 255, 90 / 255, 43 / 255];
-      const GREY = [117 / 255, 117 / 255, 117 / 255]; 
 
-      for (var i = 0; i < pages.length; i++) { 
-        const existingPage = pages[i].addFontDictionary(INVOICE_FONT, invoiceFontRef);
-        const PAGE_WIDTH = (existingPage.get('MediaBox').array[2]).number;
-        const PAGE_HEIGHT = (existingPage.get('MediaBox').array[3]).number;
-        console.log(PAGE_WIDTH, PAGE_HEIGHT)
+      for (var i = 0; i < pages.length; i++) {
+        const currentPage = pages[i].addFontDictionary(INVOICE_FONT, invoiceFontRef);
+        const PAGE_WIDTH = (currentPage.get('MediaBox').array[2]).number;
+        const PAGE_HEIGHT = (currentPage.get('MediaBox').array[3]).number;
         var contentStream1 = pdfDoc.createContentStream(
           drawLinesOfText(
             ['Page: ' + (i + 1).toString() + '/' + (pages.length).toString()],
             { x: 34, y: 31, size: 8, font: INVOICE_FONT, colorRgb: GREY, },
           ),
         );
-
-        existingPage.addContentStreams(pdfDoc.register(contentStream1));
+        currentPage.addContentStreams(pdfDoc.register(contentStream1));
       }
 
       const pdfBytes = PDFDocumentWriter.saveToBytes(pdfDoc);
@@ -277,10 +280,11 @@ export default {
       var tempPdfFile = os.tmpdir() + '/tmp_invoice.pdf'
       fs.writeFileSync(tempPdfFile, pdfBytes);
       vm.isRenderingPdf = false;
-      vm.webview.loadURL("file://" + tempPdfFile);
+      vm.webview.loadURL(tempPdfFile);
+
     });
 
-    setTimeout(() => { vm.toPDF() }, 100);
+
 
 
 
@@ -324,11 +328,12 @@ export default {
       var vm = this
       this.isRenderingPdf = true;
       // this.pdfString = "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
-         this.webview.loadURL("file://" + ASSETS+"/billing/blank.pdf");
+      // this.webview.loadURL("file://" + ASSETS + "/billing/blank.pdf");
+        console.log(" PDF DATA requested.....");
       setTimeout(() => {
         var content = document.getElementById("billing-container").parentNode.innerHTML
         ipcRenderer.send("printPDF", vm.form.invoice_number, content, vm.theme, true);
-      }, 1000);
+      }, 100);
 
     },
 

@@ -45,7 +45,7 @@ export default new Router({
   {
     path: '/invoice/new',
     name: 'new-invoice',
-    meta: { transitionName: 'slide' },
+    // meta: { transitionName: 'slide' },
     component: () => import('../views/billing/invoice/new')
   },
   {

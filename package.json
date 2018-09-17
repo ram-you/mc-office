@@ -1,6 +1,6 @@
 {
   "name": "mc-office",
-  "version": "0.3.21",
+  "version": "0.3.44",
   "db_version": "0.0.3",
   "license": "MIT",
   "description": "A MEDIACEPT Technology creation",
@@ -21,7 +21,7 @@
     "build:all": "npm run pack && electron-builder -wl",
     "clean": "cross-env BUILD_TARGET=clean node vue-electron/build.js",
     "dev": "cross-env NODE_ENV=development ELECTRON_DISABLE_SECURITY_WARNINGS=true node vue-electron/dev-runner.js",
-    "pack": "npm version patch --no-git-tag-version && cross-env NODE_ENV=production npm run pack:main && npm run pack:renderer",
+    "pack": "npm run clean && npm version patch --no-git-tag-version && cross-env NODE_ENV=production npm run pack:main && npm run pack:renderer",
     "pack:main": "webpack  --mode production --hide-modules --config vue-electron/webpack.main.config.js",
     "pack:renderer": "webpack --mode production --hide-modules --config vue-electron/webpack.renderer.config.js",
     "postinstall": "electron-builder install-app-deps && npm rebuild node-sass",
@@ -39,9 +39,9 @@
     "electron-pdf-window": "^1.0.12",
     "electron-store": "^2.0.0",
     "fs-extra": "^7.0.0",
-    "got": "^9.2.1",
+    "got": "^9.2.2",
     "knex": "^0.15.2",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.11",
     "nedb": "^1.8.0",
     "pdf-lib": "^0.3.0",
     "sqlite3": "^4.0.2",
@@ -49,11 +49,12 @@
     "vue-chartjs": "^3.4.0",
     "vue-i18n": "^8.1.0",
     "vue-router": "^3.0.1",
-    "vue-swatches": "^1.0.1",
+    "vue-swatches": "^1.0.2",
     "vuetify": "^1.2.3",
     "vuetify-upload-button": "^1.1.0",
     "vuex": "^3.0.1",
-    "xlsx": "^0.14.0"
+    "xlsx": "^0.14.0",
+    "electron-unhandled": "^1.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

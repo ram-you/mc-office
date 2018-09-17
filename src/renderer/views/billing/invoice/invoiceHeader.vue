@@ -127,21 +127,9 @@
 </template>
 
 <script>
-var axios = require("axios");
-import debounce from "lodash/debounce";
-var format = require('date-fns/format')
-
-var path = require('path');
-var electron = require("electron")
-const remote = electron.remote;
-const app = remote.app;
-let sep = path.sep
-const userDataPath = app.getPath('userData') + sep;
-const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
-var knex = require('knex')({ client: 'sqlite3', connection: { filename: dbFilename }, useNullAsDefault: true });
-
-
-
+var got = require("got");
+import debounce from "lodash/debounce"; 
+ 
 export default {
   props: {
     form: { type: Object, required: false, default: {} }
@@ -178,23 +166,27 @@ export default {
   },
   watch: {
     searchClient(val) {
-      // Items have already been loaded
       if (this.clientsItems.length > 0) return
-
       this.isLoading = true
 
-      // Lazily load input items
-      axios.get('https://api.coinmarketcap.com/v2/listings/')
-        .then(res => {
-          this.clientsItems = res.data.data
-          this.isLoading = false
-        })
-        .catch(err => {
-          console.log(err)
-        })
+
+
+
+        (async () => {
+          try {
+            const response = await got('https://api.coinmarketcap.com/v2/listings/');
+            console.log(response.body);
+            this.clientsItems = res.data.data
+            this.isLoading = false
+          } catch (error) {
+            console.log(error.response.body);
+          }
+        })();
+
+
+
     }
   },
-
   beforeCreate() {
   },
   created() {
