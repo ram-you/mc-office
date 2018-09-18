@@ -39,6 +39,7 @@ global.dbWorkerWindow = null
 global.ormWorkerWindow = null
 global.printWorkerWindow = null
 global.pdfViewerWindow = null
+global.invoiceData={data:null}
 
 global.DB_VERSION = require('../../package.json').db_version
 

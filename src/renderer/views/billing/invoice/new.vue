@@ -80,9 +80,7 @@
       </v-card-actions>
     </v-card>
     <!-- ========================================= -->
-    <div class="hidden-div">
-      <invoice-detail :invoiceData="form"></invoice-detail>
-    </div>
+  
     <v-card class="ma-4 pb-2">
 
       <v-toolbar flat dense style="border-bottom:1px solid rgba(150, 150, 150, 0.23);">
@@ -143,7 +141,7 @@ import invoiceHeader from "./invoiceHeader"
 import invoiceItems from "./invoiceItems"
 import invoiceFooter from "./invoiceFooter"
 
-import InvoiceDetail from "./itemDetails"
+
 import { setTimeout } from 'timers';
 
 function Uint8ToBase64(u8Arr) {
@@ -161,7 +159,7 @@ function Uint8ToBase64(u8Arr) {
 }
 
 export default {
-  components: { invoiceHeader, invoiceItems, invoiceFooter, InvoiceDetail },
+  components: { invoiceHeader, invoiceItems, invoiceFooter },
   data() {
     const defaultForm = Object.freeze({
       invoice_number: '',
@@ -236,7 +234,7 @@ export default {
     vm.webview.webContents = vm.webview.getWebContents()
     PDFWindow.addSupport(vm.webview);
 
-    setTimeout(() => { vm.toPDF() }, 300);
+    vm.toPDF() 
 
 
 
@@ -298,12 +296,13 @@ export default {
       // this.pdfString = "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
       // this.webview.loadURL("file://" + ASSETS + "/billing/blank.pdf");
       console.log(" PDF DATA requested.....");
-      setTimeout(() => {
+    
         // var content = document.getElementById("billing-container").parentNode.innerHTML
         // printWorkerWindow.webContents.send("printPDF", vm.form.invoice_number, "content", vm.theme, true);
         var _data={invoice:vm.form, theme:vm.theme, silent:true}
-         printWorkerWindow.webContents.send("printPDF", _data);
-      }, 100);
+        remote.getGlobal('invoiceData').data=  JSON.stringify(_data);
+    printWorkerWindow.webContents.send("printInvoicePDF");
+ 
 
     },
 

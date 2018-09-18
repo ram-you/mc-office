@@ -25,17 +25,17 @@ function removejscssfile(filename, filetype) {
   }
 }
 
-ipcRenderer.on("printPDF", (event, _data) => {
-
+ipcRenderer.on("printInvoicePDF", (event) => {
+  console.log("data received............................",remote.getGlobal('invoiceData'))
   // var _data={data:vm.form, theme:vm.theme, silent:true}
-
-  var invoiceData={invoice:_data.invoice}
-  var theme=_data.theme
-  var silent=_data.silent
-  console.log("data received............................",_data)
+  const _DATA = JSON.parse(remote.getGlobal('invoiceData').data)
+  var invoiceData={invoice:_DATA.invoice}
+  var theme=_DATA.theme
+  var silent=_DATA.silent
+ 
   var container = document.getElementById("container");
   // container.innerHTML = fs.readFileSync(  path.join(__dirname,   './template.hbs')         , 'utf8');
-  var html
+  
   
 
   setTimeout(() => {
@@ -64,7 +64,7 @@ ipcRenderer.on("printPDF", (event, _data) => {
   setTimeout(() => {
     // ipcRenderer.send("readyToPrintPDF", ID, silent);
 
-    toPDF(  invoiceData, silent)
+    toPDF( event, invoiceData, silent)
   }, 100);
 
 });
@@ -97,7 +97,7 @@ ipcRenderer.on("print", (event, ID, content, theme, printer) => {
 
 
 
-function toPDF( invoiceData, silent = false){
+function toPDF(event, invoiceData, silent = false){
   const invoiceFontBytes = fs.readFileSync(ASSETS + '/billing/theme/default/SourceSansPro-Regular.ttf');
   const PURPLE = [119 / 255, 41 / 255, 83 / 255];
   const ORANGE = [224 / 255, 90 / 255, 43 / 255];
@@ -145,6 +145,7 @@ function toPDF( invoiceData, silent = false){
   
       if (silent) {
         mainWindow.webContents.send('data-pdf', pdfBytes);
+        console.log("data sended YES YES ===================",remote.getGlobal('invoiceData'))
       } else {
         try {
             fs.writeFileSync(pdfPath, pdfBytes);
