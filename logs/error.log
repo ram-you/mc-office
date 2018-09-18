@@ -1,0 +1,84 @@
+2018-09-18T09:55:14.558Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7)
+2018-09-18T09:55:29.618Z - error: Error occured during reporter init Error: Transport already attached: console, assign a different name
+    at exports.Logger.Logger.add (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/node_modules/winston/lib/winston/logger.js:487:11)
+    at Object.keys.forEach (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:642:16)
+    at Array.forEach (<anonymous>)
+    at Reporter._configureWinstonTransports (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:614:29)
+    at Reporter._initOptions (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:330:10)
+    at <anonymous>
+2018-09-18T09:56:37.900Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7)
+2018-09-18T10:02:42.197Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7)
+2018-09-18T10:02:47.215Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7)
+2018-09-18T10:03:29.850Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+2018-09-18T10:03:47.640Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+2018-09-18T10:04:33.249Z - error: Error occured during reporter init TypeError: this.interval.unref is not a function
+    at JobProcessor.start (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-scheduling/lib/jobProcessor.js:23:19)
+    at Scheduling.start (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-scheduling/lib/scheduling.js:174:23)
+    at Function.reporter.initializeListeners.add (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-scheduling/lib/scheduling.js:206:27)
+    at /home/ramzi/electron_projects/mc-office/node_modules/listener-collection/lib/listenerCollection.js:171:33
+    at /home/ramzi/electron_projects/mc-office/node_modules/listener-collection/lib/listenerCollection.js:151:16
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7)
+From previous event:
+    at /home/ramzi/electron_projects/mc-office/node_modules/listener-collection/lib/listenerCollection.js:149:47
+    at Array.map (<anonymous>)
+    at mapSeries (/home/ramzi/electron_projects/mc-office/node_modules/listener-collection/lib/listenerCollection.js:148:24)
+    at module.exports.ListenerCollection.fire (/home/ramzi/electron_projects/mc-office/node_modules/listener-collection/lib/listenerCollection.js:166:12)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:191:38)
+    at <anonymous>
+2018-09-18T10:11:23.521Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+2018-09-18T10:13:39.844Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7)
+2018-09-18T10:16:48.540Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+2018-09-18T10:17:23.078Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7)
+2018-09-18T10:21:35.013Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+2018-09-18T10:23:24.491Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+2018-09-18T10:30:41.509Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+2018-09-18T10:31:25.961Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>

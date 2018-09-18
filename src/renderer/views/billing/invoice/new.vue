@@ -113,19 +113,20 @@
 </template>
 
 <script>  
+var path = require('path');
 
 
 const fs = require('fs');
 const os = require('os');
 const PDFWindow = require('electron-pdf-window');
-const { PDFDocumentFactory, PDFDocumentWriter, drawText, drawLinesOfText, drawImage, drawRectangle, } = require('pdf-lib');
+
 
 const Store = require('electron-store');
 const _store = new Store();
 
 var format = require('date-fns/format')
 
-var path = require('path');
+
 const { ipcRenderer } = require('electron')
 var electron = require("electron")
 const remote = electron.remote;
@@ -135,7 +136,7 @@ let sep = path.sep
 // const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
 // var knex = require('knex')({ client: 'sqlite3', connection: { filename: dbFilename }, useNullAsDefault: true });
 let ASSETS = remote.getGlobal('ASSETS_GLOBAL')
-
+let printWorkerWindow= remote.getGlobal('printWorkerWindow');
 
 
 import invoiceHeader from "./invoiceHeader"
@@ -231,54 +232,22 @@ export default {
     var userTheme = _store.get('users.' + connectedUserName + '.invoice.theme') || 'default'
     this.theme = userTheme;
 
-    const invoiceFontBytes = fs.readFileSync(ASSETS + '/billing/theme/default/SourceSansPro-Regular.ttf');
-    const PURPLE = [119 / 255, 41 / 255, 83 / 255];
-    const ORANGE = [224 / 255, 90 / 255, 43 / 255];
-    const GREY = [117 / 255, 117 / 255, 117 / 255];
-    const INVOICE_FONT = 'InvoiceFont';
+    vm.webview = document.querySelector('webview')
+    vm.webview.webContents = vm.webview.getWebContents()
+    PDFWindow.addSupport(vm.webview);
 
-    function ready() {
-      setTimeout(() => {
-        vm.webview = document.querySelector('webview')
-        vm.webview.webContents = vm.webview.getWebContents()
-        PDFWindow.addSupport(vm.webview);
-      }, 100);
-      setTimeout(() => { vm.toPDF() }, 300);
-    }
+    setTimeout(() => { vm.toPDF() }, 300);
 
-    let stateCheck = setInterval(() => {
-      if (document.readyState === 'complete') {
-        clearInterval(stateCheck);
-        ready()
-      }
-    }, 100);
+
 
     ipcRenderer.on("data-pdf", (event, pdfData) => {
       console.log(" PDF DATA regenerated.....");
       // vm.pdfString = 'data:application/pdf;base64, ' + (Uint8ToBase64(pdfData))
 
-      const pdfDoc = PDFDocumentFactory.load(pdfData);
 
-      const [invoiceFontRef] = pdfDoc.embedFont(invoiceFontBytes);
-      const pages = pdfDoc.getPages();
-
-      for (var i = 0; i < pages.length; i++) {
-        const currentPage = pages[i].addFontDictionary(INVOICE_FONT, invoiceFontRef);
-        const PAGE_WIDTH = (currentPage.get('MediaBox').array[2]).number;
-        const PAGE_HEIGHT = (currentPage.get('MediaBox').array[3]).number;
-        var contentStream1 = pdfDoc.createContentStream(
-          drawLinesOfText(
-            ['Page: ' + (i + 1).toString() + '/' + (pages.length).toString()],
-            { x: 34, y: 31, size: 8, font: INVOICE_FONT, colorRgb: GREY, },
-          ),
-        );
-        currentPage.addContentStreams(pdfDoc.register(contentStream1));
-      }
-
-      const pdfBytes = PDFDocumentWriter.saveToBytes(pdfDoc);
 
       var tempPdfFile = os.tmpdir() + '/tmp_invoice.pdf'
-      fs.writeFileSync(tempPdfFile, pdfBytes);
+      fs.writeFileSync(tempPdfFile, pdfData);
       vm.isRenderingPdf = false;
       vm.webview.loadURL(tempPdfFile);
 
@@ -323,16 +292,17 @@ export default {
       return defaultPrinter || this.getSystemDefaultPrinter()
     },
 
-
     toPDF() {
       var vm = this
       this.isRenderingPdf = true;
       // this.pdfString = "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
       // this.webview.loadURL("file://" + ASSETS + "/billing/blank.pdf");
-        console.log(" PDF DATA requested.....");
+      console.log(" PDF DATA requested.....");
       setTimeout(() => {
-        var content = document.getElementById("billing-container").parentNode.innerHTML
-        ipcRenderer.send("printPDF", vm.form.invoice_number, content, vm.theme, true);
+        // var content = document.getElementById("billing-container").parentNode.innerHTML
+        // printWorkerWindow.webContents.send("printPDF", vm.form.invoice_number, "content", vm.theme, true);
+        var _data={invoice:vm.form, theme:vm.theme, silent:true}
+         printWorkerWindow.webContents.send("printPDF", _data);
       }, 100);
 
     },

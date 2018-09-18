@@ -1,84 +1,16 @@
 <!DOCTYPE html>
-<!-- This is My Awesome Template -->
 <html>
 <meta charset="utf-8">
 
 <head>
-  <style>
-  </style>
 </head>
 
 <body>
-  <div id="container"></div>
+  <div id="container"> 
+  </div>
+  <script src="index.js"></script>
   <script>
-    const fs = require('fs')
-    const os = require('os')
-    const path = require('path')
-    const ipcRenderer = require("electron").ipcRenderer;
-    const isDevelopment = process.env.NODE_ENV !== 'production';
-
-    function removejscssfile(filename, filetype) {
-      var targetelement = (filetype == "js") ? "script" : (filetype == "css") ? "link" : "none" //determine element type to create nodelist from
-      var targetattr = (filetype == "js") ? "src" : (filetype == "css") ? "href" : "none" //determine corresponding attribute to test for
-      var allsuspects = document.getElementsByTagName(targetelement)
-      for (var i = allsuspects.length; i >= 0; i--) { //search backwards within nodelist for matching elements to remove
-        if (allsuspects[i] && allsuspects[i].getAttribute(targetattr) != null && allsuspects[i].getAttribute(targetattr).indexOf(filename) != -1)
-          allsuspects[i].parentNode.removeChild(allsuspects[i]) //remove element by calling parentNode.removeChild()
-      }
-    }
-
-    ipcRenderer.on("printPDF", (event, ID, content, theme, silent) => {
-      var container = document.getElementById("container");
-      container.innerHTML = content;
-
-      let assetsFolder = isDevelopment ? ('./theme/' + theme + '/') : ('/../../../assets/billing/theme/' + theme + '/')
-      let indexCss = path.join(__dirname, assetsFolder + 'index.css')
-      if (document.getElementById("invoiceStyle")) {
-        removejscssfile(indexCss, "css")
-      }
-
-      setTimeout(() => {
-        var element = document.createElement('link');
-        element.id = "invoiceStyle"
-        element.type = 'text/css';
-        element.rel = 'stylesheet';
-        element.href = indexCss;
-        document.getElementsByTagName("head")[0].appendChild(element);
-      }, 50);
  
-
-
-      setTimeout(() => {
-        ipcRenderer.send("readyToPrintPDF", ID, silent);
-      }, 100);
-
-    });
-
-    // ===
-    ipcRenderer.on("print", (event, ID, content, theme, printer) => {
-      var container = document.getElementById("container");
-      container.innerHTML = content;
-
-      let assetsFolder = isDevelopment ? ('./theme/' + theme + '/') : ('/../../../assets/billing/theme/' + theme + '/')
-      let indexCss = path.join(__dirname, assetsFolder + 'index.css')
-
-      if (document.getElementById("invoiceStyle")) {
-        removejscssfile(indexCss, "css")
-      }
-
-      setTimeout(() => {
-        var element = document.createElement('link');
-        element.id = "invoiceStyle"
-        element.type = 'text/css';
-        element.rel = 'stylesheet';
-        element.href = indexCss;
-        document.getElementsByTagName("head")[0].appendChild(element);
-      }, 100);
-      setTimeout(() => {
-        ipcRenderer.send("readyToPrint", ID, printer);
-      }, 200);
-
-    });
   </script>
 </body>
 

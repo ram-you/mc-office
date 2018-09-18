@@ -1,0 +1,690 @@
+2018-09-18T09:55:12.657Z - info: Initializing jsreport@2.2.0 in development mode using configuration file: jsreport.config.json
+2018-09-18T09:55:12.659Z - info: Searching for available extensions in /home/ramzi/electron_projects/mc-office
+2018-09-18T09:55:12.682Z - info: Extensions location cache contains up to date information, skipping crawling in /home/ramzi/electron_projects/mc-office
+2018-09-18T09:55:13.161Z - info: Found 31 extensions
+2018-09-18T09:55:13.530Z - info: Using extension handlebars
+2018-09-18T09:55:13.535Z - info: Using extension import-export
+2018-09-18T09:55:13.702Z - info: Using extension templates
+2018-09-18T09:55:13.705Z - info: Using extension jsrender
+2018-09-18T09:55:13.706Z - info: Using extension freeze
+2018-09-18T09:55:13.708Z - info: Using extension cli
+2018-09-18T09:55:13.708Z - info: Using extension express
+2018-09-18T09:55:13.843Z - info: Using extension debug
+2018-09-18T09:55:13.845Z - info: Using extension tags
+2018-09-18T09:55:13.848Z - info: Using extension data
+2018-09-18T09:55:13.850Z - info: Using extension fs-store
+2018-09-18T09:55:14.013Z - info: Using extension authorization
+2018-09-18T09:55:14.015Z - info: Using extension html-to-xlsx
+2018-09-18T09:55:14.168Z - info: html-to-xlsx detected chrome as available html engine
+2018-09-18T09:55:14.168Z - info: Using extension child-templates
+2018-09-18T09:55:14.174Z - info: Using extension browser-client
+2018-09-18T09:55:14.177Z - info: Using extension chrome-pdf
+2018-09-18T09:55:14.182Z - info: Using extension pdf-utils
+2018-09-18T09:55:14.184Z - info: Using extension version-control
+2018-09-18T09:55:14.214Z - info: Using extension reports
+2018-09-18T09:55:14.218Z - info: Using extension text
+2018-09-18T09:55:14.220Z - info: Using extension base
+2018-09-18T09:55:14.222Z - info: Using extension studio
+2018-09-18T09:55:14.250Z - info: Using extension licensing
+2018-09-18T09:55:14.292Z - info: Using extension scripts
+2018-09-18T09:55:14.297Z - info: Using extension assets
+2018-09-18T09:55:14.308Z - info: Using extension scheduling
+2018-09-18T09:55:14.377Z - info: Using extension xlsx
+2018-09-18T09:55:14.546Z - info: Using extension sample-template
+2018-09-18T09:55:14.550Z - info: Using extension resources
+2018-09-18T09:55:14.552Z - info: Using extension public-templates
+2018-09-18T09:55:14.558Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7)
+2018-09-18T09:55:29.618Z - error: Error occured during reporter init Error: Transport already attached: console, assign a different name
+    at exports.Logger.Logger.add (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/node_modules/winston/lib/winston/logger.js:487:11)
+    at Object.keys.forEach (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:642:16)
+    at Array.forEach (<anonymous>)
+    at Reporter._configureWinstonTransports (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:614:29)
+    at Reporter._initOptions (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:330:10)
+    at <anonymous>
+2018-09-18T09:56:36.068Z - info: Initializing jsreport@2.2.0 in development mode using configuration file: jsreport.config.json
+2018-09-18T09:56:36.070Z - info: Searching for available extensions in /home/ramzi/electron_projects/mc-office
+2018-09-18T09:56:36.093Z - info: Extensions location cache contains up to date information, skipping crawling in /home/ramzi/electron_projects/mc-office
+2018-09-18T09:56:36.567Z - info: Found 31 extensions
+2018-09-18T09:56:36.934Z - info: Using extension handlebars
+2018-09-18T09:56:36.938Z - info: Using extension import-export
+2018-09-18T09:56:37.104Z - info: Using extension templates
+2018-09-18T09:56:37.107Z - info: Using extension jsrender
+2018-09-18T09:56:37.108Z - info: Using extension freeze
+2018-09-18T09:56:37.110Z - info: Using extension cli
+2018-09-18T09:56:37.110Z - info: Using extension express
+2018-09-18T09:56:37.248Z - info: Using extension debug
+2018-09-18T09:56:37.250Z - info: Using extension tags
+2018-09-18T09:56:37.253Z - info: Using extension data
+2018-09-18T09:56:37.255Z - info: Using extension fs-store
+2018-09-18T09:56:37.417Z - info: Using extension authorization
+2018-09-18T09:56:37.420Z - info: Using extension html-to-xlsx
+2018-09-18T09:56:37.569Z - info: html-to-xlsx detected chrome as available html engine
+2018-09-18T09:56:37.570Z - info: Using extension child-templates
+2018-09-18T09:56:37.576Z - info: Using extension browser-client
+2018-09-18T09:56:37.578Z - info: Using extension chrome-pdf
+2018-09-18T09:56:37.584Z - info: Using extension pdf-utils
+2018-09-18T09:56:37.586Z - info: Using extension version-control
+2018-09-18T09:56:37.612Z - info: Using extension reports
+2018-09-18T09:56:37.617Z - info: Using extension text
+2018-09-18T09:56:37.618Z - info: Using extension base
+2018-09-18T09:56:37.619Z - info: Using extension studio
+2018-09-18T09:56:37.648Z - info: Using extension licensing
+2018-09-18T09:56:37.692Z - info: Using extension scripts
+2018-09-18T09:56:37.696Z - info: Using extension assets
+2018-09-18T09:56:37.708Z - info: Using extension scheduling
+2018-09-18T09:56:37.773Z - info: Using extension xlsx
+2018-09-18T09:56:37.893Z - info: Using extension sample-template
+2018-09-18T09:56:37.895Z - info: Using extension resources
+2018-09-18T09:56:37.897Z - info: Using extension public-templates
+2018-09-18T09:56:37.900Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7)
+2018-09-18T10:02:40.187Z - info: Initializing jsreport@2.2.0 in development mode using configuration file: jsreport.config.json
+2018-09-18T10:02:40.189Z - info: Searching for available extensions in /home/ramzi/electron_projects/mc-office
+2018-09-18T10:02:40.219Z - info: Extensions location cache contains up to date information, skipping crawling in /home/ramzi/electron_projects/mc-office
+2018-09-18T10:02:40.788Z - info: Found 31 extensions
+2018-09-18T10:02:41.179Z - info: Using extension handlebars
+2018-09-18T10:02:41.185Z - info: Using extension import-export
+2018-09-18T10:02:41.359Z - info: Using extension templates
+2018-09-18T10:02:41.362Z - info: Using extension jsrender
+2018-09-18T10:02:41.363Z - info: Using extension freeze
+2018-09-18T10:02:41.365Z - info: Using extension cli
+2018-09-18T10:02:41.366Z - info: Using extension express
+2018-09-18T10:02:41.504Z - info: Using extension debug
+2018-09-18T10:02:41.507Z - info: Using extension tags
+2018-09-18T10:02:41.510Z - info: Using extension data
+2018-09-18T10:02:41.511Z - info: Using extension fs-store
+2018-09-18T10:02:41.681Z - info: Using extension authorization
+2018-09-18T10:02:41.683Z - info: Using extension html-to-xlsx
+2018-09-18T10:02:41.861Z - info: html-to-xlsx detected chrome as available html engine
+2018-09-18T10:02:41.862Z - info: Using extension child-templates
+2018-09-18T10:02:41.868Z - info: Using extension browser-client
+2018-09-18T10:02:41.870Z - info: Using extension chrome-pdf
+2018-09-18T10:02:41.876Z - info: Using extension pdf-utils
+2018-09-18T10:02:41.878Z - info: Using extension version-control
+2018-09-18T10:02:41.907Z - info: Using extension reports
+2018-09-18T10:02:41.910Z - info: Using extension text
+2018-09-18T10:02:41.911Z - info: Using extension base
+2018-09-18T10:02:41.912Z - info: Using extension studio
+2018-09-18T10:02:41.941Z - info: Using extension licensing
+2018-09-18T10:02:41.985Z - info: Using extension scripts
+2018-09-18T10:02:41.989Z - info: Using extension assets
+2018-09-18T10:02:42.006Z - info: Using extension scheduling
+2018-09-18T10:02:42.062Z - info: Using extension xlsx
+2018-09-18T10:02:42.189Z - info: Using extension sample-template
+2018-09-18T10:02:42.192Z - info: Using extension resources
+2018-09-18T10:02:42.193Z - info: Using extension public-templates
+2018-09-18T10:02:42.197Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7)
+2018-09-18T10:02:45.283Z - info: Initializing jsreport@2.2.0 in development mode using configuration file: jsreport.config.json
+2018-09-18T10:02:45.284Z - info: Searching for available extensions in /home/ramzi/electron_projects/mc-office
+2018-09-18T10:02:45.314Z - info: Extensions location cache contains up to date information, skipping crawling in /home/ramzi/electron_projects/mc-office
+2018-09-18T10:02:45.813Z - info: Found 31 extensions
+2018-09-18T10:02:46.250Z - info: Using extension handlebars
+2018-09-18T10:02:46.254Z - info: Using extension import-export
+2018-09-18T10:02:46.422Z - info: Using extension templates
+2018-09-18T10:02:46.425Z - info: Using extension jsrender
+2018-09-18T10:02:46.426Z - info: Using extension freeze
+2018-09-18T10:02:46.427Z - info: Using extension cli
+2018-09-18T10:02:46.428Z - info: Using extension express
+2018-09-18T10:02:46.560Z - info: Using extension debug
+2018-09-18T10:02:46.563Z - info: Using extension tags
+2018-09-18T10:02:46.566Z - info: Using extension data
+2018-09-18T10:02:46.568Z - info: Using extension fs-store
+2018-09-18T10:02:46.732Z - info: Using extension authorization
+2018-09-18T10:02:46.735Z - info: Using extension html-to-xlsx
+2018-09-18T10:02:46.887Z - info: html-to-xlsx detected chrome as available html engine
+2018-09-18T10:02:46.887Z - info: Using extension child-templates
+2018-09-18T10:02:46.894Z - info: Using extension browser-client
+2018-09-18T10:02:46.896Z - info: Using extension chrome-pdf
+2018-09-18T10:02:46.902Z - info: Using extension pdf-utils
+2018-09-18T10:02:46.904Z - info: Using extension version-control
+2018-09-18T10:02:46.933Z - info: Using extension reports
+2018-09-18T10:02:46.937Z - info: Using extension text
+2018-09-18T10:02:46.938Z - info: Using extension base
+2018-09-18T10:02:46.940Z - info: Using extension studio
+2018-09-18T10:02:46.967Z - info: Using extension licensing
+2018-09-18T10:02:47.012Z - info: Using extension scripts
+2018-09-18T10:02:47.016Z - info: Using extension assets
+2018-09-18T10:02:47.026Z - info: Using extension scheduling
+2018-09-18T10:02:47.089Z - info: Using extension xlsx
+2018-09-18T10:02:47.208Z - info: Using extension sample-template
+2018-09-18T10:02:47.211Z - info: Using extension resources
+2018-09-18T10:02:47.212Z - info: Using extension public-templates
+2018-09-18T10:02:47.215Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7)
+2018-09-18T10:03:28.246Z - info: Initializing jsreport@2.2.0 in development mode using configuration file: jsreport.config.json
+2018-09-18T10:03:28.247Z - info: Searching for available extensions in /home/ramzi/electron_projects/mc-office
+2018-09-18T10:03:28.280Z - info: Extensions location cache contains up to date information, skipping crawling in /home/ramzi/electron_projects/mc-office
+2018-09-18T10:03:28.757Z - info: Found 31 extensions
+2018-09-18T10:03:28.772Z - debug: Writing extension locations cache to /tmp/jsreport/core/locations.json
+2018-09-18T10:03:28.776Z - debug: Discovered 31 extensions
+2018-09-18T10:03:28.823Z - info: Setting process based strategy for rendering. Please visit http://jsreport.net/learn/configuration for information how to get more performance.
+2018-09-18T10:03:28.827Z - info: Using extension handlebars
+2018-09-18T10:03:28.831Z - info: Using extension import-export
+2018-09-18T10:03:28.991Z - info: Using extension templates
+2018-09-18T10:03:28.994Z - info: Using extension jsrender
+2018-09-18T10:03:28.995Z - info: Using extension authentication
+2018-09-18T10:03:29.084Z - debug: Extension authentication was disabled
+2018-09-18T10:03:29.084Z - info: Using extension freeze
+2018-09-18T10:03:29.086Z - info: Using extension cli
+2018-09-18T10:03:29.087Z - info: Using extension express
+2018-09-18T10:03:29.213Z - info: Using extension debug
+2018-09-18T10:03:29.215Z - info: Using extension tags
+2018-09-18T10:03:29.218Z - info: Using extension data
+2018-09-18T10:03:29.220Z - info: Using extension fs-store
+2018-09-18T10:03:29.377Z - debug: Extension fs-store was disabled
+2018-09-18T10:03:29.377Z - info: Using extension authorization
+2018-09-18T10:03:29.379Z - debug: Extension authorization was disabled
+2018-09-18T10:03:29.379Z - info: Using extension html-to-xlsx
+2018-09-18T10:03:29.528Z - info: html-to-xlsx detected chrome as available html engine
+2018-09-18T10:03:29.528Z - info: Using extension child-templates
+2018-09-18T10:03:29.534Z - info: Using extension browser-client
+2018-09-18T10:03:29.536Z - info: Using extension chrome-pdf
+2018-09-18T10:03:29.542Z - info: Using extension pdf-utils
+2018-09-18T10:03:29.544Z - info: Using extension version-control
+2018-09-18T10:03:29.575Z - info: Using extension reports
+2018-09-18T10:03:29.579Z - info: Using extension text
+2018-09-18T10:03:29.580Z - info: Using extension base
+2018-09-18T10:03:29.582Z - info: Using extension studio
+2018-09-18T10:03:29.610Z - info: Using extension licensing
+2018-09-18T10:03:29.655Z - info: Using extension scripts
+2018-09-18T10:03:29.659Z - info: Using extension assets
+2018-09-18T10:03:29.670Z - info: Using extension scheduling
+2018-09-18T10:03:29.724Z - info: Using extension xlsx
+2018-09-18T10:03:29.843Z - info: Using extension sample-template
+2018-09-18T10:03:29.845Z - debug: Creating samples is disabled
+2018-09-18T10:03:29.845Z - info: Using extension resources
+2018-09-18T10:03:29.846Z - info: Using extension public-templates
+2018-09-18T10:03:29.849Z - debug: Extension public-templates was disabled
+2018-09-18T10:03:29.850Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+2018-09-18T10:03:46.096Z - info: Initializing jsreport@2.2.0 in development mode using configuration file: jsreport.config.json
+2018-09-18T10:03:46.098Z - info: Searching for available extensions in /home/ramzi/electron_projects/mc-office
+2018-09-18T10:03:46.118Z - info: Extensions location cache contains up to date information, skipping crawling in /home/ramzi/electron_projects/mc-office
+2018-09-18T10:03:46.581Z - info: Found 31 extensions
+2018-09-18T10:03:46.596Z - debug: Writing extension locations cache to /tmp/jsreport/core/locations.json
+2018-09-18T10:03:46.598Z - debug: Discovered 31 extensions
+2018-09-18T10:03:46.648Z - info: Setting process based strategy for rendering. Please visit http://jsreport.net/learn/configuration for information how to get more performance.
+2018-09-18T10:03:46.651Z - info: Using extension handlebars
+2018-09-18T10:03:46.655Z - info: Using extension import-export
+2018-09-18T10:03:46.817Z - info: Using extension templates
+2018-09-18T10:03:46.820Z - info: Using extension jsrender
+2018-09-18T10:03:46.820Z - info: Using extension authentication
+2018-09-18T10:03:46.891Z - debug: Extension authentication was disabled
+2018-09-18T10:03:46.891Z - info: Using extension freeze
+2018-09-18T10:03:46.893Z - info: Using extension cli
+2018-09-18T10:03:46.894Z - info: Using extension express
+2018-09-18T10:03:47.019Z - info: Using extension debug
+2018-09-18T10:03:47.021Z - info: Using extension tags
+2018-09-18T10:03:47.024Z - info: Using extension data
+2018-09-18T10:03:47.026Z - info: Using extension fs-store
+2018-09-18T10:03:47.180Z - debug: Extension fs-store was disabled
+2018-09-18T10:03:47.180Z - info: Using extension authorization
+2018-09-18T10:03:47.182Z - debug: Extension authorization was disabled
+2018-09-18T10:03:47.182Z - info: Using extension html-to-xlsx
+2018-09-18T10:03:47.326Z - info: html-to-xlsx detected chrome as available html engine
+2018-09-18T10:03:47.326Z - info: Using extension child-templates
+2018-09-18T10:03:47.332Z - info: Using extension browser-client
+2018-09-18T10:03:47.335Z - info: Using extension chrome-pdf
+2018-09-18T10:03:47.342Z - info: Using extension pdf-utils
+2018-09-18T10:03:47.344Z - info: Using extension version-control
+2018-09-18T10:03:47.373Z - info: Using extension reports
+2018-09-18T10:03:47.377Z - info: Using extension text
+2018-09-18T10:03:47.377Z - info: Using extension base
+2018-09-18T10:03:47.379Z - info: Using extension studio
+2018-09-18T10:03:47.406Z - info: Using extension licensing
+2018-09-18T10:03:47.444Z - info: Using extension scripts
+2018-09-18T10:03:47.448Z - info: Using extension assets
+2018-09-18T10:03:47.459Z - info: Using extension scheduling
+2018-09-18T10:03:47.519Z - info: Using extension xlsx
+2018-09-18T10:03:47.633Z - info: Using extension sample-template
+2018-09-18T10:03:47.635Z - debug: Creating samples is disabled
+2018-09-18T10:03:47.635Z - info: Using extension resources
+2018-09-18T10:03:47.636Z - info: Using extension public-templates
+2018-09-18T10:03:47.639Z - debug: Extension public-templates was disabled
+2018-09-18T10:03:47.640Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+2018-09-18T10:04:32.534Z - info: Initializing jsreport@2.2.0 in development mode using configuration file: jsreport.config.json
+2018-09-18T10:04:32.534Z - info: Searching for available extensions in /home/ramzi/electron_projects/mc-office
+2018-09-18T10:04:32.541Z - info: Extensions location cache contains up to date information, skipping crawling in /home/ramzi/electron_projects/mc-office
+2018-09-18T10:04:33.043Z - info: Found 31 extensions
+2018-09-18T10:04:33.051Z - debug: Writing extension locations cache to /tmp/jsreport/core/locations.json
+2018-09-18T10:04:33.053Z - debug: Discovered 31 extensions
+2018-09-18T10:04:33.101Z - info: Setting process based strategy for rendering. Please visit http://jsreport.net/learn/configuration for information how to get more performance.
+2018-09-18T10:04:33.102Z - info: Using extension handlebars
+2018-09-18T10:04:33.105Z - info: Using extension import-export
+2018-09-18T10:04:33.105Z - info: Using extension templates
+2018-09-18T10:04:33.106Z - info: Using extension jsrender
+2018-09-18T10:04:33.106Z - info: Using extension authentication
+2018-09-18T10:04:33.113Z - debug: Extension authentication was disabled
+2018-09-18T10:04:33.113Z - info: Using extension freeze
+2018-09-18T10:04:33.115Z - info: Using extension cli
+2018-09-18T10:04:33.115Z - info: Using extension express
+2018-09-18T10:04:33.119Z - info: Using extension debug
+2018-09-18T10:04:33.120Z - info: Using extension tags
+2018-09-18T10:04:33.122Z - info: Using extension data
+2018-09-18T10:04:33.122Z - info: Using extension fs-store
+2018-09-18T10:04:33.125Z - debug: Extension fs-store was disabled
+2018-09-18T10:04:33.125Z - info: Using extension authorization
+2018-09-18T10:04:33.125Z - debug: Extension authorization was disabled
+2018-09-18T10:04:33.125Z - info: Using extension html-to-xlsx
+2018-09-18T10:04:33.131Z - info: html-to-xlsx detected chrome as available html engine
+2018-09-18T10:04:33.131Z - info: Using extension child-templates
+2018-09-18T10:04:33.131Z - info: Using extension browser-client
+2018-09-18T10:04:33.133Z - info: Using extension chrome-pdf
+2018-09-18T10:04:33.136Z - info: Using extension pdf-utils
+2018-09-18T10:04:33.136Z - info: Using extension version-control
+2018-09-18T10:04:33.138Z - info: Using extension reports
+2018-09-18T10:04:33.140Z - info: Using extension text
+2018-09-18T10:04:33.141Z - info: Using extension base
+2018-09-18T10:04:33.142Z - info: Using extension studio
+2018-09-18T10:04:33.145Z - info: Using extension licensing
+2018-09-18T10:04:33.147Z - info: Using extension scripts
+2018-09-18T10:04:33.150Z - info: Using extension assets
+2018-09-18T10:04:33.152Z - info: Using extension scheduling
+2018-09-18T10:04:33.155Z - info: Using extension xlsx
+2018-09-18T10:04:33.158Z - info: Using extension sample-template
+2018-09-18T10:04:33.160Z - debug: Creating samples is disabled
+2018-09-18T10:04:33.161Z - info: Using extension resources
+2018-09-18T10:04:33.161Z - info: Using extension public-templates
+2018-09-18T10:04:33.164Z - debug: Extension public-templates was disabled
+2018-09-18T10:04:33.207Z - info: Creating default express app.
+2018-09-18T10:04:33.240Z - info: jsreport server successfully started on http port: 5488
+2018-09-18T10:04:33.244Z - info: Verifying license key free
+2018-09-18T10:04:33.246Z - info: Using free license
+2018-09-18T10:04:33.249Z - error: Error occured during reporter init TypeError: this.interval.unref is not a function
+    at JobProcessor.start (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-scheduling/lib/jobProcessor.js:23:19)
+    at Scheduling.start (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-scheduling/lib/scheduling.js:174:23)
+    at Function.reporter.initializeListeners.add (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-scheduling/lib/scheduling.js:206:27)
+    at /home/ramzi/electron_projects/mc-office/node_modules/listener-collection/lib/listenerCollection.js:171:33
+    at /home/ramzi/electron_projects/mc-office/node_modules/listener-collection/lib/listenerCollection.js:151:16
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7)
+From previous event:
+    at /home/ramzi/electron_projects/mc-office/node_modules/listener-collection/lib/listenerCollection.js:149:47
+    at Array.map (<anonymous>)
+    at mapSeries (/home/ramzi/electron_projects/mc-office/node_modules/listener-collection/lib/listenerCollection.js:148:24)
+    at module.exports.ListenerCollection.fire (/home/ramzi/electron_projects/mc-office/node_modules/listener-collection/lib/listenerCollection.js:166:12)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:191:38)
+    at <anonymous>
+2018-09-18T10:11:21.106Z - info: Initializing jsreport@2.2.0 in development mode using configuration file: jsreport.config.json
+2018-09-18T10:11:21.107Z - info: Searching for available extensions in /home/ramzi/electron_projects/mc-office
+2018-09-18T10:11:21.133Z - info: Extensions location cache /tmp/jsreport/core/locations.json contains older information, crawling
+2018-09-18T10:11:22.430Z - info: Found 31 extensions
+2018-09-18T10:11:22.460Z - debug: Writing extension locations cache to /tmp/jsreport/core/locations.json
+2018-09-18T10:11:22.460Z - debug: Discovered 31 extensions
+2018-09-18T10:11:22.506Z - info: Setting process based strategy for rendering. Please visit http://jsreport.net/learn/configuration for information how to get more performance.
+2018-09-18T10:11:22.510Z - info: Using extension handlebars
+2018-09-18T10:11:22.513Z - info: Using extension import-export
+2018-09-18T10:11:22.680Z - info: Using extension templates
+2018-09-18T10:11:22.683Z - info: Using extension jsrender
+2018-09-18T10:11:22.684Z - info: Using extension authentication
+2018-09-18T10:11:22.757Z - debug: Extension authentication was disabled
+2018-09-18T10:11:22.757Z - info: Using extension freeze
+2018-09-18T10:11:22.759Z - info: Using extension cli
+2018-09-18T10:11:22.759Z - info: Using extension express
+2018-09-18T10:11:22.886Z - info: Using extension debug
+2018-09-18T10:11:22.888Z - info: Using extension tags
+2018-09-18T10:11:22.891Z - info: Using extension data
+2018-09-18T10:11:22.893Z - info: Using extension fs-store
+2018-09-18T10:11:23.051Z - debug: Extension fs-store was disabled
+2018-09-18T10:11:23.051Z - info: Using extension authorization
+2018-09-18T10:11:23.053Z - debug: Extension authorization was disabled
+2018-09-18T10:11:23.053Z - info: Using extension html-to-xlsx
+2018-09-18T10:11:23.201Z - info: html-to-xlsx detected chrome as available html engine
+2018-09-18T10:11:23.201Z - info: Using extension child-templates
+2018-09-18T10:11:23.208Z - info: Using extension browser-client
+2018-09-18T10:11:23.210Z - info: Using extension chrome-pdf
+2018-09-18T10:11:23.216Z - info: Using extension pdf-utils
+2018-09-18T10:11:23.218Z - info: Using extension version-control
+2018-09-18T10:11:23.246Z - info: Using extension reports
+2018-09-18T10:11:23.250Z - info: Using extension text
+2018-09-18T10:11:23.251Z - info: Using extension base
+2018-09-18T10:11:23.252Z - info: Using extension studio
+2018-09-18T10:11:23.281Z - info: Using extension licensing
+2018-09-18T10:11:23.321Z - info: Using extension scripts
+2018-09-18T10:11:23.325Z - info: Using extension assets
+2018-09-18T10:11:23.344Z - info: Using extension scheduling
+2018-09-18T10:11:23.397Z - info: Using extension xlsx
+2018-09-18T10:11:23.514Z - info: Using extension sample-template
+2018-09-18T10:11:23.516Z - debug: Creating samples is disabled
+2018-09-18T10:11:23.516Z - info: Using extension resources
+2018-09-18T10:11:23.517Z - info: Using extension public-templates
+2018-09-18T10:11:23.520Z - debug: Extension public-templates was disabled
+2018-09-18T10:11:23.521Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+2018-09-18T10:13:38.053Z - info: Initializing jsreport@2.2.0 in development mode using configuration file: jsreport.config.json
+2018-09-18T10:13:38.054Z - info: Searching for available extensions in /home/ramzi/electron_projects/mc-office
+2018-09-18T10:13:38.080Z - info: Extensions location cache contains up to date information, skipping crawling in /home/ramzi/electron_projects/mc-office
+2018-09-18T10:13:38.551Z - info: Found 31 extensions
+2018-09-18T10:13:38.918Z - info: Using extension handlebars
+2018-09-18T10:13:38.924Z - info: Using extension import-export
+2018-09-18T10:13:39.087Z - info: Using extension templates
+2018-09-18T10:13:39.090Z - info: Using extension jsrender
+2018-09-18T10:13:39.091Z - info: Using extension freeze
+2018-09-18T10:13:39.093Z - info: Using extension cli
+2018-09-18T10:13:39.093Z - info: Using extension express
+2018-09-18T10:13:39.221Z - info: Using extension debug
+2018-09-18T10:13:39.223Z - info: Using extension tags
+2018-09-18T10:13:39.226Z - info: Using extension data
+2018-09-18T10:13:39.228Z - info: Using extension fs-store
+2018-09-18T10:13:39.387Z - info: Using extension authorization
+2018-09-18T10:13:39.389Z - info: Using extension html-to-xlsx
+2018-09-18T10:13:39.533Z - info: html-to-xlsx detected chrome as available html engine
+2018-09-18T10:13:39.533Z - info: Using extension child-templates
+2018-09-18T10:13:39.540Z - info: Using extension browser-client
+2018-09-18T10:13:39.542Z - info: Using extension chrome-pdf
+2018-09-18T10:13:39.548Z - info: Using extension pdf-utils
+2018-09-18T10:13:39.550Z - info: Using extension version-control
+2018-09-18T10:13:39.576Z - info: Using extension reports
+2018-09-18T10:13:39.579Z - info: Using extension text
+2018-09-18T10:13:39.580Z - info: Using extension base
+2018-09-18T10:13:39.581Z - info: Using extension studio
+2018-09-18T10:13:39.608Z - info: Using extension licensing
+2018-09-18T10:13:39.644Z - info: Using extension scripts
+2018-09-18T10:13:39.648Z - info: Using extension assets
+2018-09-18T10:13:39.659Z - info: Using extension scheduling
+2018-09-18T10:13:39.719Z - info: Using extension xlsx
+2018-09-18T10:13:39.837Z - info: Using extension sample-template
+2018-09-18T10:13:39.840Z - info: Using extension resources
+2018-09-18T10:13:39.841Z - info: Using extension public-templates
+2018-09-18T10:13:39.844Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7)
+2018-09-18T10:16:48.368Z - info: Initializing jsreport@2.2.0 in development mode using configuration file: none
+2018-09-18T10:16:48.368Z - info: Searching for available extensions in src/renderer/views/billing/invoice
+2018-09-18T10:16:48.371Z - info: Extensions location cache contains up to date information, skipping crawling in src/renderer/views/billing/invoice
+2018-09-18T10:16:48.372Z - info: Found 31 extensions
+2018-09-18T10:16:48.423Z - info: Setting process based strategy for rendering. Please visit http://jsreport.net/learn/configuration for information how to get more performance.
+2018-09-18T10:16:48.425Z - info: Using extension handlebars
+2018-09-18T10:16:48.427Z - info: Using extension import-export
+2018-09-18T10:16:48.427Z - info: Using extension templates
+2018-09-18T10:16:48.428Z - info: Using extension jsrender
+2018-09-18T10:16:48.428Z - info: Using extension authentication
+2018-09-18T10:16:48.500Z - info: Using extension freeze
+2018-09-18T10:16:48.502Z - info: Using extension cli
+2018-09-18T10:16:48.502Z - info: Using extension express
+2018-09-18T10:16:48.505Z - info: Using extension debug
+2018-09-18T10:16:48.506Z - info: Using extension tags
+2018-09-18T10:16:48.508Z - info: Using extension data
+2018-09-18T10:16:48.508Z - info: Using extension fs-store
+2018-09-18T10:16:48.511Z - info: Using extension authorization
+2018-09-18T10:16:48.511Z - info: Using extension html-to-xlsx
+2018-09-18T10:16:48.514Z - info: html-to-xlsx detected chrome as available html engine
+2018-09-18T10:16:48.514Z - info: Using extension child-templates
+2018-09-18T10:16:48.514Z - info: Using extension browser-client
+2018-09-18T10:16:48.516Z - info: Using extension chrome-pdf
+2018-09-18T10:16:48.519Z - info: Using extension pdf-utils
+2018-09-18T10:16:48.519Z - info: Using extension version-control
+2018-09-18T10:16:48.521Z - info: Using extension reports
+2018-09-18T10:16:48.522Z - info: Using extension text
+2018-09-18T10:16:48.523Z - info: Using extension base
+2018-09-18T10:16:48.524Z - info: Using extension studio
+2018-09-18T10:16:48.526Z - info: Using extension licensing
+2018-09-18T10:16:48.527Z - info: Using extension scripts
+2018-09-18T10:16:48.530Z - info: Using extension assets
+2018-09-18T10:16:48.532Z - info: Using extension scheduling
+2018-09-18T10:16:48.534Z - info: Using extension xlsx
+2018-09-18T10:16:48.537Z - info: Using extension sample-template
+2018-09-18T10:16:48.538Z - info: Using extension resources
+2018-09-18T10:16:48.539Z - info: Using extension public-templates
+2018-09-18T10:16:48.540Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+2018-09-18T10:17:21.211Z - info: Initializing jsreport@2.2.0 in development mode using configuration file: jsreport.config.json
+2018-09-18T10:17:21.213Z - info: Searching for available extensions in /home/ramzi/electron_projects/mc-office
+2018-09-18T10:17:21.238Z - info: Extensions location cache contains up to date information, skipping crawling in /home/ramzi/electron_projects/mc-office
+2018-09-18T10:17:21.726Z - info: Found 31 extensions
+2018-09-18T10:17:22.088Z - info: Using extension handlebars
+2018-09-18T10:17:22.092Z - info: Using extension import-export
+2018-09-18T10:17:22.259Z - info: Using extension templates
+2018-09-18T10:17:22.262Z - info: Using extension jsrender
+2018-09-18T10:17:22.263Z - info: Using extension freeze
+2018-09-18T10:17:22.265Z - info: Using extension cli
+2018-09-18T10:17:22.265Z - info: Using extension express
+2018-09-18T10:17:22.394Z - info: Using extension debug
+2018-09-18T10:17:22.396Z - info: Using extension tags
+2018-09-18T10:17:22.399Z - info: Using extension data
+2018-09-18T10:17:22.401Z - info: Using extension fs-store
+2018-09-18T10:17:22.559Z - info: Using extension authorization
+2018-09-18T10:17:22.561Z - info: Using extension html-to-xlsx
+2018-09-18T10:17:22.711Z - info: html-to-xlsx detected chrome as available html engine
+2018-09-18T10:17:22.711Z - info: Using extension child-templates
+2018-09-18T10:17:22.718Z - info: Using extension browser-client
+2018-09-18T10:17:22.720Z - info: Using extension chrome-pdf
+2018-09-18T10:17:22.726Z - info: Using extension pdf-utils
+2018-09-18T10:17:22.728Z - info: Using extension version-control
+2018-09-18T10:17:22.755Z - info: Using extension reports
+2018-09-18T10:17:22.760Z - info: Using extension text
+2018-09-18T10:17:22.761Z - info: Using extension base
+2018-09-18T10:17:22.762Z - info: Using extension studio
+2018-09-18T10:17:22.791Z - info: Using extension licensing
+2018-09-18T10:17:22.828Z - info: Using extension scripts
+2018-09-18T10:17:22.832Z - info: Using extension assets
+2018-09-18T10:17:22.843Z - info: Using extension scheduling
+2018-09-18T10:17:22.907Z - info: Using extension xlsx
+2018-09-18T10:17:23.067Z - info: Using extension sample-template
+2018-09-18T10:17:23.070Z - info: Using extension resources
+2018-09-18T10:17:23.071Z - info: Using extension public-templates
+2018-09-18T10:17:23.078Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7)
+2018-09-18T10:21:33.433Z - info: Initializing jsreport@2.2.0 in development mode using configuration file: jsreport.config.json
+2018-09-18T10:21:33.434Z - info: Searching for available extensions in /home/ramzi/electron_projects/mc-office
+2018-09-18T10:21:33.457Z - info: Extensions location cache contains up to date information, skipping crawling in /home/ramzi/electron_projects/mc-office
+2018-09-18T10:21:33.940Z - info: Found 31 extensions
+2018-09-18T10:21:33.955Z - debug: Writing extension locations cache to /tmp/jsreport/core/locations.json
+2018-09-18T10:21:33.957Z - debug: Discovered 31 extensions
+2018-09-18T10:21:34.003Z - info: Setting process based strategy for rendering. Please visit http://jsreport.net/learn/configuration for information how to get more performance.
+2018-09-18T10:21:34.007Z - info: Using extension handlebars
+2018-09-18T10:21:34.010Z - info: Using extension import-export
+2018-09-18T10:21:34.179Z - info: Using extension templates
+2018-09-18T10:21:34.182Z - info: Using extension jsrender
+2018-09-18T10:21:34.182Z - info: Using extension authentication
+2018-09-18T10:21:34.254Z - debug: Extension authentication was disabled
+2018-09-18T10:21:34.254Z - info: Using extension freeze
+2018-09-18T10:21:34.256Z - info: Using extension cli
+2018-09-18T10:21:34.257Z - info: Using extension express
+2018-09-18T10:21:34.382Z - info: Using extension debug
+2018-09-18T10:21:34.384Z - info: Using extension tags
+2018-09-18T10:21:34.387Z - info: Using extension data
+2018-09-18T10:21:34.389Z - info: Using extension fs-store
+2018-09-18T10:21:34.544Z - debug: Extension fs-store was disabled
+2018-09-18T10:21:34.544Z - info: Using extension authorization
+2018-09-18T10:21:34.546Z - debug: Extension authorization was disabled
+2018-09-18T10:21:34.546Z - info: Using extension html-to-xlsx
+2018-09-18T10:21:34.698Z - info: html-to-xlsx detected chrome as available html engine
+2018-09-18T10:21:34.698Z - info: Using extension child-templates
+2018-09-18T10:21:34.704Z - info: Using extension browser-client
+2018-09-18T10:21:34.706Z - info: Using extension chrome-pdf
+2018-09-18T10:21:34.712Z - info: Using extension pdf-utils
+2018-09-18T10:21:34.713Z - info: Using extension version-control
+2018-09-18T10:21:34.742Z - info: Using extension reports
+2018-09-18T10:21:34.746Z - info: Using extension text
+2018-09-18T10:21:34.747Z - info: Using extension base
+2018-09-18T10:21:34.748Z - info: Using extension studio
+2018-09-18T10:21:34.774Z - info: Using extension licensing
+2018-09-18T10:21:34.817Z - info: Using extension scripts
+2018-09-18T10:21:34.821Z - info: Using extension assets
+2018-09-18T10:21:34.831Z - info: Using extension scheduling
+2018-09-18T10:21:34.886Z - info: Using extension xlsx
+2018-09-18T10:21:35.005Z - info: Using extension sample-template
+2018-09-18T10:21:35.007Z - debug: Creating samples is disabled
+2018-09-18T10:21:35.008Z - info: Using extension resources
+2018-09-18T10:21:35.009Z - info: Using extension public-templates
+2018-09-18T10:21:35.012Z - debug: Extension public-templates was disabled
+2018-09-18T10:21:35.013Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+2018-09-18T10:23:22.943Z - info: Initializing jsreport@2.2.0 in development mode using configuration file: jsreport.config.json
+2018-09-18T10:23:22.945Z - info: Searching for available extensions in /home/ramzi/electron_projects/mc-office
+2018-09-18T10:23:22.960Z - info: Extensions location cache contains up to date information, skipping crawling in /home/ramzi/electron_projects/mc-office
+2018-09-18T10:23:23.431Z - info: Found 31 extensions
+2018-09-18T10:23:23.446Z - debug: Writing extension locations cache to /tmp/jsreport/core/locations.json
+2018-09-18T10:23:23.447Z - debug: Discovered 31 extensions
+2018-09-18T10:23:23.495Z - info: Setting process based strategy for rendering. Please visit http://jsreport.net/learn/configuration for information how to get more performance.
+2018-09-18T10:23:23.498Z - info: Using extension handlebars
+2018-09-18T10:23:23.502Z - info: Using extension import-export
+2018-09-18T10:23:23.664Z - info: Using extension templates
+2018-09-18T10:23:23.667Z - info: Using extension jsrender
+2018-09-18T10:23:23.668Z - info: Using extension authentication
+2018-09-18T10:23:23.740Z - debug: Extension authentication was disabled
+2018-09-18T10:23:23.740Z - info: Using extension freeze
+2018-09-18T10:23:23.742Z - info: Using extension cli
+2018-09-18T10:23:23.742Z - info: Using extension express
+2018-09-18T10:23:23.867Z - info: Using extension debug
+2018-09-18T10:23:23.869Z - info: Using extension tags
+2018-09-18T10:23:23.872Z - info: Using extension data
+2018-09-18T10:23:23.874Z - info: Using extension fs-store
+2018-09-18T10:23:24.029Z - debug: Extension fs-store was disabled
+2018-09-18T10:23:24.030Z - info: Using extension authorization
+2018-09-18T10:23:24.032Z - debug: Extension authorization was disabled
+2018-09-18T10:23:24.032Z - info: Using extension html-to-xlsx
+2018-09-18T10:23:24.175Z - info: html-to-xlsx detected chrome as available html engine
+2018-09-18T10:23:24.175Z - info: Using extension child-templates
+2018-09-18T10:23:24.181Z - info: Using extension browser-client
+2018-09-18T10:23:24.184Z - info: Using extension chrome-pdf
+2018-09-18T10:23:24.189Z - debug: Chrome custom launch options are args=[--no-sandbox]
+2018-09-18T10:23:24.190Z - info: Using extension pdf-utils
+2018-09-18T10:23:24.192Z - info: Using extension version-control
+2018-09-18T10:23:24.220Z - info: Using extension reports
+2018-09-18T10:23:24.223Z - info: Using extension text
+2018-09-18T10:23:24.224Z - info: Using extension base
+2018-09-18T10:23:24.226Z - info: Using extension studio
+2018-09-18T10:23:24.254Z - info: Using extension licensing
+2018-09-18T10:23:24.293Z - info: Using extension scripts
+2018-09-18T10:23:24.298Z - info: Using extension assets
+2018-09-18T10:23:24.307Z - info: Using extension scheduling
+2018-09-18T10:23:24.368Z - info: Using extension xlsx
+2018-09-18T10:23:24.484Z - info: Using extension sample-template
+2018-09-18T10:23:24.486Z - debug: Creating samples is disabled
+2018-09-18T10:23:24.486Z - info: Using extension resources
+2018-09-18T10:23:24.487Z - info: Using extension public-templates
+2018-09-18T10:23:24.490Z - debug: Extension public-templates was disabled
+2018-09-18T10:23:24.491Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+2018-09-18T10:30:39.832Z - info: Initializing jsreport@2.2.0 in development mode using configuration file: jsreport.config.json
+2018-09-18T10:30:39.834Z - info: Searching for available extensions in /home/ramzi/electron_projects/mc-office
+2018-09-18T10:30:39.850Z - info: Extensions location cache contains up to date information, skipping crawling in /home/ramzi/electron_projects/mc-office
+2018-09-18T10:30:40.366Z - info: Found 31 extensions
+2018-09-18T10:30:40.392Z - debug: Writing extension locations cache to /tmp/jsreport/core/locations.json
+2018-09-18T10:30:40.394Z - debug: Discovered 31 extensions
+2018-09-18T10:30:40.443Z - info: Setting process based strategy for rendering. Please visit http://jsreport.net/learn/configuration for information how to get more performance.
+2018-09-18T10:30:40.446Z - info: Using extension handlebars
+2018-09-18T10:30:40.451Z - info: Using extension import-export
+2018-09-18T10:30:40.637Z - info: Using extension templates
+2018-09-18T10:30:40.641Z - info: Using extension jsrender
+2018-09-18T10:30:40.641Z - info: Using extension authentication
+2018-09-18T10:30:40.740Z - debug: Extension authentication was disabled
+2018-09-18T10:30:40.740Z - info: Using extension freeze
+2018-09-18T10:30:40.743Z - info: Using extension cli
+2018-09-18T10:30:40.744Z - info: Using extension express
+2018-09-18T10:30:40.889Z - info: Using extension debug
+2018-09-18T10:30:40.891Z - info: Using extension tags
+2018-09-18T10:30:40.894Z - info: Using extension data
+2018-09-18T10:30:40.896Z - info: Using extension fs-store
+2018-09-18T10:30:41.051Z - debug: Extension fs-store was disabled
+2018-09-18T10:30:41.051Z - info: Using extension authorization
+2018-09-18T10:30:41.053Z - debug: Extension authorization was disabled
+2018-09-18T10:30:41.053Z - info: Using extension html-to-xlsx
+2018-09-18T10:30:41.191Z - info: html-to-xlsx detected chrome as available html engine
+2018-09-18T10:30:41.191Z - info: Using extension child-templates
+2018-09-18T10:30:41.198Z - info: Using extension browser-client
+2018-09-18T10:30:41.200Z - info: Using extension chrome-pdf
+2018-09-18T10:30:41.206Z - debug: Chrome custom launch options are args=[--no-sandbox]
+2018-09-18T10:30:41.207Z - info: Using extension pdf-utils
+2018-09-18T10:30:41.208Z - info: Using extension version-control
+2018-09-18T10:30:41.241Z - info: Using extension reports
+2018-09-18T10:30:41.245Z - info: Using extension text
+2018-09-18T10:30:41.245Z - info: Using extension base
+2018-09-18T10:30:41.247Z - info: Using extension studio
+2018-09-18T10:30:41.273Z - info: Using extension licensing
+2018-09-18T10:30:41.311Z - info: Using extension scripts
+2018-09-18T10:30:41.315Z - info: Using extension assets
+2018-09-18T10:30:41.326Z - info: Using extension scheduling
+2018-09-18T10:30:41.379Z - info: Using extension xlsx
+2018-09-18T10:30:41.502Z - info: Using extension sample-template
+2018-09-18T10:30:41.504Z - debug: Creating samples is disabled
+2018-09-18T10:30:41.504Z - info: Using extension resources
+2018-09-18T10:30:41.505Z - info: Using extension public-templates
+2018-09-18T10:30:41.508Z - debug: Extension public-templates was disabled
+2018-09-18T10:30:41.509Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>
+2018-09-18T10:31:24.369Z - info: Initializing jsreport@2.2.0 in development mode using configuration file: jsreport.config.json
+2018-09-18T10:31:24.370Z - info: Searching for available extensions in /home/ramzi/electron_projects/mc-office
+2018-09-18T10:31:24.383Z - info: Extensions location cache contains up to date information, skipping crawling in /home/ramzi/electron_projects/mc-office
+2018-09-18T10:31:24.892Z - info: Found 31 extensions
+2018-09-18T10:31:24.911Z - debug: Writing extension locations cache to /tmp/jsreport/core/locations.json
+2018-09-18T10:31:24.913Z - debug: Discovered 31 extensions
+2018-09-18T10:31:24.960Z - info: Setting process based strategy for rendering. Please visit http://jsreport.net/learn/configuration for information how to get more performance.
+2018-09-18T10:31:24.964Z - info: Using extension handlebars
+2018-09-18T10:31:24.968Z - info: Using extension import-export
+2018-09-18T10:31:25.137Z - info: Using extension templates
+2018-09-18T10:31:25.141Z - info: Using extension jsrender
+2018-09-18T10:31:25.141Z - info: Using extension authentication
+2018-09-18T10:31:25.212Z - debug: Extension authentication was disabled
+2018-09-18T10:31:25.212Z - info: Using extension freeze
+2018-09-18T10:31:25.214Z - info: Using extension cli
+2018-09-18T10:31:25.215Z - info: Using extension express
+2018-09-18T10:31:25.339Z - info: Using extension debug
+2018-09-18T10:31:25.341Z - info: Using extension tags
+2018-09-18T10:31:25.344Z - info: Using extension data
+2018-09-18T10:31:25.346Z - info: Using extension fs-store
+2018-09-18T10:31:25.502Z - debug: Extension fs-store was disabled
+2018-09-18T10:31:25.502Z - info: Using extension authorization
+2018-09-18T10:31:25.504Z - debug: Extension authorization was disabled
+2018-09-18T10:31:25.504Z - info: Using extension html-to-xlsx
+2018-09-18T10:31:25.651Z - info: html-to-xlsx detected chrome as available html engine
+2018-09-18T10:31:25.651Z - info: Using extension child-templates
+2018-09-18T10:31:25.657Z - info: Using extension browser-client
+2018-09-18T10:31:25.660Z - info: Using extension chrome-pdf
+2018-09-18T10:31:25.666Z - debug: Chrome custom launch options are args=[--no-sandbox]
+2018-09-18T10:31:25.666Z - info: Using extension pdf-utils
+2018-09-18T10:31:25.668Z - info: Using extension version-control
+2018-09-18T10:31:25.695Z - info: Using extension reports
+2018-09-18T10:31:25.698Z - info: Using extension text
+2018-09-18T10:31:25.699Z - info: Using extension base
+2018-09-18T10:31:25.700Z - info: Using extension studio
+2018-09-18T10:31:25.728Z - info: Using extension licensing
+2018-09-18T10:31:25.764Z - info: Using extension scripts
+2018-09-18T10:31:25.768Z - info: Using extension assets
+2018-09-18T10:31:25.785Z - info: Using extension scheduling
+2018-09-18T10:31:25.838Z - info: Using extension xlsx
+2018-09-18T10:31:25.954Z - info: Using extension sample-template
+2018-09-18T10:31:25.956Z - debug: Creating samples is disabled
+2018-09-18T10:31:25.956Z - info: Using extension resources
+2018-09-18T10:31:25.957Z - info: Using extension public-templates
+2018-09-18T10:31:25.959Z - debug: Extension public-templates was disabled
+2018-09-18T10:31:25.961Z - error: Error occured during reporter init TypeError: setInterval(...).unref is not a function
+    at Reporter._startReaper (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:742:51)
+    at Reporter.init (/home/ramzi/electron_projects/mc-office/node_modules/jsreport-core/lib/reporter.js:187:18)
+    at <anonymous>

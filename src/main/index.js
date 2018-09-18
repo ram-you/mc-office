@@ -214,8 +214,8 @@ function createPrintWorkerWindow() {
   return printWorkerWindow
 }
 
-ipcMain.on("printPDF", (event, ID, content, theme, silent = false) => {
-  printWorkerWindow.webContents.send("printPDF", ID, content, theme, silent);
+ipcMain.on("printPDF", (event, content, theme, silent = false) => {
+  printWorkerWindow.webContents.send("printPDF", content, theme, silent);
 });
 
 
@@ -233,7 +233,13 @@ ipcMain.on("print", (event, ID, content, theme, printer) => {
 });
 
 
+const invoiceFontBytes = fs.readFileSync(ASSETS_GLOBAL + '/billing/theme/default/SourceSansPro-Regular.ttf');
+const PURPLE = [119 / 255, 41 / 255, 83 / 255];
+const ORANGE = [224 / 255, 90 / 255, 43 / 255];
+const GREY = [117 / 255, 117 / 255, 117 / 255];
+const INVOICE_FONT = 'InvoiceFont';
 
+const { PDFDocumentFactory, PDFDocumentWriter, drawText  } = require('pdf-lib');
 
 ipcMain.on("readyToPrintPDF",  (event, ID, silent = false) => {
   let pdfPathFolder = userDataPath + 'billing' + path.sep + 'invoices' + path.sep
@@ -248,13 +254,36 @@ ipcMain.on("readyToPrintPDF",  (event, ID, silent = false) => {
     landscape: false
   }
   printWorkerWindow.webContents.printToPDF(printOptions,  function(error, data) {
-    if (error) throw error
+    if (error) throw error;
+
+
+
+    const pdfDoc = PDFDocumentFactory.load(data);
+
+    const [invoiceFontRef] = pdfDoc.embedFont(invoiceFontBytes);
+    const pages = pdfDoc.getPages();
+
+    for (var i = 0; i < pages.length; i++) {
+      const currentPage = pages[i].addFontDictionary(INVOICE_FONT, invoiceFontRef);
+      const PAGE_WIDTH = (currentPage.get('MediaBox').array[2]).number;
+      const PAGE_HEIGHT = (currentPage.get('MediaBox').array[3]).number;
+      var contentStream1 = pdfDoc.createContentStream(
+        drawText(
+          'Page: ' + (i + 1).toString() + '/' + (pages.length).toString(),
+          { x: 34, y: 31, size: 8, font: INVOICE_FONT, colorRgb: GREY, },
+        ),
+      );
+      currentPage.addContentStreams(pdfDoc.register(contentStream1));
+    }
+
+    const pdfBytes = PDFDocumentWriter.saveToBytes(pdfDoc);
+
 
     if (silent) {
-      mainWindow.send('data-pdf', data);
+      mainWindow.send('data-pdf', pdfBytes);
     } else {
       try {
-          fs.writeFileSync(pdfPath, data);
+          fs.writeFileSync(pdfPath, pdfBytes);
         // shell.openItem(pdfPath)
         pdfViewerWindow = createPdfViewerWindow(pdfPath)
         mainWindow.send('wrote-pdf', pdfPath)
