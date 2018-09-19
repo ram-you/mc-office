@@ -37,7 +37,7 @@ global.ASSETS_GLOBAL = isDevelopment ? path.resolve(__dirname, '../common/assets
 global.mainWindow = null
 global.dbWorkerWindow = null
 global.ormWorkerWindow = null
-global.printWorkerWindow = null
+global.printWorkerWindow = null 
 global.pdfViewerWindow = null
 global.invoiceData = { data: null }
 
@@ -116,9 +116,9 @@ function createMainWindow() {
 
 // create main BrowserWindow when electron is ready
 app.on('ready', async () => {
-  dbWorkerWindow = createDataBaseWorkerWindow()
-  mainWindow = createMainWindow()
-  printWorkerWindow = createPrintWorkerWindow()
+  dbWorkerWindow = createDataBaseWorkerWindow();
+  mainWindow = createMainWindow();
+  printWorkerWindow = createPrintWorkerWindow(); 
   userDataPath = app.getPath('userData') + path.sep;
 })
 
@@ -136,10 +136,10 @@ function createDataBaseWorkerWindow() {
   dbWorkerWindow.webContents.openDevTools();
   return dbWorkerWindow
 }
+// =====================~~~~~~~============================================~~~~~~~===========
 
-// =====================~~~~~~~============================================
 
-
+ 
 
 
 // quit application when all windows are closed

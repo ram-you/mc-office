@@ -108,15 +108,11 @@ export default {
         if (vm.childData.invoice_items.length == 0) vm.addNewLine()
       }, 100);
     },
-    // updateLine(item) {
-    //   item.line_total = item.quantity * item.unit_cost;
-
-    //   this.updateGrandTotal()
-    // },
+  
 
     updateLine: debounce(function (event, item) {
       var vm = this;
-      item.line_total = item.quantity * item.unit_cost;
+      item.line_total =parseFloat(( item.quantity * item.unit_cost).toFixed(3).replace(",", "."));
 
       vm.updateGrandTotal()
     }, 500),
@@ -126,13 +122,15 @@ export default {
       for (var i = 0; i < this.childData.invoice_items.length; i++) {
         subtotal += this.childData.invoice_items[i].line_total
       }
-      this.childData.totals.subtotal = subtotal;
+      this.childData.totals.subtotal =  parseFloat((subtotal).toFixed(3).replace(",", "."));
       if (this.childData.is_amount_discount == 1) {
         this.childData.totals.discount = this.childData.discount;
       } else {
         this.childData.totals.discount = this.childData.discount * subtotal / 100;
       }
-      this.childData.totals.total = subtotal - this.childData.totals.discount;
+      this.childData.totals.discount = parseFloat((this.childData.totals.discount).toFixed(3).replace(",", "."));
+
+      this.childData.totals.total = parseFloat((subtotal - this.childData.totals.discount).toFixed(3).replace(",", "."));
 
       if (!oneTime)
         this.$emit('interface', this.childData)

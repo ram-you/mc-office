@@ -351,7 +351,7 @@ export default {
           ctx.drawImage(img, 0, 0);
           var base64Image = canvas.toDataURL('image/png')
           canvas = null;
-          setTimeout(() => { resolve(base64Image) }, 100)
+         resolve(base64Image)
         }
         img.onerror = error => { reject(error) }
         img.src = imgSrc
