@@ -37,7 +37,7 @@ global.ASSETS_GLOBAL = isDevelopment ? path.resolve(__dirname, '../common/assets
 global.mainWindow = null
 global.dbWorkerWindow = null
 global.ormWorkerWindow = null
-global.printWorkerWindow = null 
+global.printWorkerWindow = null
 global.pdfViewerWindow = null
 global.invoiceData = { data: null }
 
@@ -118,7 +118,7 @@ function createMainWindow() {
 app.on('ready', async () => {
   dbWorkerWindow = createDataBaseWorkerWindow();
   mainWindow = createMainWindow();
-  printWorkerWindow = createPrintWorkerWindow(); 
+  printWorkerWindow = createPrintWorkerWindow();
   userDataPath = app.getPath('userData') + path.sep;
 })
 
@@ -133,20 +133,28 @@ function createDataBaseWorkerWindow() {
   });
   var dbWorkerPathname = ASSETS_GLOBAL + '/database/worker.html';
   dbWorkerWindow.loadURL(formatUrl({ pathname: dbWorkerPathname, protocol: 'file', slashes: true }));
+  dbWorkerWindow.setMenu(null)
   dbWorkerWindow.webContents.openDevTools();
+
+  dbWorkerWindow.on('close', (e) => {
+    if (mainWindow && (mainWindow.isMinimized() || mainWindow.isVisible())) {
+      e.preventDefault();
+      dbWorkerWindow.hide()
+    }
+  });
   return dbWorkerWindow
 }
 // =====================~~~~~~~============================================~~~~~~~===========
 
 
- 
+
 
 
 // quit application when all windows are closed
 app.on('window-all-closed', () => {
   // on macOS it is common for applications to stay open until the user explicitly quits
   if (platform !== 'darwin') {
-    app.quit()
+         app.quit()
   }
 })
 

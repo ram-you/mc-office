@@ -248,10 +248,10 @@
    if (isDevelopment) menuTemplate.splice(3, 0, viewMenu);
    // Build the menu
    const menu = Menu.buildFromTemplate(menuTemplate);
-   Menu.setApplicationMenu(menu);
+  //  Menu.setApplicationMenu(menu);
 
 
-
+   mainWindow.setMenu(menu)
 
  }
 
