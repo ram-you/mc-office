@@ -2,7 +2,7 @@
 
   <div class="clearfix header" style="padding: 0 0 20px;">
     <div id="logo">
-      <img :src="base64">
+      <img src="{{logo}}">
     </div>
     <div id="company">
       <h2 class="name">MEDIACEPT Technology</h2>
@@ -50,9 +50,9 @@
       </thead>
       <!-- === -->
       <tbody>
-  {{#each invoice.invoice_items}}
+        {{#each invoice.invoice_items}}
         <tr>
-          <td class="no">1</td>
+          <td class="no">{{inc @index}}</td>
           <td class="item"> {{item}}</td>
           <td class="desc"> {{description}}</td>
           <td class="unit">{{unit_cost}}</td>
@@ -60,7 +60,7 @@
           <td class="total">{{line_total}}</td>
 
         </tr>
-    {{/each}}
+        {{/each}}
       </tbody>
 
       <!-- === -->

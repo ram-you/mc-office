@@ -80,9 +80,9 @@
       </v-card-actions>
     </v-card>
     <!-- ========================================= -->
-  
-    <v-card class="ma-4 pb-2">
 
+    <v-card class="ma-4 pb-2">
+      <v-progress-linear :indeterminate="isRenderingPdf" :active="isRenderingPdf" class="ma-0"></v-progress-linear>
       <v-toolbar flat dense style="border-bottom:1px solid rgba(150, 150, 150, 0.23);">
         <span class="subheading">Aperçu (Preview) </span>
         <v-spacer></v-spacer>
@@ -96,17 +96,11 @@
         </div>
 
       </v-toolbar>
-      <webview id="pdf-viewer" :src="pdfString" style="display:flex; width:100%; height:100vh" autosize></webview>
+
+      <webview id="pdf-viewer" :src="pdfString" style="display:flex; width:100%; height:100vh" autosize plugins></webview>
 
     </v-card>
 
-    <v-dialog v-model="isRenderingPdf" persistent width="300">
-      <v-card color="primary" dark>
-        <v-card-text> {{waitingMessage}}
-          <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
@@ -134,7 +128,7 @@ let sep = path.sep
 // const dbFilename = path.join(userDataPath, 'database/mc-office.sqlite');
 // var knex = require('knex')({ client: 'sqlite3', connection: { filename: dbFilename }, useNullAsDefault: true });
 let ASSETS = remote.getGlobal('ASSETS_GLOBAL')
-let printWorkerWindow= remote.getGlobal('printWorkerWindow');
+let printWorkerWindow = remote.getGlobal('printWorkerWindow');
 
 
 import invoiceHeader from "./invoiceHeader"
@@ -179,7 +173,8 @@ export default {
       terms: false
     })
     return {
-      waitingMessage: 'Mise à jour de la Facture',
+      logoImg: require("../../../../common/assets/img/logo/256x256.png"),
+      base64: '',
       showInvoiceData: false,
       clientDialog: false,
       pdfString: 'about:blank',
@@ -234,7 +229,7 @@ export default {
     vm.webview.webContents = vm.webview.getWebContents()
     PDFWindow.addSupport(vm.webview);
 
-    vm.toPDF() 
+
 
 
 
@@ -251,7 +246,10 @@ export default {
 
     });
 
-
+    this.generateBase64(this.logoImg).then((data) => {
+      vm.base64 = data;
+      vm.toPDF();
+    })
 
 
 
@@ -293,16 +291,14 @@ export default {
     toPDF() {
       var vm = this
       this.isRenderingPdf = true;
-      // this.pdfString = "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
-      // this.webview.loadURL("file://" + ASSETS + "/billing/blank.pdf");
       console.log(" PDF DATA requested.....");
-    
-        // var content = document.getElementById("billing-container").parentNode.innerHTML
-        // printWorkerWindow.webContents.send("printPDF", vm.form.invoice_number, "content", vm.theme, true);
-        var _data={invoice:vm.form, theme:vm.theme, silent:true}
-        remote.getGlobal('invoiceData').data=  JSON.stringify(_data);
-    printWorkerWindow.webContents.send("printInvoicePDF");
- 
+
+      // var content = document.getElementById("billing-container").parentNode.innerHTML
+      // printWorkerWindow.webContents.send("printPDF", vm.form.invoice_number, "content", vm.theme, true);
+      var _data = { logo: this.base64, invoice: vm.form, theme: vm.theme, silent: true }
+      remote.getGlobal('invoiceData').data = JSON.stringify(_data);
+      printWorkerWindow.webContents.send("printInvoicePDF");
+
 
     },
 
@@ -342,7 +338,31 @@ export default {
 
     },
 
+    generateBase64(imgSrc) {
+      var vm = this
+      return new Promise((resolve, reject) => {
+        let canvas = document.createElement('CANVAS')
+        let img = document.createElement('img')
 
+        img.onload = () => {
+          canvas.height = img.height
+          canvas.width = img.width
+          var ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+          var base64Image = canvas.toDataURL('image/png')
+          canvas = null;
+          setTimeout(() => { resolve(base64Image) }, 100)
+        }
+        img.onerror = error => { reject(error) }
+        img.src = imgSrc
+      })
+
+
+
+
+
+
+    },
 
   },
 }

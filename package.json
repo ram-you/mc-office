@@ -1,6 +1,6 @@
 {
   "name": "mc-office",
-  "version": "0.3.44",
+  "version": "0.3.53",
   "db_version": "0.0.3",
   "license": "MIT",
   "description": "A MEDIACEPT Technology creation",
@@ -58,10 +58,10 @@
     "handlebars": "^4.0.12"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0",
+    "@babel/core": "^7.1.0",
     "@babel/plugin-syntax-dynamic-import": "^7.0.0",
-    "@babel/plugin-transform-runtime": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
     "@babel/register": "^7.0.0",
     "@babel/runtime": "^7.0.0",
     "babel-loader": "^8.0.2",
@@ -72,7 +72,7 @@
     "css-loader": "^1.0.0",
     "del": "^3.0.0",
     "devtron": "^1.4.0",
-    "electron": "^2.0.9",
+    "electron": "^2.0.10",
     "electron-builder": "^20.28.4",
     "electron-debug": "^2.0.0",
     "electron-rebuild": "^1.8.2",
@@ -91,7 +91,7 @@
     "style-loader": "^0.23.0",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
-    "uglifyjs-webpack-plugin": "^2.0.0",
+    "uglifyjs-webpack-plugin": "^2.0.1",
     "url-loader": "^1.1.1",
     "vue-devtools": "^4.1.4",
     "vue-electron": "^1.0.6",
@@ -110,10 +110,6 @@
     ],
     "productName": "MC-Office",
     "appId": "com.mediacept.mc-office",
-    "extraFiles": [
-      "jsreport.config.json",
-      "node_modules/puppeteer/.local-chromium/**/*"
-    ],
     "directories": {
       "output": "dist_electron"
     },

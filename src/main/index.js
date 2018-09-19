@@ -39,7 +39,7 @@ global.dbWorkerWindow = null
 global.ormWorkerWindow = null
 global.printWorkerWindow = null
 global.pdfViewerWindow = null
-global.invoiceData={data:null}
+global.invoiceData = { data: null }
 
 global.DB_VERSION = require('../../package.json').db_version
 
@@ -128,10 +128,10 @@ function createDataBaseWorkerWindow() {
     title: "Database",
     parent: mainWindow,
     modal: true,
-    show: isDevelopment ? true : false,
+    show: false,
     icon: ASSETS_DIR + '/icons/64x64.png',
   });
-  var dbWorkerPathname = ASSETS_GLOBAL + '/database/worker.html'; // isDevelopment ? (ASSETS_DIR + '/database/worker.html') : path.join(__dirname, '/../../../assets/database/worker.html')
+  var dbWorkerPathname = ASSETS_GLOBAL + '/database/worker.html';
   dbWorkerWindow.loadURL(formatUrl({ pathname: dbWorkerPathname, protocol: 'file', slashes: true }));
   dbWorkerWindow.webContents.openDevTools();
   return dbWorkerWindow
@@ -208,7 +208,7 @@ function createPdfViewerWindow(file) {
 }
 
 function createPrintWorkerWindow() {
-  printWorkerWindow = new BrowserWindow({   title: "Print Worker",show: isDevelopment ? true : false,  icon: ASSETS_DIR + '/icons/64x64.png', });
+  printWorkerWindow = new BrowserWindow({ title: "Print Worker", width: 860, show: false, icon: ASSETS_DIR + '/icons/64x64.png', });
   var printWorkerPathname = ASSETS_GLOBAL + '/billing/worker.html'; // isDevelopment ? (ASSETS_DIR + '/billing/worker.html') : path.join(__dirname, '/../../../assets/billing/' + 'worker.html')
   printWorkerWindow.loadURL(formatUrl({ pathname: printWorkerPathname, protocol: 'file', slashes: true }))
   printWorkerWindow.webContents.openDevTools();
@@ -240,9 +240,9 @@ const ORANGE = [224 / 255, 90 / 255, 43 / 255];
 const GREY = [117 / 255, 117 / 255, 117 / 255];
 const INVOICE_FONT = 'InvoiceFont';
 
-const { PDFDocumentFactory, PDFDocumentWriter, drawText  } = require('pdf-lib');
+const { PDFDocumentFactory, PDFDocumentWriter, drawText } = require('pdf-lib');
 
-ipcMain.on("readyToPrintPDF",  (event, ID, silent = false) => {
+ipcMain.on("readyToPrintPDF", (event, ID, silent = false) => {
   let pdfPathFolder = userDataPath + 'billing' + path.sep + 'invoices' + path.sep
   fse.ensureDirSync(pdfPathFolder)
   const pdfPath = pdfPathFolder + 'invoice-' + ID + '.pdf';
@@ -250,11 +250,11 @@ ipcMain.on("readyToPrintPDF",  (event, ID, silent = false) => {
   const printOptions = {
     pageSize: 'A4',
     marginsType: 0,
-    printBackground: true, 
+    printBackground: true,
     printSelectionOnly: false,
     landscape: false
   }
-  printWorkerWindow.webContents.printToPDF(printOptions,  function(error, data) {
+  printWorkerWindow.webContents.printToPDF(printOptions, function(error, data) {
     if (error) throw error;
 
 
@@ -270,8 +270,7 @@ ipcMain.on("readyToPrintPDF",  (event, ID, silent = false) => {
       const PAGE_HEIGHT = (currentPage.get('MediaBox').array[3]).number;
       var contentStream1 = pdfDoc.createContentStream(
         drawText(
-          'Page: ' + (i + 1).toString() + '/' + (pages.length).toString(),
-          { x: 34, y: 31, size: 8, font: INVOICE_FONT, colorRgb: GREY, },
+          'Page: ' + (i + 1).toString() + '/' + (pages.length).toString(), { x: 34, y: 31, size: 8, font: INVOICE_FONT, colorRgb: GREY, },
         ),
       );
       currentPage.addContentStreams(pdfDoc.register(contentStream1));
@@ -284,7 +283,7 @@ ipcMain.on("readyToPrintPDF",  (event, ID, silent = false) => {
       mainWindow.send('data-pdf', pdfBytes);
     } else {
       try {
-          fs.writeFileSync(pdfPath, pdfBytes);
+        fs.writeFileSync(pdfPath, pdfBytes);
         // shell.openItem(pdfPath)
         pdfViewerWindow = createPdfViewerWindow(pdfPath)
         mainWindow.send('wrote-pdf', pdfPath)

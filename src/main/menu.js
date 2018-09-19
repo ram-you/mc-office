@@ -10,49 +10,41 @@
  let assetsFolder = isDevelopment ? '../common/assets/' : '/../../../assets/'
 
  function init(window) {
-   mainWindow = window
-
+   mainWindow = window;
    const fileMenu = {
-    label: 'File',
-    submenu: [{
-        label: 'Home',
-        icon: path.join(__dirname, assetsFolder + 'icons/menu/home.png'),
-        accelerator: 'CmdOrCtrl+H',
-        click() {
-          mainWindow.webContents.send('menu-change-tab', 'home');
-        },
-      } 
-    
-    ],
-  };
-
-   const aboutMenu = {
-     label: 'My App',
-     submenu: [
-       { role: 'about' },
-       { type: 'separator' },
-       {
-         label: 'Check For Updates',
-         accelerator: 'CmdOrCtrl+U',
+     label: 'File',
+     submenu: [{
+         label: 'Home',
+         icon: path.join(__dirname, assetsFolder + 'icons/menu/home.png'),
+         accelerator: 'CmdOrCtrl+H',
          click() {
-           ipc.send('check-for-updates');
+           mainWindow.webContents.send('menu-change-tab', 'home');
+         },
+       }
+
+     ],
+   };
+
+   const viewHiddenWindowsMenu = {
+     label: 'View',
+     submenu: [{
+         label: 'Print Worker',
+         icon: path.join(__dirname, assetsFolder + 'icons/menu/file-invoice.png'),
+         click() {
+           global.printWorkerWindow.isVisible() ? global.printWorkerWindow.hide() : global.printWorkerWindow.show();
          },
        },
-
-       { type: 'separator' },
-       { role: 'services', submenu: [] },
-       { type: 'separator' },
-       { role: 'hide' },
-       { role: 'hideothers' },
-       { role: 'unhide' },
        { type: 'separator' },
        {
-         label: 'Quit App',
-         accelerator: 'CmdOrCtrl+Q',
+         label: 'Database Worker',
+         icon: path.join(__dirname, assetsFolder + 'icons/menu/database.png'),
          click() {
-           ipc.send('quit-app');
+           global.dbWorkerWindow.isVisible() ? global.dbWorkerWindow.hide() : global.dbWorkerWindow.show();
          },
        },
+       { type: 'separator' },
+       { role: 'forcereload' },
+       { role: 'togglefullscreen' },
      ]
    };
 
@@ -62,7 +54,7 @@
          label: 'New',
          accelerator: 'CmdOrCtrl+N',
          click() {
-          mainWindow.webContents.send('menu-change-tab', 'new-invoice');
+           mainWindow.webContents.send('menu-change-tab', 'new-invoice');
          },
        },
        {
@@ -180,7 +172,7 @@
    };
 
    const viewMenu = {
-     label: 'View',
+     label: 'View...',
      submenu: [
        { role: 'forcereload' },
        { role: 'toggledevtools' },
@@ -211,23 +203,23 @@
          },
        },
        {
-        label: 'About MEDIACEPT Office',
-        icon: path.join(__dirname, assetsFolder + 'icons/menu/info-circle.png'),
-        accelerator: 'CmdOrCtrl+A',
-        click() {
+         label: 'About MEDIACEPT Office',
+         icon: path.join(__dirname, assetsFolder + 'icons/menu/info-circle.png'),
+         accelerator: 'CmdOrCtrl+A',
+         click() {
            mainWindow.webContents.send('menu-change-tab', 'about');
-        },
-      },
+         },
+       },
      ],
    };
 
    // Add additional menu item on Windows & Linux
    if (process.platform !== 'darwin') {
      // Add Quit to invoiceMenu
-    fileMenu.submenu.push({ type: 'separator' }, {
-      icon: path.join(__dirname, assetsFolder + 'icons/menu/power-off.png'),
-      role: 'close',
-      label: i18n.__('Close')
+     fileMenu.submenu.push({ type: 'separator' }, {
+       icon: path.join(__dirname, assetsFolder + 'icons/menu/power-off.png'),
+       role: 'close',
+       label: i18n.__('Close')
      }, );
      // Add check for update to helpMenu
      helpMenu.submenu.unshift({
@@ -243,6 +235,7 @@
      fileMenu,
      invoiceMenu,
      goMenu,
+     viewHiddenWindowsMenu,
      editMenu,
      windowsMenu,
      helpMenu,
