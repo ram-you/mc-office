@@ -1,32 +1,31 @@
 {
   "name": "mc-office",
   "version": "0.3.53",
-  "db_version": "0.0.3",
-  "license": "MIT",
   "description": "A MEDIACEPT Technology creation",
-  "author": {
-    "name": "Ramzi Youssef",
-    "email": "contact@mediacept.com"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ram-you/mc-office.git"
   },
+  "license": "MIT",
+  "author": {
+    "name": "Ramzi Youssef",
+    "email": "contact@mediacept.com"
+  },
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "npm run pack && electron-builder",
+    "build:all": "npm run pack && electron-builder -wl",
     "build:dir": "npm run pack && electron-builder --dir",
     "build:linux": "npm run pack && electron-builder --linux",
     "build:win": "npm run pack && electron-builder --win",
-    "build:all": "npm run pack && electron-builder -wl",
     "clean": "cross-env BUILD_TARGET=clean node vue-electron/build.js",
     "dev": "cross-env NODE_ENV=development ELECTRON_DISABLE_SECURITY_WARNINGS=true node vue-electron/dev-runner.js",
+    "postinstall": "electron-builder install-app-deps && npm rebuild node-sass",
     "pack": "npm run clean && npm version patch --no-git-tag-version && cross-env NODE_ENV=production npm run pack:main && npm run pack:renderer",
     "pack:main": "webpack  --mode production --hide-modules --config vue-electron/webpack.main.config.js",
     "pack:renderer": "webpack --mode production --hide-modules --config vue-electron/webpack.renderer.config.js",
-    "postinstall": "electron-builder install-app-deps && npm rebuild node-sass",
-    "rebuild-electron": "./node_modules/.bin/electron-rebuild",
     "rebuild": "electron-rebuild -f -w sqlite3",
+    "rebuild-electron": "./node_modules/.bin/electron-rebuild",
     "release": "build"
   },
   "dependencies": {
@@ -41,6 +40,7 @@
     "electron-store": "^2.0.0",
     "fs-extra": "^7.0.0",
     "got": "^9.2.2",
+    "handlebars": "^4.0.12",
     "knex": "^0.15.2",
     "lodash": "^4.17.11",
     "nedb": "^1.8.0",
@@ -54,8 +54,7 @@
     "vuetify": "^1.2.4",
     "vuetify-upload-button": "^1.1.0",
     "vuex": "^3.0.1",
-    "xlsx": "^0.14.0",
-    "handlebars": "^4.0.12"
+    "xlsx": "^0.14.0"
   },
   "devDependencies": {
     "@babel/core": "^7.1.0",
@@ -185,5 +184,6 @@
       "afterInstall": "./scripts/debian-add-repo.sh",
       "afterRemove": "./scripts/debian-uninstaller.sh"
     }
-  }
+  },
+  "db_version": "0.0.3"
 }
