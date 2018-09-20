@@ -29,7 +29,7 @@
                     <v-divider v-else-if="item.divider" :inset="item.inset" :key="index"></v-divider>
 
                     <v-list-tile v-else :key="item.title" avatar>
-                      <v-list-tile-avatar>
+                      <v-list-tile-avatar v-on:dblclick="item.cb?item.cb():function(){}">
                         <img :src="item.avatar">
                       </v-list-tile-avatar>
 
@@ -67,8 +67,10 @@
 <script>
 
 
-
-var _app = require('electron').remote.app
+var electron = require("electron")
+const remote = electron.remote;
+const { ipcRenderer } = require('electron')
+var _app = remote.app
 const electronVersion = process.versions.electron
 const chromeVersion = process.versions.chrome
 const v8Version = process.versions.v8
@@ -76,6 +78,8 @@ const nodeVersion = process.versions.node
 const os = require('os');
 const appPath = _app.getPath('exe')
 const appVersion = _app.getVersion()
+let SHOW_HIDDEN_WINDOWS_MENU = remote.getGlobal('showHiddenWindowsMenu');
+
 var sysInfos;
 
 export default {
@@ -90,12 +94,13 @@ export default {
         {
           avatar: require("../../common/assets/img/logo/256x256.png"),
           title: appTitle,
-          subtitle: appVersion
+          subtitle: appVersion,
+             cb: function () { SHOW_HIDDEN_WINDOWS_MENU["show"] = !SHOW_HIDDEN_WINDOWS_MENU["show"]; ipcRenderer.send("update-main-menu"); },
         },
         { divider: true, inset: true },
         {
           avatar: require("../../common/assets/img/electron-icon.png"),
-          title: 'Electron',
+          title: 'Electron',       
           subtitle: electronVersion
         },
         { divider: true, inset: true },
@@ -166,10 +171,10 @@ export default {
     }(document, 'script', 'weatherwidget-io-js');
 
 
- 
 
 
- 
+
+
 
   },
   methods: {

@@ -40,6 +40,7 @@ global.ormWorkerWindow = null
 global.printWorkerWindow = null
 global.pdfViewerWindow = null
 global.invoiceData = { data: null }
+global.showHiddenWindowsMenu={ show: false }
 
 global.DB_VERSION = require('../../package.json').db_version
 
@@ -64,7 +65,7 @@ function createMainWindow() {
     y: winPOS.y,
     backgroundColor: isDarkMode ? '#303030' : '#fff',
     show: false,
-    icon: ASSETS_DIR + '/icons/64x64.png', // path.join(__dirname, '../common/assets/icons/64x64.png'),
+    icon: ASSETS_DIR + '/icons/64x64.png',
     webPreferences: { plugins: true }
 
   })
@@ -105,7 +106,10 @@ function createMainWindow() {
     e.preventDefault();
     onWindowResize();
   }, 100));
-
+  mainWindow.on('hide', () => { 
+    dbWorkerWindow.hide();
+    printWorkerWindow.hide();
+   })
   require('./menu').init(mainWindow)
   require('./traymenu').init(mainWindow)
 
@@ -135,31 +139,24 @@ function createDataBaseWorkerWindow() {
   dbWorkerWindow.loadURL(formatUrl({ pathname: dbWorkerPathname, protocol: 'file', slashes: true }));
   dbWorkerWindow.setMenu(null)
   dbWorkerWindow.webContents.openDevTools();
-
   dbWorkerWindow.on('close', (e) => {
-    if (mainWindow && (mainWindow.isMinimized() || mainWindow.isVisible())) {
+    if (mainWindow && (mainWindow.isMinimized() || mainWindow.isVisible() || !mainWindow.isVisible())) {
       e.preventDefault();
-      dbWorkerWindow.hide()
+      dbWorkerWindow.hide();
     }
   });
-  return dbWorkerWindow
+  return dbWorkerWindow;
 }
 // =====================~~~~~~~============================================~~~~~~~===========
 
-
-
-
-
-// quit application when all windows are closed
-app.on('window-all-closed', () => {
-  // on macOS it is common for applications to stay open until the user explicitly quits
+ 
+app.on('window-all-closed', () => { 
   if (platform !== 'darwin') {
-         app.quit()
+    app.quit()
   }
 })
 
-app.on('activate', () => {
-  // on macOS it is common to re-create a window even after all windows have been closed
+app.on('activate', () => { 
   if (mainWindow === null) {
     mainWindow = createMainWindow()
   }
@@ -202,38 +199,37 @@ function createPdfViewerWindow(file) {
     title: "PDF Viewer",
     // parent: mainWindow, modal: true,
     show: false,
-    icon: ASSETS_DIR + '/icons/pdf.png', //path.join(__dirname, '../common/assets/icons/pdf.png'),
+    icon: ASSETS_DIR + '/icons/pdf.png',  
     webPreferences: { plugins: true, },
     icon: ASSETS_DIR + '/icons/64x64.png',
   });
   pdfViewerWindow.setMenu(null)
   pdfViewerWindow.loadURL(formatUrl({ pathname: file, protocol: 'file', slashes: true }))
   pdfViewerWindow.on('ready-to-show', () => {
-    pdfViewerWindow.show()
-    pdfViewerWindow.focus()
+    pdfViewerWindow.show();
+    pdfViewerWindow.focus();
   })
-  return pdfViewerWindow
+  return pdfViewerWindow;
 }
 
 function createPrintWorkerWindow() {
   printWorkerWindow = new BrowserWindow({ title: "Print Worker", width: 860, show: false, icon: ASSETS_DIR + '/icons/64x64.png', });
-  var printWorkerPathname = ASSETS_GLOBAL + '/billing/worker.html'; // isDevelopment ? (ASSETS_DIR + '/billing/worker.html') : path.join(__dirname, '/../../../assets/billing/' + 'worker.html')
-  printWorkerWindow.loadURL(formatUrl({ pathname: printWorkerPathname, protocol: 'file', slashes: true }))
+  var printWorkerPathname = ASSETS_GLOBAL + '/billing/worker.html'; 
+  printWorkerWindow.loadURL(formatUrl({ pathname: printWorkerPathname, protocol: 'file', slashes: true }));
+  printWorkerWindow.setMenu(null);
   printWorkerWindow.webContents.openDevTools();
-  return printWorkerWindow
+  printWorkerWindow.on('close', (e) => {
+    if (mainWindow && (mainWindow.isMinimized() || mainWindow.isVisible() || !mainWindow.isVisible())) {
+      e.preventDefault();
+      printWorkerWindow.hide();
+    }
+  });
+  return printWorkerWindow;
 }
 
 ipcMain.on("printPDF", (event, content, theme, silent = false) => {
   printWorkerWindow.webContents.send("printPDF", content, theme, silent);
 });
-
-
-
-
-
-
-
-
 
 
 

@@ -2001,7 +2001,7 @@ h1, h2, h3, h4, h5, h6 {
   background: -moz-linear-gradient(90deg, #f45622 0%, #f53e54 100%);
   background: -webkit-linear-gradient(90deg, #f45622 0%, #f53e54 100%);
   background: -ms-linear-gradient(90deg, #f45622 0%, #f53e54 100%);
-  -webkit-background-clip: text;
+ 
   -webkit-text-fill-color: transparent;
 }
 
@@ -2153,17 +2153,8 @@ h1, h2, h3, h4, h5, h6 {
   background-color: transparent;
 }
 
-@media (max-width: 1199px) {
-  .banner-area .fullscreen {
-    height: 800px !important;
-  }
-}
-
-@media (max-width: 991px) {
-  .banner-content {
-    text-align: center;
-  }
-}
+ 
+ 
 
 .banner-content h1 {
   color: #fff;
@@ -2194,12 +2185,7 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 45px;
   }
 }
-
-@media (max-width: 800px) {
-  .banner-content h1 {
-    margin-top: 60px;
-  }
-}
+ 
 
 .header-btn {
   background-color: #fff;

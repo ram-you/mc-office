@@ -225,11 +225,11 @@ export default {
     var userTheme = _store.get('users.' + connectedUserName + '.invoice.theme') || 'default'
     this.theme = userTheme;
 
+
+
     vm.webview = document.querySelector('webview')
     vm.webview.webContents = vm.webview.getWebContents()
     PDFWindow.addSupport(vm.webview);
-
-
 
 
 
@@ -237,7 +237,7 @@ export default {
       console.log(" PDF DATA regenerated.....");
       // vm.pdfString = 'data:application/pdf;base64, ' + (Uint8ToBase64(pdfData))
 
-
+      vm.webview.webContents = vm.webview.getWebContents()
 
       var tempPdfFile = os.tmpdir() + '/tmp_invoice.pdf'
       fs.writeFileSync(tempPdfFile, pdfData);
@@ -351,7 +351,7 @@ export default {
           ctx.drawImage(img, 0, 0);
           var base64Image = canvas.toDataURL('image/png')
           canvas = null;
-         resolve(base64Image)
+          resolve(base64Image)
         }
         img.onerror = error => { reject(error) }
         img.src = imgSrc

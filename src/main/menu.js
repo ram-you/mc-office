@@ -10,7 +10,7 @@
  let assetsFolder = isDevelopment ? '../common/assets/' : '/../../../assets/'
 
  function init(window) {
-   mainWindow = window;
+   mainWindow = global.mainWindow;
    const fileMenu = {
      label: 'File',
      submenu: [{
@@ -172,7 +172,7 @@
    };
 
    const viewMenu = {
-     label: 'View...',
+     label: 'View (dev)',
      submenu: [
        { role: 'forcereload' },
        { role: 'toggledevtools' },
@@ -235,23 +235,28 @@
      fileMenu,
      invoiceMenu,
      goMenu,
-     viewHiddenWindowsMenu,
      editMenu,
      windowsMenu,
      helpMenu,
    ];
-   // Add About menu on Mac
-   if (process.platform === 'darwin') {
-     menuTemplate.unshift(aboutMenu);
-   }
+
    // Developer Tools Menu
    if (isDevelopment) menuTemplate.splice(3, 0, viewMenu);
+
+   if (global.showHiddenWindowsMenu["show"]) menuTemplate.splice(3, 0, viewHiddenWindowsMenu);
+
    // Build the menu
    const menu = Menu.buildFromTemplate(menuTemplate);
-  //  Menu.setApplicationMenu(menu);
+   //  Menu.setApplicationMenu(menu);
 
 
-   mainWindow.setMenu(menu)
+   mainWindow.setMenu(menu);
+
+ipcMain.once("update-main-menu", (event) => {
+  init()
+
+})
+
 
  }
 

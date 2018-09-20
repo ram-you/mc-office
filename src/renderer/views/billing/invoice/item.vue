@@ -25,14 +25,14 @@
       </div>
 
     </v-toolbar>
-    <div style="position: relative; margin-top:1px;"  >
+    <div style="position: relative; margin-top:1px;">
 
       <div class="d-flex" style="overflow-x:overlay">
-     
-          <invoice-setup  />
-      
+
+        <invoice-setup />
+
         <div class="pa-4">
-          <invoice-detail :id="invoiceID" :number="invoiceNumber"  />
+          <invoice-detail :id="invoiceID" :number="invoiceNumber" />
         </div>
       </div>
 
@@ -51,7 +51,7 @@ const _store = new Store();
 const fs = require('fs')
 const os = require('os')
 const path = require('path')
-const { shell, ipcRenderer, ipcMain } = require('electron')
+const { shell, ipcRenderer } = require('electron')
 const remote = require("electron").remote
 
 import InvoiceDetail from "./itemDetails"
@@ -62,11 +62,11 @@ export default {
   components: { InvoiceSetup, InvoiceDetail },
   data() {
     return {
-    
-     
-     
 
- 
+
+
+
+
       theme: 'default',
       invoice: {},
       invoiceID: this.$route.params.id,

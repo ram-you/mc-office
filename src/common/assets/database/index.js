@@ -6,7 +6,7 @@ module.paths.push(path.resolve(__dirname, '..', '..', 'electron.asar', 'node_mod
 module.paths.push(path.resolve(__dirname, '..', '..', 'app', 'node_modules'));
 module.paths.push(path.resolve(__dirname, '..', '..', 'app.asar', 'node_modules'));
 
-
+const Handlebars = require("handlebars");
 
 const fs = require('fs')
 const fse = require('fs-extra');
@@ -57,8 +57,9 @@ fs.exists(versionFile, function(exists) {
 
 
 function migrateDB(version) {
-  if (version.current == version.latest) { 
+  if (version.current == version.latest) {
     require("./schema/" + version.current + "/initData.js");
+    get_dbStatistics()
   } else {
     var migrationFile = path.join(ASSETS, "database/schema/" + version.latest + "/migrate/" + version.current + ".js");
     fs.exists(migrationFile, function(exists) {
@@ -71,17 +72,56 @@ function migrateDB(version) {
           fs.writeFile(versionFile, json, () => {
             console.log("Migration done.")
             mainWindow.webContents.send("migrateDatabase", { status: 'finish', current: version.current, latest: version.latest });
+            get_dbStatistics()
           });
         });
       } else {
-        alert("No Migration File: \n \n" + migrationFile)
+        alert("No Migration File: \n \n" + migrationFile);
+        get_dbStatistics()
       }
     })
   }
 }
 
 
-// require("./schema/" +"0.0.3" + "/initData.js");
+function get_dbStatistics() {
+  var dbTables=[]
+  var query = "SELECT name FROM sqlite_master" +
+    " WHERE type IN ('table','view') AND name NOT LIKE 'sqlite_%'" +
+    " UNION ALL" +
+    " SELECT name FROM sqlite_temp_master" +
+    " WHERE type IN ('table','view')" +
+    " ORDER BY 1";
+
+  knex.raw(query).then(function(resp) {
+    var models = resp.map(a => a.name);
+
+    var promises = models.map(model => {
+      console.log(model)
+      return new Promise((resolve, reject) => {
+        knex(model).count('* as count').then(c => {
+          var total = c[0].count;
+          resolve({table_name: model, table_count: total  })
+        })
+      });
+    });
+
+
+    Promise.all(promises).then(function(values) {
+      for (var i = 0; i < values.length; i++) {
+        var value = values[i];
+        dbTables.push(value)
+      }
+
+      var source   = document.getElementById("db-tables-template").innerHTML;
+      var template = Handlebars.compile(source);
+      var html    = template( {version:DB_VERSION,dbTables:dbTables});
+      
+      document.getElementById("db-infos").innerHTML=html
+    });
+
+  })
+}
 
 
 
