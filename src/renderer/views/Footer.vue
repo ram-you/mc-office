@@ -11,14 +11,16 @@
     <v-card flat tile class="text-xs-right" width="100%">
       <v-divider></v-divider>
       <v-card-text class="grey--text text--darken-2 py-2">
-        &copy;{{currentYear}}
-        <strong v-if="!aboutPage" class="mx-1"> MC Office</strong>
+       
+        <!-- <strong v-if="!aboutPage" class="mx-1"> MC Office</strong> -->
         Powered by
         <a href="http://mediacept.com/" style="text-decoration: none;">
-          <strong class="grey--text text--darken-1 mx-1">MEDIACEPT&trade; Technology
-            <sup>®</sup>
-          </strong>
+          <span class="grey--text text--darken-1 mx-1" style="font-size: 13px;font-weight: bold;">MEDIACEPT Technology
+            <!-- <sup>®</sup> -->
+              © {{currentYear}}
+          </span>
         </a>
+       
       </v-card-text>
     </v-card>
 
@@ -62,7 +64,7 @@ export default {
             win.focus()
           } else {
             win = new BrowserWindow({
-              show: true,
+              show: false,
               autoHideMenuBar: true,
               webPreferences: { nodeIntegration: false }
             })

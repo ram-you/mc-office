@@ -27,19 +27,34 @@
 
    const viewHiddenWindowsMenu = {
      label: 'View',
+     enabled: global.showHiddenWindowsMenu["show"],
      submenu: [{
          label: 'Print Worker',
          icon: path.join(__dirname, assetsFolder + 'icons/menu/file-invoice.png'),
          click() {
-           global.printWorkerWindow.isVisible() ? global.printWorkerWindow.hide() : global.printWorkerWindow.show();
+           var win = global.printWorkerWindow
+           win.show();
+           win.restore();
+           win.focus();
          },
        },
-       { type: 'separator' },
+
        {
          label: 'Database Worker',
          icon: path.join(__dirname, assetsFolder + 'icons/menu/database.png'),
          click() {
-           global.dbWorkerWindow.isVisible() ? global.dbWorkerWindow.hide() : global.dbWorkerWindow.show();
+           var win = global.dbWorkerWindow
+           win.show();
+           win.restore();
+           win.focus();
+         },
+       },
+       {
+         label: 'Close all',
+         icon: path.join(__dirname, assetsFolder + 'icons/menu/eye-slash.png'),
+         click() {
+           global.dbWorkerWindow.hide();
+           global.printWorkerWindow.hide();
          },
        },
        { type: 'separator' },
@@ -165,8 +180,7 @@
        { role: 'cut' },
        { role: 'copy' },
        { role: 'paste' },
-       { role: 'pasteandmatchstyle' },
-       { role: 'deconste' },
+       { type: 'separator' },
        { role: 'selectall' },
      ],
    };
@@ -183,7 +197,8 @@
 
    const windowsMenu = {
      role: 'window',
-     submenu: [{ role: 'minimize' }, { role: 'close' }],
+     submenu: [{ role: 'minimize' }, { role: 'close' }, viewHiddenWindowsMenu],
+
    };
 
    const helpMenu = {
@@ -192,7 +207,7 @@
          label: 'Show Tutorial',
          accelerator: 'CmdOrCtrl+T',
          click() {
-           ipc.send('start-tour');
+          mainWindow.send('start-tour');
          },
        },
        { type: 'separator' },
@@ -226,16 +241,16 @@
        label: 'Check For Updates',
        accelerator: 'CmdOrCtrl+U',
        click() {
-         ipc.send('check-for-updates');
+        mainWindow.send('check-for-updates');
        },
      });
    }
    // Base menu
    const menuTemplate = [
      fileMenu,
-     invoiceMenu,
-     goMenu,
      editMenu,
+     goMenu,
+     invoiceMenu,
      windowsMenu,
      helpMenu,
    ];
@@ -243,7 +258,6 @@
    // Developer Tools Menu
    if (isDevelopment) menuTemplate.splice(3, 0, viewMenu);
 
-   if (global.showHiddenWindowsMenu["show"]) menuTemplate.splice(3, 0, viewHiddenWindowsMenu);
 
    // Build the menu
    const menu = Menu.buildFromTemplate(menuTemplate);
@@ -252,10 +266,10 @@
 
    mainWindow.setMenu(menu);
 
-ipcMain.once("update-main-menu", (event) => {
-  init()
+   ipcMain.once("update-main-menu", (event) => {
+     init()
 
-})
+   })
 
 
  }
