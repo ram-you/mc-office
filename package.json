@@ -34,6 +34,7 @@
     "animejs": "^2.2.0",
     "axios": "^0.18.0",
     "chart.js": "^2.7.2",
+    "crypto-js": "^3.1.9-1",
     "date-fns": "^1.29.0",
     "electron-is-dev": "^1.0.1",
     "electron-pdf-window": "^1.0.12",
@@ -41,10 +42,12 @@
     "fs-extra": "^7.0.0",
     "got": "^9.2.2",
     "handlebars": "^4.0.12",
+    "jquery": "^3.3.1",
     "knex": "^0.15.2",
     "lodash": "^4.17.11",
     "nedb": "^1.8.0",
     "pdf-lib": "^0.3.0",
+    "popper.js": "^1.14.4",
     "sqlite3": "^4.0.2",
     "vue": "^2.5.17",
     "vue-chartjs": "^3.4.0",
@@ -100,7 +103,7 @@
     "webpack": "^4.19.1",
     "webpack-cli": "^3.1.0",
     "webpack-dev-server": "3.1.8",
-    "webpack-hot-middleware": "^2.24.1"
+    "webpack-hot-middleware": "^2.24.2"
   },
   "build": {
     "asar": true,

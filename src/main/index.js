@@ -36,11 +36,11 @@ global.ASSETS_GLOBAL = isDevelopment ? path.resolve(__dirname, '../common/assets
 
 global.mainWindow = null
 global.dbWorkerWindow = null
-global.ormWorkerWindow = null
+global.adminWorkerWindow = null
 global.printWorkerWindow = null
 global.pdfViewerWindow = null
 global.invoiceData = { data: null }
-global.showHiddenWindowsMenu={ show: false }
+global.showHiddenWindowsMenu = { show: false }
 
 global.DB_VERSION = require('../../package.json').db_version
 
@@ -106,10 +106,10 @@ function createMainWindow() {
     e.preventDefault();
     onWindowResize();
   }, 100));
-  mainWindow.on('hide', () => { 
+  mainWindow.on('hide', () => {
     dbWorkerWindow.hide();
     printWorkerWindow.hide();
-   })
+  })
   require('./menu').init(mainWindow)
   require('./traymenu').init(mainWindow)
 
@@ -123,8 +123,34 @@ app.on('ready', async () => {
   dbWorkerWindow = createDataBaseWorkerWindow();
   mainWindow = createMainWindow();
   printWorkerWindow = createPrintWorkerWindow();
+  adminWorkerWindow = createAdminWorkerWindow();
   userDataPath = app.getPath('userData') + path.sep;
 })
+
+// =====================ADMIN================ADMIN==========ADMIN==================
+function createAdminWorkerWindow() {
+  adminWorkerWindow = new BrowserWindow({
+    title: "Admin",
+    // parent: mainWindow,
+    modal: true,
+    show: true,
+    icon: ASSETS_DIR + '/icons/64x64.png',
+  });
+  var adminWorkerPathname = ASSETS_GLOBAL + '/admin/index.html';
+  adminWorkerWindow.loadURL(formatUrl({ pathname: adminWorkerPathname, protocol: 'file', slashes: true }));
+  adminWorkerWindow.setMenu(null)
+  adminWorkerWindow.webContents.openDevTools();
+  adminWorkerWindow.on('close', (e) => {
+    if (mainWindow && (mainWindow.isMinimized() || mainWindow.isVisible() || !mainWindow.isVisible())) {
+      e.preventDefault();
+      adminWorkerWindow.hide();
+    }
+  });
+  return adminWorkerWindow;
+}
+// =====================~~~~~~~============================================~~~~~~~===========
+
+
 
 // =====================DATABASE================DATABASE==========DATABASE==================
 function createDataBaseWorkerWindow() {
@@ -149,14 +175,14 @@ function createDataBaseWorkerWindow() {
 }
 // =====================~~~~~~~============================================~~~~~~~===========
 
- 
-app.on('window-all-closed', () => { 
+
+app.on('window-all-closed', () => {
   if (platform !== 'darwin') {
     app.quit()
   }
 })
 
-app.on('activate', () => { 
+app.on('activate', () => {
   if (mainWindow === null) {
     mainWindow = createMainWindow()
   }
@@ -199,7 +225,7 @@ function createPdfViewerWindow(file) {
     title: "PDF Viewer",
     // parent: mainWindow, modal: true,
     show: false,
-    icon: ASSETS_DIR + '/icons/pdf.png',  
+    icon: ASSETS_DIR + '/icons/pdf.png',
     webPreferences: { plugins: true, },
     icon: ASSETS_DIR + '/icons/64x64.png',
   });
@@ -214,7 +240,7 @@ function createPdfViewerWindow(file) {
 
 function createPrintWorkerWindow() {
   printWorkerWindow = new BrowserWindow({ title: "Print Worker", width: 860, show: false, icon: ASSETS_DIR + '/icons/64x64.png', });
-  var printWorkerPathname = ASSETS_GLOBAL + '/billing/worker.html'; 
+  var printWorkerPathname = ASSETS_GLOBAL + '/billing/worker.html';
   printWorkerWindow.loadURL(formatUrl({ pathname: printWorkerPathname, protocol: 'file', slashes: true }));
   printWorkerWindow.setMenu(null);
   printWorkerWindow.webContents.openDevTools();
