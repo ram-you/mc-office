@@ -1,8 +1,5 @@
 <template>
   <div>
-    <div class="hidden-div">
-      <!-- <invoice-detail :id="selectedInvoiceID" :number="selectedInvoiceNumber"></invoice-detail> -->
-    </div>
 
     <v-dialog v-model="waitingResponse" persistent width="300">
       <v-card color="primary" dark>
@@ -98,14 +95,16 @@
                 </v-card-actions>
               </v-card>
             </v-dialog>
-            <v-data-table :headers="headers" :items="desserts2" :search="search" item-key="name">
+
+            <v-data-table :headers="headers" :items="tableData" :search="search" item-key="id">
               <template slot="items" slot-scope="props">
                 <tr @click="props.expanded = !props.expanded">
-                  <td>{{ props.item.name }}</td>
-                  <td class="text-xs-right">{{ props.item.calories }}</td>
-                  <td class="text-xs-right">{{ props.item.fat }}</td>
-                  <td class="text-xs-right">{{ props.item.carbs }}</td>
-                  <td class="text-xs-right">{{ props.item.protein }}</td>
+
+                  <td v-for="(header,index) in headers" :key="index">
+                    {{ props.item[header.value] }}
+                  </td>
+ 
+
                   <td class="justify-center layout px-0">
                     <v-btn icon class="mx-0" @click="editItem(props.item)">
                       <v-icon color="teal" class="mdi-18px">mdi-pencil</v-icon>
@@ -113,26 +112,13 @@
                     <v-btn icon class="mx-0" @click="deleteItem(props.item)">
                       <v-icon color="red" class="mdi-18px">mdi-delete</v-icon>
                     </v-btn>
-                    <v-btn icon class="mx-0" @click="createPDF(props.item)">
-                      <v-icon color="green" class="mdi-18px">mdi-file-pdf</v-icon>
-                    </v-btn>
+
                     <v-btn icon class="mx-0" @click="goDetail(props.item)">
                       <v-icon color="blue" class="mdi-18px">mdi-link</v-icon>
                     </v-btn>
                   </td>
                 </tr>
-              </template>
-              <template slot="expand" slot-scope="props">
-                <v-card flat class="grey lighten-3 black--text">
-                  <v-card-text class="px-5">
-                    <v-icon v-if="$vuetify.rtl" class="green--text mdi-18px px-2">mdi-subdirectory-arrow-left</v-icon>
-                    <v-icon v-else class="green--text mdi-18px px-2">mdi-subdirectory-arrow-right</v-icon>
-                    <span class="grey--text text--darken-3 font-weight-regular px-2">Facture:</span>
-                    <a class="font-weight-medium" @click="goDetail(props.item)"> {{ props.item.number }} </a>
-
-                  </v-card-text>
-                </v-card>
-              </template>
+              </template> 
               <template slot="no-data">
                 <v-btn color="primary" @click="initialize">Reset</v-btn>
               </template>
@@ -188,15 +174,19 @@ import { remote } from 'electron'
 const app = remote.app
 let dbWorkerWindow = remote.getGlobal('dbWorkerWindow');
 
-import InvoiceDetail from "./itemDetails"
+function Capitalize(str) {
+ str = str.replace(/_/g, ' ').replace(/(?: |\b)(\w)/g, function (key) { return key });
+  return str.toLowerCase().split(' ').map(function (word) { return word[0].toUpperCase() + word.substr(1); }).join(' ');
+}
+
 import UploadButton from 'vuetify-upload-button';
 export default {
-  components: { 'upload-btn': UploadButton, InvoiceDetail },
+  components: { 'upload-btn': UploadButton },
   name: 'invoicesList',
   data() {
     return {
       waitingResponse: false,
-      waitingMessage:'',
+      waitingMessage: '',
       gotResponse: false,
       serverResponse: '',
       SheetJSFT: ["xlsx", "xlsb", "xlsm", "xls", "xml", "csv", "ods", "dbf"].map(function (x) { return "." + x; }).join(","),
@@ -206,20 +196,8 @@ export default {
       selectedInvoiceID: null,
       selectedInvoiceNumber: null,
       search: '',
-      headers: [
-        {
-          text: 'Dessert (100g serving)',
-          align: 'left',
-          sortable: false,
-          value: 'name'
-        },
-        { text: 'Calories', value: 'calories' },
-        { text: 'Fat (g)', value: 'fat' },
-        { text: 'Carbs (g)', value: 'carbs' },
-        { text: 'Protein (g)', value: 'protein' },
-        { text: 'Iron (%)', value: 'iron' }
-      ],
-
+      headers: [],
+      tableData: [],
       totalDesserts: 0,
 
       loading: true,
@@ -254,50 +232,37 @@ export default {
   watch: {
     pagination: {
       handler() {
-        this.getDataFromApi()
-          .then(data => {
-            this.desserts1 = data.items
-            this.totalDesserts = data.total
-          })
+
       },
       deep: true
     },
     dialog(val) { val || this.close() }
   },
-  beforeCreate(){ 
-    dbWorkerWindow.webContents.send("getInvoices", 'invoices'); 
+  beforeCreate() {
+    dbWorkerWindow.webContents.send("get_tableSchema", 'currencies');
+    dbWorkerWindow.webContents.send("get_tableData", 'currencies');
   },
-  created() { 
-    this.initialize(); 
+  created() {
+    this.initialize();
     this.isInvoicesDataLoaded = true;
   },
   destroyed() {
-    ipcRenderer.removeAllListeners("invoicesResults");
+    ipcRenderer.removeAllListeners("got_tableSchema");
   },
   mounted() {
 
     var vm = this
-    this.getDataFromApi()
-      .then(data => {
-        this.desserts1 = data.items
-        this.totalDesserts = data.total
-      })
 
-    var connectedUserName = this.connectedUserName;
-    var userTheme = _store.get('users.' + connectedUserName + '.invoice.theme') || 'default'
-    this.theme = userTheme
+    ipcRenderer.on("got_tableSchema", (event, data) => {
+      console.log("Done Schema Results=", data);
+      var res = data.tableSchema.map(row => {  return { text: Capitalize(row), value: row }      })
+      vm.headers = res
+    });
 
-    if (!vm.isInvoicesDataLoaded)
-      dbWorkerWindow.webContents.send("getInvoices", 'invoices');
-
-    var _CB = (event, data) => {
-      console.log("Done invoicesResults", data)
-      vm.isInvoicesDataLoaded = true
-      this.$store.commit("setInvoices", data)
-    }
-    ipcRenderer.on("invoicesResults", _CB);
-
-
+    ipcRenderer.on("got_tableData", (event, data) => {
+      console.log("Done Data Results=", data)
+      vm.tableData = data.data
+    });
 
 
   },
@@ -350,186 +315,12 @@ export default {
         }, 1000)
       })
     },
-    getDesserts() {
-      return [
-        {
-          value: false,
-          id: 1, number: 'FAC-2018-001', name: 'Frozen Yogurt',
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-          iron: '1%'
-        },
-        {
-          value: false,
-          id: 1, number: 'FAC-2018-002', name: 'Ice cream sandwich',
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-          iron: '1%'
-        },
-        {
-          value: false,
-          id: 1, number: 'FAC-2018-003', name: 'Eclair',
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
-          iron: '7%'
-        },
-        {
-          value: false,
-          id: 1, number: 'FAC-2018-004', name: 'Cupcake',
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
-          iron: '8%'
-        },
-        {
-          value: false,
-          id: 1, number: 'FAC-2018-005', name: 'Gingerbread',
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
-          iron: '16%'
-        },
-        {
-          value: false,
-          id: 1, number: 'FAC-2018-006', name: 'Jelly bean',
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-          iron: '0%'
-        },
-        {
-          value: false,
-          id: 1, number: 'FAC-2018-007', name: 'Lollipop',
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-          iron: '2%'
-        },
-        {
-          value: false,
-          id: 1, number: 'FAC-2018-008', name: 'Honeycomb',
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-          iron: '45%'
-        },
-        {
-          value: false,
-          id: 1, number: 'FAC-2018-009', name: 'Donut',
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-          iron: '22%'
-        },
-        {
-          value: false,
-          id: 1, number: 'FAC-2018-010', name: 'KitKat',
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-          iron: '6%'
-        }
-      ]
-    },
+
     initialize() {
-      this.desserts2 = [
-        {
-          id: 1, number: 'FAC-2018-001', name: 'Frozen Yogurt',
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0
-        },
-        {
-          id: 1, number: 'FAC-2018-002', name: 'Ice cream sandwich',
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3
-        },
-        {
-          id: 1, number: 'FAC-2018-003', name: 'Eclair',
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0
-        },
-        {
-          id: 1, number: 'FAC-2018-004', name: 'Cupcake',
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3
-        },
-        {
-          id: 1, number: 'FAC-2018-005', name: 'Gingerbread',
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9
-        },
-        {
-          id: 1, number: 'FAC-2018-006', name: 'Jelly bean',
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0
-        },
-        {
-          id: 1, number: 'FAC-2018-007', name: 'Lollipop',
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0
-        },
-        {
-          id: 1, number: 'FAC-2018-008', name: 'Honeycomb',
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5
-        },
-        {
-          id: 1, number: 'FAC-2018-009', name: 'Donut',
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9
-        },
-        {
-          id: 1, number: 'FAC-2018-010', name: 'KitKat',
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7
-        }
-      ]
+      dbWorkerWindow.webContents.send("got_tableSchema", 'currencies');
+      dbWorkerWindow.webContents.send("got_tableData", 'currencies');
     },
-    createPDF(item) {
-      var vm=this;
-      this.selectedInvoiceID = item.id;
-      this.selectedInvoiceNumber = item.number;
 
-      setTimeout(() => {
-        var content = document.getElementById("billing-container").parentNode.innerHTML
-        ipcRenderer.send("printPDF", item.number, content, vm.theme, false);
-      }, 100);
-
-
-    },
     goDetail(item) {
       this.$router.push({ name: "invoice", params: { id: item.id }, query: { number: item.number } });
     },
@@ -576,7 +367,7 @@ export default {
     exportDatabaseToExel() {
       var vm = this
       this.waitingResponse = true;
-      this.waitingMessage="Exportation en cours, veuillez patienter... "
+      this.waitingMessage = "Exportation en cours, veuillez patienter... "
       ipcRenderer.on('exportToXLS', (event, message) => {
         ipcRenderer.removeAllListeners("exportToXLS");
         vm.waitingResponse = false;

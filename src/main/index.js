@@ -35,8 +35,7 @@ let ASSETS_DIR = path.resolve(__dirname, '../common/assets')
 global.ASSETS_GLOBAL = isDevelopment ? path.resolve(__dirname, '../common/assets') : path.join(__dirname, '/../../../assets');
 
 global.mainWindow = null
-global.dbWorkerWindow = null
-global.adminWorkerWindow = null
+global.dbWorkerWindow = null 
 global.printWorkerWindow = null
 global.pdfViewerWindow = null
 global.invoiceData = { data: null }
@@ -122,34 +121,9 @@ function createMainWindow() {
 app.on('ready', async () => {
   dbWorkerWindow = createDataBaseWorkerWindow();
   mainWindow = createMainWindow();
-  printWorkerWindow = createPrintWorkerWindow();
-  adminWorkerWindow = createAdminWorkerWindow();
+  printWorkerWindow = createPrintWorkerWindow(); 
   userDataPath = app.getPath('userData') + path.sep;
 })
-
-// =====================ADMIN================ADMIN==========ADMIN==================
-function createAdminWorkerWindow() {
-  adminWorkerWindow = new BrowserWindow({
-    title: "Admin",
-    // parent: mainWindow,
-    modal: true,
-    show: true,
-    icon: ASSETS_DIR + '/icons/64x64.png',
-  });
-  var adminWorkerPathname = ASSETS_GLOBAL + '/admin/index.html';
-  adminWorkerWindow.loadURL(formatUrl({ pathname: adminWorkerPathname, protocol: 'file', slashes: true }));
-  adminWorkerWindow.setMenu(null)
-  adminWorkerWindow.webContents.openDevTools();
-  adminWorkerWindow.on('close', (e) => {
-    if (mainWindow && (mainWindow.isMinimized() || mainWindow.isVisible() || !mainWindow.isVisible())) {
-      e.preventDefault();
-      adminWorkerWindow.hide();
-    }
-  });
-  return adminWorkerWindow;
-}
-// =====================~~~~~~~============================================~~~~~~~===========
-
 
 
 // =====================DATABASE================DATABASE==========DATABASE==================

@@ -93,7 +93,7 @@ Handlebars.registerHelper('eachProperty', function(context, options) {
 
 
 // =======
-async function get_dbTables() {
+function get_dbTables() {
   var query = "SELECT name FROM sqlite_master" +
     " WHERE type IN ('table','view') AND name NOT LIKE 'sqlite_%'" +
     " UNION ALL" +
@@ -105,36 +105,18 @@ async function get_dbTables() {
 
     knex.raw(query).then(async function(resp) {
       var models = resp.map(a => a.name);
-
       var promises = models.map(model => {
-
         return new Promise((resolve, reject) => {
           knex(model).count('* as count').then(c => {
             var total = c[0].count;
-
             knex.raw("PRAGMA table_info(" + model + ");").then(function(resp) {
               resolve({ table_name: model, table_schema: resp, table_count: total })
-
             })
           })
         });
       });
-
-
-
-
-      return await Promise.all(promises)
-
-
-
-
-
-
-
-
-    }).then((d) => {
-      resolves(d)
-    })
+      return await Promise.all(promises);
+    }).then((dbTables) => { resolves(dbTables) })
 
   })
 }

@@ -70,7 +70,12 @@ export default new Router({
     component: () => import('../views/charts/index')
   },
 
-
+  {
+    path: '/database',
+    name: 'database',  
+    meta: { transitionName: 'slide' },
+    component: () => import('../views/database/index')
+  },
 
   ],
 

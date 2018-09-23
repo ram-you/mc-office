@@ -188,6 +188,13 @@
    const viewMenu = {
      label: 'View (dev)',
      submenu: [
+      {
+        label: 'Database', 
+        icon: path.join(__dirname, assetsFolder + 'icons/menu/database.png'),
+        click() {
+          mainWindow.webContents.send('menu-change-tab', 'database');
+        },
+      },
        { role: 'forcereload' },
        { role: 'toggledevtools' },
        { type: 'separator' },
