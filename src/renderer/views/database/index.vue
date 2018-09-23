@@ -50,14 +50,20 @@
     </v-toolbar>
 
     <v-flex xs12 mb-4 mt-4>
-      <div class="display-1 px-3">Liste des Factures</div>
+      <div class="display-1 px-3">DataBase</div>
 
       <v-layout row wrap align-center justify-start py-3 :reverse="$vuetify.rtl">
 
-        <v-flex xs12 sm10 offset-sm1>
+        <v-flex xs12 pa-3>
+
+          <v-flex xs12 sm6 d-flex>
+            <v-select :items="dbTables" label="Tables" solo v-model="currentTable"></v-select>
+          </v-flex>
+
           <v-card style="text-align: -webkit-auto;">
             <v-card-title>
-              Factures
+              Table:
+              <span class="font-weight-bold px-1">{{currentTable.toUpperCase()}}</span>
               <v-spacer></v-spacer>
               <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line hide-details></v-text-field>
             </v-card-title>
@@ -103,7 +109,6 @@
                   <td v-for="(header,index) in headers" :key="index">
                     {{ props.item[header.value] }}
                   </td>
- 
 
                   <td class="justify-center layout px-0">
                     <v-btn icon class="mx-0" @click="editItem(props.item)">
@@ -112,20 +117,20 @@
                     <v-btn icon class="mx-0" @click="deleteItem(props.item)">
                       <v-icon color="red" class="mdi-18px">mdi-delete</v-icon>
                     </v-btn>
-
-                    <v-btn icon class="mx-0" @click="goDetail(props.item)">
-                      <v-icon color="blue" class="mdi-18px">mdi-link</v-icon>
-                    </v-btn>
+ 
                   </td>
                 </tr>
-              </template> 
+              </template>
               <template slot="no-data">
-                <v-btn color="primary" @click="initialize">Reset</v-btn>
+                <v-alert :value="true" color="grey" outline icon="mdi-alert-decagram">
+                  <span> Sorry, no data in table </span>
+                  <span class="font-weight-bold px-1">{{currentTable.toUpperCase()}}</span>
+                </v-alert>
               </template>
               <template slot="pageText" slot-scope="{ pageStart, pageStop }">
                 From {{ pageStart }} to {{ pageStop }}
               </template>
-              <v-alert slot="no-results" :value="true" color="red" icon="warning">
+              <v-alert slot="no-results" :value="true" color="red" outline icon="mdi-alert-decagram">
                 Your search for "{{ search }}" found no results.
               </v-alert>
             </v-data-table>
@@ -175,7 +180,7 @@ const app = remote.app
 let dbWorkerWindow = remote.getGlobal('dbWorkerWindow');
 
 function Capitalize(str) {
- str = str.replace(/_/g, ' ').replace(/(?: |\b)(\w)/g, function (key) { return key });
+  str = str.replace(/_/g, ' ').replace(/(?: |\b)(\w)/g, function (key) { return key });
   return str.toLowerCase().split(' ').map(function (word) { return word[0].toUpperCase() + word.substr(1); }).join(' ');
 }
 
@@ -196,9 +201,10 @@ export default {
       selectedInvoiceID: null,
       selectedInvoiceNumber: null,
       search: '',
+      dbTables: [],
       headers: [],
       tableData: [],
-      totalDesserts: 0,
+      currentTable: "",
 
       loading: true,
       pagination: {},
@@ -236,11 +242,14 @@ export default {
       },
       deep: true
     },
-    dialog(val) { val || this.close() }
+    dialog(val) { val || this.close() },
+    currentTable() {
+      var currentTable = this.currentTable;
+      dbWorkerWindow.webContents.send("get_tableSchema", currentTable);
+      dbWorkerWindow.webContents.send("get_tableData", currentTable);
+    }
   },
   beforeCreate() {
-    dbWorkerWindow.webContents.send("get_tableSchema", 'currencies');
-    dbWorkerWindow.webContents.send("get_tableData", 'currencies');
   },
   created() {
     this.initialize();
@@ -253,9 +262,15 @@ export default {
 
     var vm = this
 
+    ipcRenderer.on("got_dbTables", (event, data) => {
+      console.log("Done dbTables Results=", data);
+      vm.dbTables = data;
+      this.currentTable = data[0]
+    });
+
     ipcRenderer.on("got_tableSchema", (event, data) => {
       console.log("Done Schema Results=", data);
-      var res = data.tableSchema.map(row => {  return { text: Capitalize(row), value: row }      })
+      var res = data.tableSchema.map(row => { return { text: Capitalize(row), value: row } })
       vm.headers = res
     });
 
@@ -317,13 +332,14 @@ export default {
     },
 
     initialize() {
-      dbWorkerWindow.webContents.send("got_tableSchema", 'currencies');
-      dbWorkerWindow.webContents.send("got_tableData", 'currencies');
+      // this.currentTable = 'currencies'
+      // var currentTable = this.currentTable
+      dbWorkerWindow.webContents.send("get_dbTables");
+      // dbWorkerWindow.webContents.send("get_tableSchema", currentTable);
+      // dbWorkerWindow.webContents.send("get_tableData", currentTable);
     },
 
-    goDetail(item) {
-      this.$router.push({ name: "invoice", params: { id: item.id }, query: { number: item.number } });
-    },
+   
     editItem(item) {
       this.editedIndex = this.desserts2.indexOf(item)
       this.editedItem = Object.assign({}, item)

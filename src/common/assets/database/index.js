@@ -128,7 +128,7 @@ async function get_dbStatistics() {
   console.log("dbTables..........###########", dbTables)
   var currenciesSchema = await get_dbTableSchema("currencies");
   console.log("currencies Schema", currenciesSchema)
-  var currenciesData= await get_dbTableData("currencies");
+  var currenciesData = await get_dbTableData("currencies");
   console.log("currencies Data", currenciesData)
   var source = document.getElementById("db-tables-template").innerHTML;
   var template = Handlebars.compile(source);
@@ -176,9 +176,14 @@ async function get_dbTableSchema(tableName) {
 }
 
 async function get_dbTableData(tableName, query) {
-  var pageNum = (query && query.page) ? parseInt(query.page) : 1;
-  var perPage = (query && query.per_page) ? parseInt(query.per_page) : 10;
-  var fromPage = (pageNum - 1) * perPage;
+  var pageNum = 1;
+  var perPage = 64000;
+  var fromPage = 0;
+  if (query) {
+    pageNum = query.page ? parseInt(query.page) : 1;
+    perPage = query.per_page ? parseInt(query.per_page) : 10;
+    fromPage = (pageNum - 1) * perPage;
+  }
   return new Promise((resolve, reject) => {
     knex(tableName).count('* as total').then(function(totalResponse) {
       knex.select('*').from(tableName).limit(perPage).offset(fromPage).then(function(dataResponse) {
@@ -315,7 +320,8 @@ ipcRenderer.on("getInvoices", async (event, model) => {
 });
 
 ipcRenderer.on("get_dbTables", async (event) => {
-  const dbTables = await get_dbTables();
+  const resp = await get_dbTables();
+  var dbTables = resp.map(a => { return a.table_name });
   mainWindow.webContents.send("got_dbTables", dbTables);
 });
 

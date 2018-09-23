@@ -31,7 +31,7 @@ import {
   VProgressLinear,
   VProgressCircular,
   VAvatar,
-  VSelect,VSnackbar,VAutocomplete,VTextarea,VSlider,VDatePicker,
+  VSelect,VSnackbar,VAutocomplete,VTextarea,VSlider,VDatePicker,VAlert,
   transitions
 } from 'vuetify'
 
@@ -70,7 +70,7 @@ Vue.use(Vuetify, {
     VProgressLinear,
     VProgressCircular,
     VAvatar,
-    VSelect,VSnackbar,VAutocomplete,VTextarea,VSlider,VDatePicker,
+    VSelect,VSnackbar,VAutocomplete,VTextarea,VSlider,VDatePicker,VAlert,
     transitions
   },
   theme: {
