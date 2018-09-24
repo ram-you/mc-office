@@ -32,6 +32,12 @@ import '@mdi/font/css/materialdesignicons.css'
 import  '../common/assets/fonts/Cairo/index.css'
 
 
+
+ 
+
+
+
+
 import VueI18n from 'vue-i18n'
 
 Vue.use(VueI18n)

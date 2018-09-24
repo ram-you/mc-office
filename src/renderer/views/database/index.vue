@@ -1,28 +1,6 @@
 <template>
   <div>
 
-    <v-dialog v-model="waitingResponse" persistent width="300">
-      <v-card color="primary" dark>
-        <v-card-text> {{waitingMessage}}
-          <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
-
-    <v-dialog v-model="gotResponse" max-width="300">
-      <v-card color="primary" dark>
-        <v-card-title class="headline" color="white">Exportation en format Excel</v-card-title>
-        <v-card-text color="white">
-          <div> Done in : {{serverResponse.timed}} </div>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn @click="gotResponse = false" light> OK </v-btn>
-          <v-btn @click='gotResponse = false;openXlsFile(serverResponse.link)' light> Ouvrir </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
     <v-toolbar flat style="border-bottom:1px solid rgba(150, 150, 150, 0.23);">
       <v-breadcrumbs divider="/">
         <v-breadcrumbs-item to="/">
@@ -48,6 +26,129 @@
       </div>
 
     </v-toolbar>
+
+    <div class="splitContainer">
+      <div class="split split-horizontal">
+        <div id="top" class="split content">
+          <editor v-model="editorContent" @init="editorInit" lang="html" theme="chrome" width="100%" height="100%"></editor>
+        </div>
+        <div id="bottom" class="split content">
+          
+    <v-flex xs12 mb-4 mt-4>
+      <div class="display-1 px-3">DataBase</div>
+
+      <v-layout row wrap align-center justify-start py-3 :reverse="$vuetify.rtl">
+
+        <v-flex xs12 pa-3>
+
+          <v-flex xs12 sm6 d-flex>
+            <v-select :items="dbTables" label="Tables" solo v-model="currentTable"></v-select>
+          </v-flex>
+
+          <v-card style="text-align: -webkit-auto;">
+            <v-card-title>
+              Table:
+              <span class="font-weight-bold px-1">{{currentTable.toUpperCase()}}</span>
+              <v-spacer></v-spacer>
+              <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line hide-details></v-text-field>
+            </v-card-title>
+            <v-dialog v-model="dialog" max-width="500px">
+              <v-btn slot="activator" color="primary" dark class="mb-2">New Item</v-btn>
+              <v-card>
+                <v-card-title>
+                  <span class="headline">{{ formTitle }}</span>
+                </v-card-title>
+                <v-card-text>
+                  <v-container grid-list-md>
+                    <v-layout wrap>
+                      <v-flex xs12 sm6 md4>
+                        <v-text-field v-model="editedItem.name" label="Dessert name"></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 sm6 md4>
+                        <v-text-field v-model="editedItem.calories" label="Calories"></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 sm6 md4>
+                        <v-text-field v-model="editedItem.fat" label="Fat (g)"></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 sm6 md4>
+                        <v-text-field v-model="editedItem.carbs" label="Carbs (g)"></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 sm6 md4>
+                        <v-text-field v-model="editedItem.protein" label="Protein (g)"></v-text-field>
+                      </v-flex>
+                    </v-layout>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
+                  <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+
+            <v-data-table :headers="headers" :items="tableData" :search="search" item-key="id">
+              <template slot="items" slot-scope="props">
+                <tr @click="props.expanded = !props.expanded">
+
+                  <td v-for="(header,index) in headers" :key="index">
+                    {{ props.item[header.value] }}
+                  </td>
+
+                  <td class="justify-center layout px-0">
+                    <v-btn icon class="mx-0" @click="editItem(props.item)">
+                      <v-icon color="teal" class="mdi-18px">mdi-pencil</v-icon>
+                    </v-btn>
+                    <v-btn icon class="mx-0" @click="deleteItem(props.item)">
+                      <v-icon color="red" class="mdi-18px">mdi-delete</v-icon>
+                    </v-btn>
+
+                  </td>
+                </tr>
+              </template>
+              <template slot="no-data">
+                <v-alert :value="true" color="grey" outline icon="mdi-alert-decagram">
+                  <span> Sorry, no data in table </span>
+                  <span class="font-weight-bold px-1">{{currentTable.toUpperCase()}}</span>
+                </v-alert>
+              </template>
+              <template slot="pageText" slot-scope="{ pageStart, pageStop }">
+                From {{ pageStart }} to {{ pageStop }}
+              </template>
+              <v-alert slot="no-results" :value="true" color="red" outline icon="mdi-alert-decagram">
+                Your search for "{{ search }}" found no results.
+              </v-alert>
+            </v-data-table>
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </v-flex>
+
+        </div>
+      </div> 
+    </div>
+
+    <v-dialog v-model="waitingResponse" persistent width="300">
+      <v-card color="primary" dark>
+        <v-card-text> {{waitingMessage}}
+          <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="gotResponse" max-width="300">
+      <v-card color="primary" dark>
+        <v-card-title class="headline" color="white">Exportation en format Excel</v-card-title>
+        <v-card-text color="white">
+          <div> Done in : {{serverResponse.timed}} </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="gotResponse = false" light> OK </v-btn>
+          <v-btn @click='gotResponse = false;openXlsFile(serverResponse.link)' light> Ouvrir </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <v-flex xs12 mb-4 mt-4>
       <div class="display-1 px-3">DataBase</div>
@@ -117,7 +218,7 @@
                     <v-btn icon class="mx-0" @click="deleteItem(props.item)">
                       <v-icon color="red" class="mdi-18px">mdi-delete</v-icon>
                     </v-btn>
- 
+
                   </td>
                 </tr>
               </template>
@@ -184,12 +285,15 @@ function Capitalize(str) {
   return str.toLowerCase().split(' ').map(function (word) { return word[0].toUpperCase() + word.substr(1); }).join(' ');
 }
 
+import Split from 'split.js'
+
 import UploadButton from 'vuetify-upload-button';
 export default {
-  components: { 'upload-btn': UploadButton },
+  components: { 'upload-btn': UploadButton, editor: require('vue2-ace-editor'), },
   name: 'invoicesList',
   data() {
     return {
+      editorContent: "",
       waitingResponse: false,
       waitingMessage: '',
       gotResponse: false,
@@ -280,8 +384,34 @@ export default {
     });
 
 
+
+    // Split(['#a', '#b'], {
+    //   gutterSize: 8,
+    //   cursor: 'col-resize'
+    // })
+    Split(['#top', '#bottom'], {
+      direction: 'vertical',
+      sizes: [25, 75],
+      gutterSize: 8,
+      cursor: 'row-resize'
+    })
+    // Split(['#e', '#f'], {
+    //   direction: 'vertical',
+    //   sizes: [25, 75],
+    //   gutterSize: 8,
+    //   cursor: 'row-resize'
+    // })
+
   },
   methods: {
+    editorInit: function () {
+      require('brace/ext/language_tools') //language extension prerequsite...
+      require('brace/mode/html')
+      require('brace/mode/javascript')    //language
+      require('brace/mode/less')
+      require('brace/theme/chrome')
+      require('brace/snippets/javascript') //snippet
+    },
     refreshInvoicesData() {
       ipcRenderer.send("getInvoices", 'invoices');
     },
@@ -339,7 +469,7 @@ export default {
       // dbWorkerWindow.webContents.send("get_tableData", currentTable);
     },
 
-   
+
     editItem(item) {
       this.editedIndex = this.desserts2.indexOf(item)
       this.editedItem = Object.assign({}, item)
@@ -416,5 +546,47 @@ export default {
 .upload-btn {
   display: inline-flex;
   vertical-align: middle;
+}
+/* --------- */
+.ace_gutter {
+  z-index: 2 !important;
+}
+/* ------------ */
+.splitContainer {
+  height: 100vh;
+  padding: 8px;
+  background-color: #f6f6f6;
+  box-sizing: border-box;
+}
+.split {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.content {
+  border: 1px solid #c0c0c0;
+  box-shadow: inset 0 1px 2px #e4e4e4;
+  background-color: #fff;
+}
+.gutter {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: 50%;
+}
+.gutter.gutter-horizontal {
+  cursor: col-resize;
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+}
+.gutter.gutter-vertical {
+  cursor: row-resize;
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAFAQMAAABo7865AAAABlBMVEVHcEzMzMzyAv2sAAAAAXRSTlMAQObYZgAAABBJREFUeF5jOAMEEAIEEFwAn3kMwcB6I2AAAAAASUVORK5CYII=');
+}
+.split.split-horizontal,
+.gutter.gutter-horizontal {
+  height: 100%;
+  /* float: left; */
+  width: 100%;
 }
 </style>
