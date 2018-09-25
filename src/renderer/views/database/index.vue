@@ -27,107 +27,6 @@
 
     </v-toolbar>
 
-    <div class="splitContainer">
-      <div class="split split-horizontal">
-        <div id="top" class="split content">
-          <editor v-model="editorContent" @init="editorInit" lang="html" theme="chrome" width="100%" height="100%"></editor>
-        </div>
-        <div id="bottom" class="split content">
-          
-    <v-flex xs12 mb-4 mt-4>
-      <div class="display-1 px-3">DataBase</div>
-
-      <v-layout row wrap align-center justify-start py-3 :reverse="$vuetify.rtl">
-
-        <v-flex xs12 pa-3>
-
-          <v-flex xs12 sm6 d-flex>
-            <v-select :items="dbTables" label="Tables" solo v-model="currentTable"></v-select>
-          </v-flex>
-
-          <v-card style="text-align: -webkit-auto;">
-            <v-card-title>
-              Table:
-              <span class="font-weight-bold px-1">{{currentTable.toUpperCase()}}</span>
-              <v-spacer></v-spacer>
-              <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line hide-details></v-text-field>
-            </v-card-title>
-            <v-dialog v-model="dialog" max-width="500px">
-              <v-btn slot="activator" color="primary" dark class="mb-2">New Item</v-btn>
-              <v-card>
-                <v-card-title>
-                  <span class="headline">{{ formTitle }}</span>
-                </v-card-title>
-                <v-card-text>
-                  <v-container grid-list-md>
-                    <v-layout wrap>
-                      <v-flex xs12 sm6 md4>
-                        <v-text-field v-model="editedItem.name" label="Dessert name"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 sm6 md4>
-                        <v-text-field v-model="editedItem.calories" label="Calories"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 sm6 md4>
-                        <v-text-field v-model="editedItem.fat" label="Fat (g)"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 sm6 md4>
-                        <v-text-field v-model="editedItem.carbs" label="Carbs (g)"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 sm6 md4>
-                        <v-text-field v-model="editedItem.protein" label="Protein (g)"></v-text-field>
-                      </v-flex>
-                    </v-layout>
-                  </v-container>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
-                  <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-
-            <v-data-table :headers="headers" :items="tableData" :search="search" item-key="id">
-              <template slot="items" slot-scope="props">
-                <tr @click="props.expanded = !props.expanded">
-
-                  <td v-for="(header,index) in headers" :key="index">
-                    {{ props.item[header.value] }}
-                  </td>
-
-                  <td class="justify-center layout px-0">
-                    <v-btn icon class="mx-0" @click="editItem(props.item)">
-                      <v-icon color="teal" class="mdi-18px">mdi-pencil</v-icon>
-                    </v-btn>
-                    <v-btn icon class="mx-0" @click="deleteItem(props.item)">
-                      <v-icon color="red" class="mdi-18px">mdi-delete</v-icon>
-                    </v-btn>
-
-                  </td>
-                </tr>
-              </template>
-              <template slot="no-data">
-                <v-alert :value="true" color="grey" outline icon="mdi-alert-decagram">
-                  <span> Sorry, no data in table </span>
-                  <span class="font-weight-bold px-1">{{currentTable.toUpperCase()}}</span>
-                </v-alert>
-              </template>
-              <template slot="pageText" slot-scope="{ pageStart, pageStop }">
-                From {{ pageStart }} to {{ pageStop }}
-              </template>
-              <v-alert slot="no-results" :value="true" color="red" outline icon="mdi-alert-decagram">
-                Your search for "{{ search }}" found no results.
-              </v-alert>
-            </v-data-table>
-          </v-card>
-        </v-flex>
-      </v-layout>
-    </v-flex>
-
-        </div>
-      </div> 
-    </div>
-
     <v-dialog v-model="waitingResponse" persistent width="300">
       <v-card color="primary" dark>
         <v-card-text> {{waitingMessage}}
@@ -157,112 +56,176 @@
 
         <v-flex xs12 pa-3>
 
-          <v-flex xs12 sm6 d-flex>
-            <v-select :items="dbTables" label="Tables" solo v-model="currentTable"></v-select>
-          </v-flex>
+          <v-card style="min-height:100px; width:100%" flat class="pa-1 my-3 pb-4">
+            <v-toolbar flat dense>
 
-          <v-card style="text-align: -webkit-auto;">
+              <v-btn icon @click="exportDatabaseToExel">
+                <v-icon class="blue-grey--text text--darken-2">mdi-folder-open</v-icon>
+              </v-btn>
+              <v-btn icon @click="exportDatabaseToExel">
+                <v-icon class="blue--text text--darken-2">mdi-content-save</v-icon>
+              </v-btn>
+              <v-btn icon @click="exportDatabaseToExel">
+                <v-icon class="orange--text text--darken-2">mdi-run</v-icon>
+              </v-btn>
+              <v-btn icon @click="exportDatabaseToExel">
+                <v-icon class="red--text text--darken-2">mdi-eraser</v-icon>
+              </v-btn>
+
+              <v-divider class="mx-3" inset vertical></v-divider>
+
+              <v-menu :nudge-width="100">
+                <v-toolbar-title slot="activator">
+                  <span class="subheading grey--text">Table: </span>
+                  <span class="subheading ">{{currentTable}}</span>
+                  <v-icon>mdi-chevron-down</v-icon>
+                </v-toolbar-title>
+
+                <v-list>
+                  <v-list-tile v-for="item in dbTables" :key="item" @click="currentTable=item">
+                    <v-list-tile-title v-text="item"></v-list-tile-title>
+                  </v-list-tile>
+                </v-list>
+              </v-menu>
+
+              <v-divider class="mx-3" inset vertical></v-divider>
+
+              <v-btn icon @click="exportDatabaseToExel">
+                <v-icon class="blue--text text--darken-2">mdi-database-export</v-icon>
+              </v-btn>
+
+              <upload-btn icon :accept="SheetJSFT" :fileChangedCallback="fileSelectedFunc" flat color='transparent'>
+                <template slot="icon">
+                  <v-icon class="green--text text--darken-2">mdi-database-import</v-icon>
+                </template>
+              </upload-btn>
+
+            </v-toolbar>
+            <v-card style="text-align: -webkit-auto;border-radius:0; padding:0 1px;" flat class="mb-1">
+              <editor v-model="editorContent" @init="editorInit" lang="sql" theme="eclipse" width="100%" height="100%"
+                style="min-height:100px; width:100%; border: 1px solid #ddd;font-size: 16px;margin-top: 1px;">
+              </editor>
+            </v-card>
+            <!-- =========== -->
+
+            <v-card style="text-align: -webkit-auto;">
+
+              <v-toolbar flat dense>
+                <v-text-field flat solo-inverted hide-details :height="36" prepend-inner-icon="mdi-magnify" label="Search"
+                  class="hidden-sm-and-down" v-model="search"></v-text-field>
+                <v-divider class="mx-3" inset vertical></v-divider>
+                <v-btn icon @click="exportDatabaseToExel">
+                  <v-icon class="blue--text text--darken-2">mdi-table-edit</v-icon>
+                </v-btn>
+                <v-btn icon @click="dialog=true">
+                  <v-icon class="green--text text--darken-2">mdi-table-row-plus-after</v-icon>
+                </v-btn>
+                <v-btn icon @click="deleteSelectedRow">
+                  <v-icon class="red--text text--darken-2">mdi-table-row-remove</v-icon>
+                </v-btn>
+
+                <v-divider class="mx-3" inset vertical></v-divider>
+                <v-btn icon @click="exportDatabaseToExel">
+                  <v-icon class="blue--text text--darken-2">mdi-database-export</v-icon>
+                </v-btn>
+
+                <upload-btn icon :accept="SheetJSFT" :fileChangedCallback="fileSelectedFunc" flat color='transparent'>
+                  <template slot="icon">
+                    <v-icon class="green--text text--darken-2">mdi-database-import</v-icon>
+                  </template>
+                </upload-btn>
+
+                <v-spacer></v-spacer>
+              </v-toolbar>
+
+              <v-dialog v-model="dialog" max-width="500px">
+                <!-- <v-btn slot="activator" color="primary" dark class="mb-2">New Item</v-btn> -->
+                <v-card>
+                  <v-card-title>
+                    <span class="headline">{{ formTitle }}</span>
+                  </v-card-title>
+                  <v-card-text>
+                    <v-container grid-list-md>
+                      <v-layout wrap>
+                        <v-flex xs12 sm6 md4>
+                          <v-text-field v-model="editedItem.name" label="Dessert name"></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 sm6 md4>
+                          <v-text-field v-model="editedItem.calories" label="Calories"></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 sm6 md4>
+                          <v-text-field v-model="editedItem.fat" label="Fat (g)"></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 sm6 md4>
+                          <v-text-field v-model="editedItem.carbs" label="Carbs (g)"></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 sm6 md4>
+                          <v-text-field v-model="editedItem.protein" label="Protein (g)"></v-text-field>
+                        </v-flex>
+                      </v-layout>
+                    </v-container>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
+                    <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+             
+              <v-data-table :headers="headers" :items="tableData" v-model="selected" :search="search" item-key="id"
+                :pagination.sync="pagination" prev-icon="mdi-menu-left" next-icon="mdi-menu-right" sort-icon="mdi-menu-down">
+
+                <template slot="items" slot-scope="props">
+                  <tr :active="selectedUniqueID==props.item.id" @click="makeSelectedUnique(props.item)" style="cursor: pointer;">
+
+                    <td v-for="(header,index) in headers" :key="index">
+                      {{ props.item[header.value] }}
+                    </td>
+
+                    <td class="justify-center layout px-0">
+                      <v-btn icon class="mx-0" @click="editItem(props.item)">
+                        <v-icon color="teal" class="mdi-18px">mdi-pencil</v-icon>
+                      </v-btn>
+                      <v-btn icon class="mx-0" @click="deleteItem(props.item)">
+                        <v-icon color="red" class="mdi-18px">mdi-delete</v-icon>
+                      </v-btn>
+
+                    </td>
+                  </tr>
+                </template>
+                <template slot="no-data">
+                  <v-alert :value="true" color="grey" outline icon="mdi-alert-decagram">
+                    <span> Sorry, no data in table </span>
+                    <span class="font-weight-bold px-1">{{currentTable.toUpperCase()}}</span>
+                  </v-alert>
+                </template>
+                <template slot="pageText" slot-scope="{ pageStart, pageStop }">
+                  From {{ pageStart }} to {{ pageStop }}
+                </template>
+                <v-alert slot="no-results" :value="true" color="red" outline icon="mdi-alert-decagram">
+                  Your search for "{{ search }}" found no results.
+                </v-alert>
+              </v-data-table>
+            </v-card>
+
+          </v-card>
+
+
+          <v-card>
             <v-card-title>
               Table:
               <span class="font-weight-bold px-1">{{currentTable.toUpperCase()}}</span>
-              <v-spacer></v-spacer>
-              <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line hide-details></v-text-field>
+              <div>
+                 {{selected}} / {{selectedUniqueID}}
+              </div>
             </v-card-title>
-            <v-dialog v-model="dialog" max-width="500px">
-              <v-btn slot="activator" color="primary" dark class="mb-2">New Item</v-btn>
-              <v-card>
-                <v-card-title>
-                  <span class="headline">{{ formTitle }}</span>
-                </v-card-title>
-                <v-card-text>
-                  <v-container grid-list-md>
-                    <v-layout wrap>
-                      <v-flex xs12 sm6 md4>
-                        <v-text-field v-model="editedItem.name" label="Dessert name"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 sm6 md4>
-                        <v-text-field v-model="editedItem.calories" label="Calories"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 sm6 md4>
-                        <v-text-field v-model="editedItem.fat" label="Fat (g)"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 sm6 md4>
-                        <v-text-field v-model="editedItem.carbs" label="Carbs (g)"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 sm6 md4>
-                        <v-text-field v-model="editedItem.protein" label="Protein (g)"></v-text-field>
-                      </v-flex>
-                    </v-layout>
-                  </v-container>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
-                  <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-
-            <v-data-table :headers="headers" :items="tableData" :search="search" item-key="id">
-              <template slot="items" slot-scope="props">
-                <tr @click="props.expanded = !props.expanded">
-
-                  <td v-for="(header,index) in headers" :key="index">
-                    {{ props.item[header.value] }}
-                  </td>
-
-                  <td class="justify-center layout px-0">
-                    <v-btn icon class="mx-0" @click="editItem(props.item)">
-                      <v-icon color="teal" class="mdi-18px">mdi-pencil</v-icon>
-                    </v-btn>
-                    <v-btn icon class="mx-0" @click="deleteItem(props.item)">
-                      <v-icon color="red" class="mdi-18px">mdi-delete</v-icon>
-                    </v-btn>
-
-                  </td>
-                </tr>
-              </template>
-              <template slot="no-data">
-                <v-alert :value="true" color="grey" outline icon="mdi-alert-decagram">
-                  <span> Sorry, no data in table </span>
-                  <span class="font-weight-bold px-1">{{currentTable.toUpperCase()}}</span>
-                </v-alert>
-              </template>
-              <template slot="pageText" slot-scope="{ pageStart, pageStop }">
-                From {{ pageStart }} to {{ pageStop }}
-              </template>
-              <v-alert slot="no-results" :value="true" color="red" outline icon="mdi-alert-decagram">
-                Your search for "{{ search }}" found no results.
-              </v-alert>
-            </v-data-table>
           </v-card>
+
+
         </v-flex>
       </v-layout>
     </v-flex>
-
-    <v-layout v-if="isInvoicesDataLoaded" row wrap align-center justify-start py-3 mb-4>
-      <v-flex xs12 sm10 offset-sm1>
-        <v-card style="text-align: -webkit-auto;" class=" mb-4">
-          <template v-for="item in invoicesList">
-            <v-card :key="item.id">
-              <v-card-title primary-title v-html="item.invoiceNumber +' '+item.invoiceClient">
-
-              </v-card-title>
-            </v-card>
-          </template>
-        </v-card>
-      </v-flex>
-    </v-layout>
-    <v-layout v-else row wrap align-center justify-start py-3 mb-4>
-      <v-flex xs12 sm10 offset-sm1>
-        <v-card style="text-align: -webkit-auto;">
-          <v-card-title primary-title id="no-data" class="justify-center py-5 mb-4">
-            <v-progress-circular :size="70" :width="7" color="red" indeterminate></v-progress-circular>
-
-          </v-card-title>
-        </v-card>
-      </v-flex>
-    </v-layout>
 
   </div>
 </template>
@@ -305,6 +268,9 @@ export default {
       selectedInvoiceID: null,
       selectedInvoiceNumber: null,
       search: '',
+      selected: [],
+      selectedID: [],
+      selectedUniqueID: '',
       dbTables: [],
       headers: [],
       tableData: [],
@@ -351,6 +317,8 @@ export default {
       var currentTable = this.currentTable;
       dbWorkerWindow.webContents.send("get_tableSchema", currentTable);
       dbWorkerWindow.webContents.send("get_tableData", currentTable);
+      this.editorContent = "SELECT * FROM " + currentTable;
+      this.search = "";
     }
   },
   beforeCreate() {
@@ -385,32 +353,42 @@ export default {
 
 
 
-    // Split(['#a', '#b'], {
-    //   gutterSize: 8,
-    //   cursor: 'col-resize'
-    // })
-    Split(['#top', '#bottom'], {
-      direction: 'vertical',
-      sizes: [25, 75],
-      gutterSize: 8,
-      cursor: 'row-resize'
-    })
-    // Split(['#e', '#f'], {
-    //   direction: 'vertical',
-    //   sizes: [25, 75],
-    //   gutterSize: 8,
-    //   cursor: 'row-resize'
-    // })
 
   },
   methods: {
+    makeSelectedUnique(item) {
+      if (this.selectedUniqueID == item.id) {
+        this.selectedUniqueID = '';
+        this.selected = [];
+      } else {
+        this.selectedUniqueID = item.id;
+        this.selected = [item];
+      }
+    },
+    deleteSelectedRow() {
+      for (var a = 0; a < this.selected.length; a++) {
+        this.selectedID.push(this.selected[a].id)
+        var itemToDelete = this.selected[a].id
+        for (var b = 0; b < this.tableData.length; b++) {
+          if (this.tableData[b].id === itemToDelete) {
+            this.tableData.splice(b, 1);
+          }
+        }
+        for (var c = 0; c < this.selected.length; c++) {
+          if (this.selected[c].id === itemToDelete) {
+            this.selected.splice(c, 1);
+          }
+        }
+        this.selectedUniqueID = '';
+      }
+    },
     editorInit: function () {
       require('brace/ext/language_tools') //language extension prerequsite...
-      require('brace/mode/html')
-      require('brace/mode/javascript')    //language
-      require('brace/mode/less')
-      require('brace/theme/chrome')
-      require('brace/snippets/javascript') //snippet
+
+      require('brace/mode/sql')    //language
+
+      require('brace/theme/eclipse')
+      require('brace/snippets/sql') //snippet
     },
     refreshInvoicesData() {
       ipcRenderer.send("getInvoices", 'invoices');
@@ -461,12 +439,8 @@ export default {
       })
     },
 
-    initialize() {
-      // this.currentTable = 'currencies'
-      // var currentTable = this.currentTable
-      dbWorkerWindow.webContents.send("get_dbTables");
-      // dbWorkerWindow.webContents.send("get_tableSchema", currentTable);
-      // dbWorkerWindow.webContents.send("get_tableData", currentTable);
+    initialize() { 
+      dbWorkerWindow.webContents.send("get_dbTables"); 
     },
 
 
@@ -546,47 +520,18 @@ export default {
 .upload-btn {
   display: inline-flex;
   vertical-align: middle;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 /* --------- */
 .ace_gutter {
   z-index: 2 !important;
 }
 /* ------------ */
-.splitContainer {
-  height: 100vh;
-  padding: 8px;
-  background-color: #f6f6f6;
-  box-sizing: border-box;
+.v-toolbar__content .v-text-field.v-text-field--solo .v-input__control {
+  min-height: 36px;
 }
-.split {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-.content {
-  border: 1px solid #c0c0c0;
-  box-shadow: inset 0 1px 2px #e4e4e4;
-  background-color: #fff;
-}
-.gutter {
-  background-color: transparent;
-  background-repeat: no-repeat;
-  background-position: 50%;
-}
-.gutter.gutter-horizontal {
-  cursor: col-resize;
-  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
-}
-.gutter.gutter-vertical {
-  cursor: row-resize;
-  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAFAQMAAABo7865AAAABlBMVEVHcEzMzMzyAv2sAAAAAXRSTlMAQObYZgAAABBJREFUeF5jOAMEEAIEEFwAn3kMwcB6I2AAAAAASUVORK5CYII=');
-}
-.split.split-horizontal,
-.gutter.gutter-horizontal {
-  height: 100%;
-  /* float: left; */
-  width: 100%;
+ .v-table thead tr:first-child {
+    border-bottom: 1px solid orange !important;
 }
 </style>

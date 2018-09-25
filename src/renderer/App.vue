@@ -241,4 +241,7 @@ export default {
 }
 
 /* ================================ */
+.v-icon{
+  vertical-align: middle !important;
+}
 </style>
