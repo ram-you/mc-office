@@ -247,8 +247,7 @@ function Capitalize(str) {
   str = str.replace(/_/g, ' ').replace(/(?: |\b)(\w)/g, function (key) { return key });
   return str.toLowerCase().split(' ').map(function (word) { return word[0].toUpperCase() + word.substr(1); }).join(' ');
 }
-
-import Split from 'split.js'
+ 
 
 import UploadButton from 'vuetify-upload-button';
 export default {
@@ -343,7 +342,7 @@ export default {
     ipcRenderer.on("got_tableSchema", (event, data) => {
       console.log("Done Schema Results=", data);
       var res = data.tableSchema.map(row => { return { text: Capitalize(row), value: row } })
-      vm.headers = res
+      vm.headers = res;
     });
 
     ipcRenderer.on("got_tableData", (event, data) => {
@@ -533,5 +532,8 @@ export default {
 }
  .v-table thead tr:first-child {
     border-bottom: 1px solid orange !important;
+}
+.v-table tbody tr[active] { 
+    border-left: 8px solid #0095ff !important; 
 }
 </style>
