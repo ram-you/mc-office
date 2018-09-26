@@ -166,6 +166,9 @@ export default {
 
 
 <style>
+.container > div {
+  height: 100% !important;
+}
 .application {
   -webkit-font-smoothing: antialiased;
   text-align: center;
@@ -241,7 +244,7 @@ export default {
 }
 
 /* ================================ */
-.v-icon{
+.v-icon {
   vertical-align: middle !important;
 }
 </style>

@@ -7,7 +7,7 @@
           <span class="subheading">{{ $t('main.app.Home') }} </span>
         </v-breadcrumbs-item>
         <v-breadcrumbs-item disabled>
-          <span class="subheading">Liste des Factures </span>
+          <span class="subheading">Database (Base de données)</span>
           <span class="subheading font-weight-medium"> </span>
         </v-breadcrumbs-item>
       </v-breadcrumbs>
@@ -64,15 +64,14 @@
       </v-card>
     </v-dialog>
 
-    <v-flex xs12 mb-4 mt-4>
-      <div class="display-1 px-3">DataBase</div>
+    <v-flex xs12 mb-4 > 
 
-      <v-layout row wrap align-center justify-start py-3 :reverse="$vuetify.rtl">
+      <v-layout row wrap align-center justify-start pb-3 :reverse="$vuetify.rtl">
 
-        <v-flex xs12 pa-3>
+        <v-flex xs12 px-3>
 
-          <v-card style="min-height:100px; width:100%" flat class="pa-1 my-3 pb-4">
-            <v-toolbar flat dense>
+          <v-card style="min-height:100px; width:100%;background: rgba(125, 125, 125, 0.15);"   class="pa-2 mt-3 pb-4">
+            <v-toolbar dense class="elevation-1">
 
               <v-btn icon @click="exportDatabaseToExel">
                 <v-icon class="blue-grey--text text--darken-2">mdi-folder-open</v-icon>
@@ -117,19 +116,19 @@
               </upload-btn>
 
             </v-toolbar>
-            <v-card style="text-align: -webkit-auto;border-radius:0; padding:0 1px;" flat class="mb-1">
-              <editor v-model="editorContent" @init="editorInit" lang="sql" theme="eclipse" width="100%"
-                height="100%" style="min-height:100px; width:100%; border: 1px solid #ddd;font-size: 16px;margin-top: 1px;">
+            <v-card style="text-align: -webkit-auto;border-radius:0;margin: 1px 0 4px;" class=" elevation-1">
+              <editor v-model="editorContent" @init="editorInit" lang="sql" :theme="isDarkTheme?'tomorrow_night_eighties':'crimson_editor'"
+                width="100%" height="100%" style="min-height:100px; width:100%; font-size: 16px;">
               </editor>
             </v-card>
             <!-- =========== -->
 
-            <v-card style="text-align: -webkit-auto;">
+            <v-card style="text-align: -webkit-auto;" class="mt-2">
 
-              <v-toolbar flat dense>
+              <v-toolbar dense flat>
                 <v-text-field flat solo-inverted hide-details :height="36" prepend-inner-icon="mdi-magnify"
                   label="Search" class="hidden-sm-and-down" v-model="search"></v-text-field>
-                <v-divider class="mx-3" inset vertical></v-divider>
+                <v-divider class="mx-3 hidden-sm-and-down" inset vertical></v-divider>
                 <v-btn icon @click="exportDatabaseToExel" :disabled="selectedUniqueID==''">
                   <v-icon class="blue--text text--darken-2">mdi-table-edit</v-icon>
                 </v-btn>
@@ -231,22 +230,13 @@
 
           </v-card>
 
-          <v-card>
-            <v-card-title>
-              Table:
-              <span class="font-weight-bold px-1">{{currentTable.toUpperCase()}}</span>
-              <div>
-                {{selected}} / {{selectedUniqueID}}
-              </div>
-            </v-card-title>
-          </v-card>
-
         </v-flex>
       </v-layout>
     </v-flex>
 
   </div>
 </template>
+
 <script>
 const Store = require('electron-store');
 const _store = new Store();
@@ -314,6 +304,7 @@ export default {
         carbs: 0,
         protein: 0
       },
+      themesItems: this.$colorThemeItems,
     }
   },
   computed: {
@@ -321,6 +312,10 @@ export default {
     formTitle() { return this.editedIndex === -1 ? 'New Item' : 'Edit Item' },
 
     invoicesList() { return this.$store.state.Invoice.invoices },
+
+    _userTheme() { return this.$store.state.User.userTheme; },
+    userTheme() { return this.themesItems.filter((item) => { return item.theme == this._userTheme; })[0] },
+    isDarkTheme() { return this.userTheme.theme == 'dark'; }
 
   },
   watch: {
@@ -335,7 +330,7 @@ export default {
       var currentTable = this.currentTable;
       dbWorkerWindow.webContents.send("get_tableSchema", currentTable);
       dbWorkerWindow.webContents.send("get_tableData", currentTable);
-      this.editorContent = "SELECT * FROM " + currentTable;
+      this.editorContent = "SELECT * FROM " + currentTable+";";
       this.search = "";
     }
   },
@@ -442,7 +437,8 @@ export default {
     editorInit: function (editor) {
       require('brace/ext/language_tools') //language extension prerequsite...
       require('brace/mode/sql')    //language
-      require('brace/theme/eclipse')
+      require('brace/theme/crimson_editor');
+      require('brace/theme/tomorrow_night_eighties')
       require('brace/snippets/sql') //snippet
 
       editor.setOption("minLines", 10);
