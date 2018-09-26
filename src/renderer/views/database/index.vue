@@ -83,7 +83,7 @@
               <v-btn icon @click="runSqlQueryImput">
                 <v-icon class="orange--text text--darken-2">mdi-run</v-icon>
               </v-btn>
-              <v-btn icon @click="exportDatabaseToExel">
+              <v-btn icon @click="editorContent=''">
                 <v-icon class="red--text text--darken-2">mdi-eraser</v-icon>
               </v-btn>
 
@@ -199,7 +199,7 @@
                     style="cursor: pointer;">
 
                     <td v-for="(header,index) in headers" :key="index" :class=" 'text-xs-'+header.align">
-                      <span v-if="header.value=='#'"> {{ tableData.indexOf(props.item)+1 }}</span>
+                      <span v-if="header.value=='#'"> {{ tableData.indexOf(props.item) + 1 }}</span>
                       <span v-else> {{ props.item[header.value] }}</span>
                     </td>
 
@@ -552,9 +552,9 @@ export default {
       ipcRenderer.on('exportToXLS', (event, message) => {
         ipcRenderer.removeAllListeners("exportToXLS");
         vm.waitingResponse = false;
-        setTimeout(() => { 
+        setTimeout(() => {
           vm.gotResponse = true;
-          vm.serverResponse = message; 
+          vm.serverResponse = message;
         }, 300);
 
       });
@@ -594,7 +594,11 @@ export default {
 .v-table thead tr:first-child {
   border-bottom: 1px solid orange !important;
 }
-.v-table tbody tr[active] {
-  border-left: 8px solid #0095ff !important;
+
+.theme--dark .v-table tbody tr[active] td {
+  color: #ff7c72 !important;
+}
+.theme--light .v-table tbody tr[active] td {
+  color: rgba(222, 0, 0, 0.79) !important;
 }
 </style>
