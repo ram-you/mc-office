@@ -164,13 +164,15 @@ function get_dbTables() {
 
   })
 }
+
 async function get_dbTableSchema(tableName) {
   const dbTables = await get_dbTables();
   return new Promise((resolve, reject) => {
     var table = dbTables.filter(t => { return t.table_name == tableName })[0];
-    var tableSchema = table.table_schema.map(r => { return r.name });
+    var tableSchema = table.table_schema
+    // var tableSchema = table.map(r => { return r.name });
     var response = { tableSchema: tableSchema };
-    resolve(response);
+    resolve(tableSchema);
 
   })
 }
@@ -198,6 +200,25 @@ async function get_dbTableData(tableName, query) {
         resolve(response);
       })
     })
+
+  })
+}
+
+async function run_sqlQuery(query) {
+
+  return new Promise((resolve, reject) => {
+ 
+ 
+  
+ 
+    knex.raw(query)
+      .then(function(response) {
+        resolve(response);
+      })
+      .catch(function(err) {
+        console.log(err.stack);
+        reject(err.code);
+      })
 
   })
 }
@@ -321,7 +342,8 @@ ipcRenderer.on("getInvoices", async (event, model) => {
 
 ipcRenderer.on("get_dbTables", async (event) => {
   const resp = await get_dbTables();
-  var dbTables = resp.map(a => { return a.table_name });
+  var dbTables = resp
+  // var dbTables = resp.map(a => { return a.table_name });
   mainWindow.webContents.send("got_dbTables", dbTables);
 });
 
@@ -329,7 +351,20 @@ ipcRenderer.on("get_tableSchema", async (event, table) => {
   var tableSchema = await get_dbTableSchema(table);
   mainWindow.webContents.send("got_tableSchema", tableSchema);
 });
+
 ipcRenderer.on("get_tableData", async (event, table, query) => {
   var tableData = await get_dbTableData(table, query);
   mainWindow.webContents.send("got_tableData", tableData);
+});
+
+
+ipcRenderer.on("run_sqlQuery", async (event, query) => {
+  try {
+    var sqlResult = await run_sqlQuery(query);
+    mainWindow.webContents.send("got_sqlQueryResult", { query: query, result: sqlResult, error: '' });
+  } catch (error) {
+    mainWindow.webContents.send("got_sqlQueryResult", { query: query, result: error, error: error });
+  }
+
+
 });

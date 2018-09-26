@@ -37,14 +37,29 @@
 
     <v-dialog v-model="gotResponse" max-width="300">
       <v-card color="primary" dark>
-        <v-card-title class="headline" color="white">Exportation en format Excel</v-card-title>
+        <v-card-title class="headline" color="white" style="background: rgba(0, 0, 0, 0.1);padding: 8px 16px;">Exportation
+          en format Excel</v-card-title>
         <v-card-text color="white">
           <div> Done in : {{serverResponse.timed}} </div>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn @click="gotResponse = false" light> OK </v-btn>
-          <v-btn @click='gotResponse = false;openXlsFile(serverResponse.link)' light> Ouvrir </v-btn>
+          <v-btn @click='gotResponse = false;openXlsFile(serverResponse.link)' light> Ouvrir
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="alert.visible" max-width="300">
+      <v-card :color="alert.color" dark>
+        <v-card-title class="headline" color="white" style="background: rgba(0, 0, 0, 0.1);padding: 8px 16px;">{{alert.title}}</v-card-title>
+        <v-card-text color="white">
+          <div> {{alert.message}} </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="alert.visible = false" light> OK </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -65,7 +80,7 @@
               <v-btn icon @click="exportDatabaseToExel">
                 <v-icon class="blue--text text--darken-2">mdi-content-save</v-icon>
               </v-btn>
-              <v-btn icon @click="exportDatabaseToExel">
+              <v-btn icon @click="runSqlQueryImput">
                 <v-icon class="orange--text text--darken-2">mdi-run</v-icon>
               </v-btn>
               <v-btn icon @click="exportDatabaseToExel">
@@ -94,7 +109,8 @@
                 <v-icon class="blue--text text--darken-2">mdi-database-export</v-icon>
               </v-btn>
 
-              <upload-btn icon :accept="SheetJSFT" :fileChangedCallback="fileSelectedFunc" flat color='transparent'>
+              <upload-btn icon :accept="SheetJSFT" :fileChangedCallback="fileSelectedFunc" flat
+                color='transparent'>
                 <template slot="icon">
                   <v-icon class="green--text text--darken-2">mdi-database-import</v-icon>
                 </template>
@@ -102,8 +118,8 @@
 
             </v-toolbar>
             <v-card style="text-align: -webkit-auto;border-radius:0; padding:0 1px;" flat class="mb-1">
-              <editor v-model="editorContent" @init="editorInit" lang="sql" theme="eclipse" width="100%" height="100%"
-                style="min-height:100px; width:100%; border: 1px solid #ddd;font-size: 16px;margin-top: 1px;">
+              <editor v-model="editorContent" @init="editorInit" lang="sql" theme="eclipse" width="100%"
+                height="100%" style="min-height:100px; width:100%; border: 1px solid #ddd;font-size: 16px;margin-top: 1px;">
               </editor>
             </v-card>
             <!-- =========== -->
@@ -111,16 +127,16 @@
             <v-card style="text-align: -webkit-auto;">
 
               <v-toolbar flat dense>
-                <v-text-field flat solo-inverted hide-details :height="36" prepend-inner-icon="mdi-magnify" label="Search"
-                  class="hidden-sm-and-down" v-model="search"></v-text-field>
+                <v-text-field flat solo-inverted hide-details :height="36" prepend-inner-icon="mdi-magnify"
+                  label="Search" class="hidden-sm-and-down" v-model="search"></v-text-field>
                 <v-divider class="mx-3" inset vertical></v-divider>
-                <v-btn icon @click="exportDatabaseToExel">
+                <v-btn icon @click="exportDatabaseToExel" :disabled="selectedUniqueID==''">
                   <v-icon class="blue--text text--darken-2">mdi-table-edit</v-icon>
                 </v-btn>
                 <v-btn icon @click="dialog=true">
                   <v-icon class="green--text text--darken-2">mdi-table-row-plus-after</v-icon>
                 </v-btn>
-                <v-btn icon @click="deleteSelectedRow">
+                <v-btn icon @click="deleteSelectedRow" :disabled="selectedUniqueID==''">
                   <v-icon class="red--text text--darken-2">mdi-table-row-remove</v-icon>
                 </v-btn>
 
@@ -129,7 +145,8 @@
                   <v-icon class="blue--text text--darken-2">mdi-database-export</v-icon>
                 </v-btn>
 
-                <upload-btn icon :accept="SheetJSFT" :fileChangedCallback="fileSelectedFunc" flat color='transparent'>
+                <upload-btn icon :accept="SheetJSFT" :fileChangedCallback="fileSelectedFunc" flat
+                  color='transparent'>
                   <template slot="icon">
                     <v-icon class="green--text text--darken-2">mdi-database-import</v-icon>
                   </template>
@@ -172,15 +189,18 @@
                   </v-card-actions>
                 </v-card>
               </v-dialog>
-             
-              <v-data-table :headers="headers" :items="tableData" v-model="selected" :search="search" item-key="id"
-                :pagination.sync="pagination" prev-icon="mdi-menu-left" next-icon="mdi-menu-right" sort-icon="mdi-menu-down">
+
+              <v-data-table :headers="headers" :items="tableData" v-model="selected" :search="search"
+                item-key="id" :pagination.sync="pagination" prev-icon="mdi-menu-left" next-icon="mdi-menu-right"
+                sort-icon="mdi-menu-down">
 
                 <template slot="items" slot-scope="props">
-                  <tr :active="selectedUniqueID==props.item.id" @click="makeSelectedUnique(props.item)" style="cursor: pointer;">
+                  <tr :active="selectedUniqueID==props.item.id" @click="makeSelectedUnique(props.item)"
+                    style="cursor: pointer;">
 
-                    <td v-for="(header,index) in headers" :key="index">
-                      {{ props.item[header.value] }}
+                    <td v-for="(header,index) in headers" :key="index" :class=" 'text-xs-'+header.align">
+                      <span v-if="header.value=='#'"> {{ tableData.indexOf(props.item)+1 }}</span>
+                      <span v-else> {{ props.item[header.value] }}</span>
                     </td>
 
                     <td class="justify-center layout px-0">
@@ -211,17 +231,15 @@
 
           </v-card>
 
-
           <v-card>
             <v-card-title>
               Table:
               <span class="font-weight-bold px-1">{{currentTable.toUpperCase()}}</span>
               <div>
-                 {{selected}} / {{selectedUniqueID}}
+                {{selected}} / {{selectedUniqueID}}
               </div>
             </v-card-title>
           </v-card>
-
 
         </v-flex>
       </v-layout>
@@ -247,7 +265,7 @@ function Capitalize(str) {
   str = str.replace(/_/g, ' ').replace(/(?: |\b)(\w)/g, function (key) { return key });
   return str.toLowerCase().split(' ').map(function (word) { return word[0].toUpperCase() + word.substr(1); }).join(' ');
 }
- 
+
 
 import UploadButton from 'vuetify-upload-button';
 export default {
@@ -258,6 +276,7 @@ export default {
       editorContent: "",
       waitingResponse: false,
       waitingMessage: '',
+      alert: { visible: false, color: 'green', title: 'Message', message: 'Message' },
       gotResponse: false,
       serverResponse: '',
       SheetJSFT: ["xlsx", "xlsb", "xlsm", "xls", "xml", "csv", "ods", "dbf"].map(function (x) { return "." + x; }).join(","),
@@ -332,17 +351,32 @@ export default {
   mounted() {
 
     var vm = this
-
+    function align(row) {
+      var text = "left"
+      switch (row.type) {
+        case "float":
+          text = 'right'
+          break;
+        case "integer":
+          text = 'right'
+          break;
+        default:
+          text = 'left'
+      }
+      return (row.name == 'id') ? 'left' : text
+    }
     ipcRenderer.on("got_dbTables", (event, data) => {
       console.log("Done dbTables Results=", data);
-      vm.dbTables = data;
-      this.currentTable = data[0]
+      var dbTables = data.map(a => { return a.table_name });
+      vm.dbTables = dbTables;
+      this.currentTable = dbTables[0]
     });
 
     ipcRenderer.on("got_tableSchema", (event, data) => {
-      console.log("Done Schema Results=", data);
-      var res = data.tableSchema.map(row => { return { text: Capitalize(row), value: row } })
+      var res = data.map(row => { return { text: Capitalize(row.name), value: row.name, align: align(row), sortable: true } });
+      res.unshift({ text: '#', value: '#', align: 'center', sortable: false, width: "50" })
       vm.headers = res;
+      console.log("Done Schema Results=", data, " vm.headers", vm.headers);
     });
 
     ipcRenderer.on("got_tableData", (event, data) => {
@@ -350,11 +384,35 @@ export default {
       vm.tableData = data.data
     });
 
+    ipcRenderer.on("got_sqlQueryResult", (event, data) => {
+      console.log("Done sqlQueryResult Results=", data);
+      vm.headers = []
+      vm.tableData = []
+      if (Array.isArray(data.result)) {
+        if (data.result.length > 0) {
+          var headers = Object.keys(data.result[0]).map(row => { return { text: Capitalize(row), value: row, align: 'left', sortable: true } });
+          headers.unshift({ text: '#', value: '#', align: 'center', sortable: false, width: "50" })
+          vm.headers = headers
+          vm.tableData = data.result
+        }
+      } else {
+        if (data.error != "") {
+          vm.alert = { visible: true, color: 'red', title: 'Error', message: data.error }
+        }
+      }
 
+    });
 
 
   },
   methods: {
+    runSqlQueryImput() {
+      var sqlCommands = this.editorContent.split(';')
+      for (var a = 0; a < sqlCommands.length; a++) {
+        if (sqlCommands[a].length > 0)
+          dbWorkerWindow.webContents.send("run_sqlQuery", sqlCommands[a]);
+      }
+    },
     makeSelectedUnique(item) {
       if (this.selectedUniqueID == item.id) {
         this.selectedUniqueID = '';
@@ -381,13 +439,17 @@ export default {
         this.selectedUniqueID = '';
       }
     },
-    editorInit: function () {
+    editorInit: function (editor) {
       require('brace/ext/language_tools') //language extension prerequsite...
-
       require('brace/mode/sql')    //language
-
       require('brace/theme/eclipse')
       require('brace/snippets/sql') //snippet
+
+      editor.setOption("minLines", 10);
+      editor.setAutoScrollEditorIntoView(true);
+      editor.setOption("maxLines", 20);
+      editor.setOption("wrap", true)
+      editor.setShowPrintMargin(false);
     },
     refreshInvoicesData() {
       ipcRenderer.send("getInvoices", 'invoices');
@@ -438,8 +500,8 @@ export default {
       })
     },
 
-    initialize() { 
-      dbWorkerWindow.webContents.send("get_dbTables"); 
+    initialize() {
+      dbWorkerWindow.webContents.send("get_dbTables");
     },
 
 
@@ -490,10 +552,9 @@ export default {
       ipcRenderer.on('exportToXLS', (event, message) => {
         ipcRenderer.removeAllListeners("exportToXLS");
         vm.waitingResponse = false;
-        setTimeout(() => {
-          // alert(message);
+        setTimeout(() => { 
           vm.gotResponse = true;
-          vm.serverResponse = message;
+          vm.serverResponse = message; 
         }, 300);
 
       });
@@ -530,10 +591,10 @@ export default {
 .v-toolbar__content .v-text-field.v-text-field--solo .v-input__control {
   min-height: 36px;
 }
- .v-table thead tr:first-child {
-    border-bottom: 1px solid orange !important;
+.v-table thead tr:first-child {
+  border-bottom: 1px solid orange !important;
 }
-.v-table tbody tr[active] { 
-    border-left: 8px solid #0095ff !important; 
+.v-table tbody tr[active] {
+  border-left: 8px solid #0095ff !important;
 }
 </style>
