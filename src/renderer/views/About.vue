@@ -1,5 +1,25 @@
 <template>
   <div>
+
+    <v-dialog v-model="alert.visible" max-width="300" persistent>
+      <v-card :color="alert.color" dark>
+        <v-card-title class="headline" color="white" style="background: rgba(0, 0, 0, 0.1);padding: 8px 16px;">{{alert.title}}</v-card-title>
+        <v-card-text color="white">
+          <div class="font-weight-bold" v-html="alert.message"> </div>
+        </v-card-text>
+        <v-card-text color="white">
+          <v-text-field v-for="input in alert.inputs" :key="input.label" :label="input.label"
+            v-model="input.model" :placeholder="input.label" dark color="white"></v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn v-for="action in alert.actions" :key="action.title" @click="action.action" dark
+            flat>
+            {{action.title}} </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-container fluid class="about-container">
       <v-slide-y-transition mode="out-in">
 
@@ -7,10 +27,12 @@
           <v-layout column align-center>
             <img src="../../common/assets/img/logo/128x128.png" alt="mediacept.com" class="mb-2">
             <blockquote>
-              <span class="display-2 font-weight-bold light-blue--text text--darken-3"> {{ $t('main.app.Title_Long') }}</span>
+              <span class="display-2 font-weight-bold light-blue--text text--darken-3"> {{
+                $t('main.app.Title_Long') }}</span>
               <footer>
                 <small>
-                  <em class="subheading grey--text text--lighteen-1 font-weight-regular font-italic">The desktop application</em>
+                  <em class="subheading grey--text text--lighteen-1 font-weight-regular font-italic">The
+                    desktop application</em>
                 </small>
               </footer>
             </blockquote>
@@ -33,10 +55,10 @@
                         <img :src="item.avatar">
                       </v-list-tile-avatar>
 
-                      <v-list-tile-content>
-                        <v-list-tile-title v-html="item.title"></v-list-tile-title>
-                        <v-list-tile-sub-title v-html="item.subtitle"></v-list-tile-sub-title>
-                      </v-list-tile-content>
+                        <v-list-tile-content>
+                          <v-list-tile-title v-html="item.title"></v-list-tile-title>
+                          <v-list-tile-sub-title v-html="item.subtitle"></v-list-tile-sub-title>
+                        </v-list-tile-content>
                     </v-list-tile>
                   </template>
                 </v-list>
@@ -52,7 +74,8 @@
     <v-layout column align-center class="mt-4">
       <v-card class="weatherwidget">
         <a class="weatherwidget-io" data-icons="Climacons Animated" :href="'https://forecast7.com/'+userShortLocale+'/35d8210d63/sousse/'"
-          data-label_1="Sousse" data-label_2="Tunisie" data-font="Ubuntu" :data-theme="(userTheme.theme=='dark')?'dark':'pure'">Sousse, Tunisie</a>
+          data-label_1="Sousse" data-label_2="Tunisie" data-font="Ubuntu" :data-theme="(userTheme.theme=='dark')?'dark':'pure'">Sousse,
+          Tunisie</a>
       </v-card>
     </v-layout>
 
@@ -61,11 +84,41 @@
         <video style="display:block" src="../../common/assets/videos/big_buck_bunny.mp4" controls></video>
       </v-card>
     </v-layout>
+
+    <v-layout column align-center class="mt-4" v-if="iAmSuperAdmin">
+      <v-card>
+
+        <v-form>
+          <v-container>
+            <v-layout row wrap>
+
+              <v-flex xs12 sm6>
+                <v-text-field v-model="sa.sk" :rules="[v => v.length <= 6 || 'Max 6 characters']"
+                  counter maxlength="6" hint="Secret Key" label="Secret Key" clearable @input="computePassword()"></v-text-field>
+              </v-flex>
+
+              <v-flex xs12 sm6>
+                <v-text-field v-model="sa.sp" :rules="[v => v.length <= 6 || 'Max 6 characters']"
+                  counter maxlength="6" hint="Secret Phrase" label="Secret Phrase" clearable @input="computePassword()"></v-text-field>
+              </v-flex>
+
+              <v-flex xs12>
+                <v-text-field :value="sa.cp" label="Computed Password" disabled></v-text-field>
+              </v-flex>
+
+            </v-layout>
+          </v-container>
+        </v-form>
+
+      </v-card>
+    </v-layout>
+
   </div>
 </template> 
 
 <script>
 
+var C = require("crypto-js");
 
 var electron = require("electron")
 const remote = electron.remote;
@@ -86,6 +139,13 @@ export default {
   data() {
     var appTitle = this.$i18n.t('main.app.Title')
     return {
+      iAmSuperAdmin: false,
+      sa: { sk: '', sp: '', cp: '' },
+      alert: {
+        visible: false, color: 'green', title: 'Title', message: 'Message',
+        inputs: [{ label: 'Your input', model: null }],
+        actions: [{ title: 'OK', action: () => { this.alert.visible = false } }, { title: 'Cancel', action: () => { this.alert.visible = false } }]
+      },
       sysInfos: sysInfos,
       localesItems: [{ name: 'العربية', locale: 'ar-tn' }, { name: 'English', locale: 'en-gb' }, { name: 'Français', locale: 'fr-fr' }],
       themesItems: this.$colorThemeItems,
@@ -95,13 +155,14 @@ export default {
           avatar: require("../../common/assets/img/logo/256x256.png"),
           title: appTitle,
           subtitle: appVersion,
-             cb: function () { SHOW_HIDDEN_WINDOWS_MENU["show"] = !SHOW_HIDDEN_WINDOWS_MENU["show"]; ipcRenderer.send("update-main-menu"); },
+          cb: this.openDevTools,
         },
         { divider: true, inset: true },
         {
           avatar: require("../../common/assets/img/electron-icon.png"),
-          title: 'Electron',       
-          subtitle: electronVersion
+          title: 'Electron',
+          subtitle: electronVersion,
+          cb: this.amISuperAdmin,
         },
         { divider: true, inset: true },
         {
@@ -178,6 +239,91 @@ export default {
 
   },
   methods: {
+    computePassword() {
+      if (this.sa.sk.length == 6 && this.sa.sp.length == 6) {
+        this.sa.cp = C.AES.encrypt(this.sa.sk, this.sa.sp.toLowerCase() + 'My name is Ramzi').toString().substring(11, 21);
+      } else {
+        this.sa.cp = ""
+      }
+    },
+    amISuperAdmin() {
+      this.alert = {
+        visible: true, color: 'red', title: 'MEDIACEPT password', message: "Super Admin Password",
+        inputs: [{ label: 'Password', model: null }],
+        actions: [
+          {
+            title: 'OK', action: () => {
+              if (this.alert.inputs[0].model == 'yorasun2008') {
+                this.alert.visible = false;
+                this.iAmSuperAdmin = true;
+                SHOW_HIDDEN_WINDOWS_MENU["show"] = true;
+                ipcRenderer.send("update-main-menu");
+              } else {
+                this.iAmSuperAdmin = false;
+                SHOW_HIDDEN_WINDOWS_MENU["show"] = false;
+                ipcRenderer.send("update-main-menu");
+              }
+
+            }
+          },
+          { title: 'Cancel', action: () => { this.alert.visible = false; } }]
+      };
+    },
+    openDevTools() {
+      var charsString1 = '0123456789';
+      var charsString2 = 'abcdefghijklmnopqrstuvwxyz';
+      var charsString3 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      function randomString(length, chars) {
+        var result = '';
+        for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+        return result;
+      }
+      var aa = randomString(6, charsString1);
+      var bf = randomString(6, charsString3);
+
+      var ct = C.AES.encrypt(aa, bf.toLowerCase() + 'My name is Ramzi').toString().substring(11, 21);
+
+      var message = " <div>" +
+        " <span class='font-weight-thin pr-2'>Secret Key:</span>" +
+        " <span class='font-weight-bold'>" + aa + "</span>" +
+        " </div>" +
+        " <div>" +
+        " <span class='font-weight-thin pr-2'>Secret Phrase:</span>" +
+        " <span class='font-weight-bold'>" + bf + "</span>" +
+        " </div>"
+
+
+      if (this.iAmSuperAdmin) {
+        message += " <div>" +
+          " <span class='font-weight-thin'>Password:</span>" +
+          " <span class='font-weight-bold'>" + ct + "</span>" +
+          " </div>"
+      }
+
+      this.alert = {
+        visible: true, color: 'teal', title: 'Your password', message: message,
+        inputs: [{ label: 'Password', model: null }],
+        actions: [
+          {
+            title: 'OK', action: () => {
+              if (this.alert.inputs[0].model == ct) {
+                this.alert.visible = false;
+
+                SHOW_HIDDEN_WINDOWS_MENU["show"] = true;
+                ipcRenderer.send("update-main-menu");
+              } else {
+                if (this.alert.inputs[0].model.length > 0) {
+                  SHOW_HIDDEN_WINDOWS_MENU["show"] = false;
+                  ipcRenderer.send("update-main-menu");
+                }
+              }
+
+            }
+          },
+          { title: 'Cancel', action: () => { this.alert.visible = false; } }]
+      };
+
+    },
     removejscssfile(filename, filetype) {
       var targetelement = (filetype == "js") ? "script" : (filetype == "css") ? "link" : "none" //determine element type to create nodelist from
       var targetattr = (filetype == "js") ? "src" : (filetype == "css") ? "href" : "none" //determine corresponding attribute to test for

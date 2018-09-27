@@ -35,22 +35,6 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="gotResponse" max-width="300">
-      <v-card color="primary" dark>
-        <v-card-title class="headline" color="white" style="background: rgba(0, 0, 0, 0.1);padding: 8px 16px;">Exportation
-          en format Excel</v-card-title>
-        <v-card-text color="white">
-          <div> Done in : {{serverResponse.timed}} </div>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn @click="gotResponse = false" light> OK </v-btn>
-          <v-btn @click='gotResponse = false;openXlsFile(serverResponse.link)' light> Ouvrir
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
     <v-dialog v-model="alert.visible" max-width="300">
       <v-card :color="alert.color" dark>
         <v-card-title class="headline" color="white" style="background: rgba(0, 0, 0, 0.1);padding: 8px 16px;">{{alert.title}}</v-card-title>
@@ -58,19 +42,20 @@
           <div> {{alert.message}} </div>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn @click="alert.visible = false" light> OK </v-btn>
+          <v-spacer></v-spacer> 
+          <v-btn v-for="action in alert.actions" :key="action.title" @click="action.action" dark flat >
+            {{action.title}} </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
-    <v-flex xs12 mb-4 > 
+    <v-flex xs12 mb-4>
 
       <v-layout row wrap align-center justify-start pb-3 :reverse="$vuetify.rtl">
 
         <v-flex xs12 px-3>
 
-          <v-card style="min-height:100px; width:100%;background: rgba(125, 125, 125, 0.15);"   class="pa-2 mt-3 pb-4">
+          <v-card style="min-height:100px; width:100%;background: rgba(125, 125, 125, 0.15);" class="pa-2 mt-3 pb-4">
             <v-toolbar dense class="elevation-1">
 
               <v-btn icon @click="exportDatabaseToExel">
@@ -266,9 +251,11 @@ export default {
       editorContent: "",
       waitingResponse: false,
       waitingMessage: '',
-      alert: { visible: false, color: 'green', title: 'Message', message: 'Message' },
-      gotResponse: false,
-      serverResponse: '',
+      alert: {
+        visible: false, color: 'green', title: 'Message', message: 'Message',
+        actions: [{ title: 'OK', action: () => { this.alert.visible = false } }, { title: 'Cancel', action: () => { this.alert.visible = false } }]
+      },
+
       SheetJSFT: ["xlsx", "xlsb", "xlsm", "xls", "xml", "csv", "ods", "dbf"].map(function (x) { return "." + x; }).join(","),
       isInvoicesDataLoaded: false,
       // invoicesList: [],
@@ -320,9 +307,7 @@ export default {
   },
   watch: {
     pagination: {
-      handler() {
-
-      },
+      handler() { },
       deep: true
     },
     dialog(val) { val || this.close() },
@@ -330,12 +315,11 @@ export default {
       var currentTable = this.currentTable;
       dbWorkerWindow.webContents.send("get_tableSchema", currentTable);
       dbWorkerWindow.webContents.send("get_tableData", currentTable);
-      this.editorContent = "SELECT * FROM " + currentTable+";";
+      this.editorContent = "SELECT * FROM " + currentTable + ";";
       this.search = "";
     }
   },
-  beforeCreate() {
-  },
+  beforeCreate() { },
   created() {
     this.initialize();
     this.isInvoicesDataLoaded = true;
@@ -392,7 +376,11 @@ export default {
         }
       } else {
         if (data.error != "") {
-          vm.alert = { visible: true, color: 'red', title: 'Error', message: data.error }
+
+          vm.alert = {
+            visible: true, color: 'red', title: 'Error', message: data.error,
+            actions: [{ title: 'OK', action: () => { this.alert.visible = false } }, { title: 'Cancel', action: () => { this.alert.visible = false } }]
+          }
         }
       }
 
@@ -549,8 +537,10 @@ export default {
         ipcRenderer.removeAllListeners("exportToXLS");
         vm.waitingResponse = false;
         setTimeout(() => {
-          vm.gotResponse = true;
-          vm.serverResponse = message;
+          vm.alert = {
+            visible: true, color: 'primary', title: 'Exportation vers Excel', message: 'Done in :  ' + message.timed,
+            actions: [{ title: 'OK', action: () => { this.alert.visible = false } }, { title: 'Open (Ouvrir)', action: () => { this.alert.visible = false; this.openXlsFile(message.link) } }]
+          }
         }, 300);
 
       });

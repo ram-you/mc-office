@@ -26,10 +26,10 @@
    };
 
    const viewHiddenWindowsMenu = {
-     label: 'View',
+     label: 'Dev Tools',
      enabled: global.showHiddenWindowsMenu["show"],
      submenu: [{
-         label: 'Print Worker',
+         label: 'Print Window',
          icon: path.join(__dirname, assetsFolder + 'icons/menu/file-invoice.png'),
          click() {
            var win = global.printWorkerWindow
@@ -40,7 +40,7 @@
        },
 
        {
-         label: 'Database Worker',
+         label: 'Database Window',
          icon: path.join(__dirname, assetsFolder + 'icons/menu/database.png'),
          click() {
            var win = global.dbWorkerWindow
@@ -58,8 +58,19 @@
          },
        },
        { type: 'separator' },
+       {
+         label: 'Database Administration',
+         icon: path.join(__dirname, assetsFolder + 'icons/menu/database.png'),
+         click() {
+           mainWindow.webContents.send('menu-change-tab', 'database');
+         },
+       },
+       { type: 'separator' },
        { role: 'forcereload' },
        { role: 'togglefullscreen' },
+       { type: 'separator' },
+       { role: 'toggledevtools' },
+
      ]
    };
 
@@ -188,13 +199,7 @@
    const viewMenu = {
      label: 'View (dev)',
      submenu: [
-      {
-        label: 'Database', 
-        icon: path.join(__dirname, assetsFolder + 'icons/menu/database.png'),
-        click() {
-          mainWindow.webContents.send('menu-change-tab', 'database');
-        },
-      },
+
        { role: 'forcereload' },
        { role: 'toggledevtools' },
        { type: 'separator' },
@@ -204,7 +209,7 @@
 
    const windowsMenu = {
      role: 'window',
-     submenu: [{ role: 'minimize' }, { role: 'close' }, viewHiddenWindowsMenu],
+     submenu: [{ role: 'minimize' }, { role: 'close' }],
 
    };
 
@@ -212,11 +217,13 @@
      role: 'help',
      submenu: [{
          label: 'Show Tutorial',
-         accelerator: 'CmdOrCtrl+T',
+         accelerator: 'CmdOrCtrl+t',
          click() {
-          mainWindow.send('start-tour');
+          mainWindow.webContents.send('menu-change-tab','start-tour');
          },
        },
+       { type: 'separator' },
+       viewHiddenWindowsMenu,
        { type: 'separator' },
        {
          label: 'MEDIACEPT Technology',
@@ -225,13 +232,14 @@
          },
        },
        {
-         label: 'About MEDIACEPT Office',
+         label: 'About MC Office',
          icon: path.join(__dirname, assetsFolder + 'icons/menu/info-circle.png'),
-         accelerator: 'CmdOrCtrl+A',
+         accelerator: 'CmdOrCtrl+i',
          click() {
            mainWindow.webContents.send('menu-change-tab', 'about');
          },
        },
+
      ],
    };
 
@@ -248,7 +256,7 @@
        label: 'Check For Updates',
        accelerator: 'CmdOrCtrl+U',
        click() {
-        mainWindow.send('check-for-updates');
+         mainWindow.send('check-for-updates');
        },
      });
    }
