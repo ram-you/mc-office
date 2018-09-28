@@ -27,7 +27,7 @@
 
    const viewHiddenWindowsMenu = {
      label: 'Dev Tools',
-     enabled: global.showHiddenWindowsMenu["show"],
+     enabled: global.showHiddenWindowsMenu["show"] || isDevelopment,
      submenu: [{
          label: 'Print Window',
          icon: path.join(__dirname, assetsFolder + 'icons/menu/file-invoice.png'),

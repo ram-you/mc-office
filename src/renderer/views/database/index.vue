@@ -17,7 +17,8 @@
           <v-icon class="blue--text text--darken-2">mdi-database-export</v-icon>
         </v-btn>
 
-        <upload-btn icon :accept="SheetJSFT" :fileChangedCallback="fileSelectedFunc" flat color='transparent'>
+        <upload-btn icon :accept="acceptedExcelFiles" name="excelExport" :fileChangedCallback="fileSelectedFunc"
+          flat color='transparent'>
           <template slot="icon">
             <v-icon class="green--text text--darken-2">mdi-database-import</v-icon>
           </template>
@@ -42,8 +43,9 @@
           <div> {{alert.message}} </div>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer> 
-          <v-btn v-for="action in alert.actions" :key="action.title" @click="action.action" dark flat >
+          <v-spacer></v-spacer>
+          <v-btn v-for="action in alert.actions" :key="action.title" @click="action.action" dark
+            flat>
             {{action.title}} </v-btn>
         </v-card-actions>
       </v-card>
@@ -58,13 +60,29 @@
           <v-card style="min-height:100px; width:100%;background: rgba(125, 125, 125, 0.15);" class="pa-2 mt-3 pb-4">
             <v-toolbar dense class="elevation-1">
 
-              <v-btn icon @click="exportDatabaseToExel">
+              <!-- <v-btn icon @click="exportDatabaseToExel">
                 <v-icon class="blue-grey--text text--darken-2">mdi-folder-open</v-icon>
-              </v-btn>
-              <v-btn icon @click="exportDatabaseToExel">
+              </v-btn> -->
+
+              <upload-btn icon :accept="acceptedSqlFiles" name="sqlOpen" :fileChangedCallback="fileOpenSql"
+                flat color='transparent'>
+                <template slot="icon">
+                  <v-icon class="blue-grey--text text--darken-2">mdi-folder-open</v-icon>
+                </template>
+              </upload-btn>
+
+              <v-btn icon @click="fileSaveSql">
                 <v-icon class="blue--text text--darken-2">mdi-content-save</v-icon>
               </v-btn>
-              <v-btn icon @click="runSqlQueryImput">
+
+              <!-- <upload-btn icon :accept="acceptedSqlFiles"   :fileChangedCallback="fileSaveSql"
+                flat color='transparent'>
+                <template slot="icon">
+                  <v-icon class="blue--text text--darken-2">mdi-content-save</v-icon>
+                </template>
+              </upload-btn> -->
+
+              <v-btn icon @click="runSqlQueryInput">
                 <v-icon class="orange--text text--darken-2">mdi-run</v-icon>
               </v-btn>
               <v-btn icon @click="editorContent=''">
@@ -72,7 +90,6 @@
               </v-btn>
 
               <v-divider class="mx-3" inset vertical></v-divider>
-
               <v-menu :nudge-width="100">
                 <v-toolbar-title slot="activator">
                   <span class="subheading grey--text">Table: </span>
@@ -93,8 +110,8 @@
                 <v-icon class="blue--text text--darken-2">mdi-database-export</v-icon>
               </v-btn>
 
-              <upload-btn icon :accept="SheetJSFT" :fileChangedCallback="fileSelectedFunc" flat
-                color='transparent'>
+              <upload-btn icon :accept="acceptedExcelFiles" name="excelExport" :fileChangedCallback="fileSelectedFunc"
+                flat color='transparent'>
                 <template slot="icon">
                   <v-icon class="green--text text--darken-2">mdi-database-import</v-icon>
                 </template>
@@ -129,8 +146,8 @@
                   <v-icon class="blue--text text--darken-2">mdi-database-export</v-icon>
                 </v-btn>
 
-                <upload-btn icon :accept="SheetJSFT" :fileChangedCallback="fileSelectedFunc" flat
-                  color='transparent'>
+                <upload-btn icon :accept="acceptedExcelFiles" name="excelExport"
+                  :fileChangedCallback="fileSelectedFunc" flat color='transparent'>
                   <template slot="icon">
                     <v-icon class="green--text text--darken-2">mdi-database-import</v-icon>
                   </template>
@@ -199,7 +216,7 @@
                   </tr>
                 </template>
                 <template slot="no-data">
-                  <v-alert :value="true" color="grey" outline icon="mdi-alert-decagram">
+                  <v-alert :value="true" color="grey" outline icon="mdi-alert-decagram" v-if="currentTable">
                     <span> Sorry, no data in table </span>
                     <span class="font-weight-bold px-1">{{currentTable.toUpperCase()}}</span>
                   </v-alert>
@@ -241,8 +258,7 @@ function Capitalize(str) {
   return str.toLowerCase().split(' ').map(function (word) { return word[0].toUpperCase() + word.substr(1); }).join(' ');
 }
 
-
-import UploadButton from 'vuetify-upload-button';
+import UploadButton from '../../components/UploadButton.vue';
 export default {
   components: { 'upload-btn': UploadButton, editor: require('vue2-ace-editor'), },
   name: 'invoicesList',
@@ -256,7 +272,9 @@ export default {
         actions: [{ title: 'OK', action: () => { this.alert.visible = false } }, { title: 'Cancel', action: () => { this.alert.visible = false } }]
       },
 
-      SheetJSFT: ["xlsx", "xlsb", "xlsm", "xls", "xml", "csv", "ods", "dbf"].map(function (x) { return "." + x; }).join(","),
+      acceptedExcelFiles: ["xlsx", "xlsb", "xlsm", "xls", "xml", "csv", "ods", "dbf"].map(function (x) { return "." + x; }).join(","),
+      acceptedSqlFiles: ["sql", "txt"].map(function (x) { return "." + x; }).join(","),
+
       isInvoicesDataLoaded: false,
       // invoicesList: [],
       theme: 'default',
@@ -313,9 +331,13 @@ export default {
     dialog(val) { val || this.close() },
     currentTable() {
       var currentTable = this.currentTable;
-      dbWorkerWindow.webContents.send("get_tableSchema", currentTable);
-      dbWorkerWindow.webContents.send("get_tableData", currentTable);
-      this.editorContent = "SELECT * FROM " + currentTable + ";";
+      if (currentTable) {
+        dbWorkerWindow.webContents.send("get_tableSchema", currentTable);
+        dbWorkerWindow.webContents.send("get_tableData", currentTable);
+        this.editorContent = "SELECT * FROM " + currentTable + ";";
+      } else {
+
+      }
       this.search = "";
     }
   },
@@ -373,13 +395,18 @@ export default {
           headers.unshift({ text: '#', value: '#', align: 'center', sortable: false, width: "50" })
           vm.headers = headers
           vm.tableData = data.result
+        } else {
+          vm.alert = {
+            visible: true, color: 'green', title: 'Query Result', message: "Executed with success.",
+            actions: [{ title: 'OK', action: () => { this.alert.visible = false } }]
+          }
         }
       } else {
         if (data.error != "") {
 
           vm.alert = {
             visible: true, color: 'red', title: 'Error', message: data.error,
-            actions: [{ title: 'OK', action: () => { this.alert.visible = false } }, { title: 'Cancel', action: () => { this.alert.visible = false } }]
+            actions: [{ title: 'OK', action: () => { this.alert.visible = false } }]
           }
         }
       }
@@ -389,12 +416,13 @@ export default {
 
   },
   methods: {
-    runSqlQueryImput() {
+    runSqlQueryInput() {
       var sqlCommands = this.editorContent.split(';')
       for (var a = 0; a < sqlCommands.length; a++) {
         if (sqlCommands[a].length > 0)
           dbWorkerWindow.webContents.send("run_sqlQuery", sqlCommands[a]);
       }
+      this.currentTable = null
     },
     makeSelectedUnique(item) {
       if (this.selectedUniqueID == item.id) {
@@ -552,10 +580,44 @@ export default {
     },
     fileSelectedFunc(file) {
       ipcRenderer.once('importFromXLS', (event, message) => { alert(message); });
-
       dbWorkerWindow.webContents.send('importFromXLS', file);
     },
+    fileOpenSql(file) {
+      var vm = this;
+      console.log(file)
+      fs.readFile(file.path, { encoding: 'utf-8' }, function (err, data) {
+        if (err) {
+          vm.alert = {
+            visible: true, color: 'red', title: 'Error opening file', message: err,
+            actions: [{ title: 'OK', action: () => { this.alert.visible = false } }]
+          }
+        } else {
+          vm.editorContent = data
+        }
+      });
+    },
+    fileSaveSql(file) {
+      var vm = this;
 
+      var FileSaver = require('file-saver');
+      var blob = new Blob([vm.editorContent], { type: "text/plain;charset=utf-8" });
+      FileSaver.saveAs(blob, "query.sql");
+
+
+      // fs.writeFile(file, vm.editorContent, function (err) {
+      //   if (err) {
+      //     vm.alert = {
+      //       visible: true, color: 'red', title: 'Error on save', message: err,
+      //       actions: [{ title: 'OK', action: () => { this.alert.visible = false } }]
+      //     }
+      //   }
+
+      //   vm.alert = {
+      //     visible: true, color: 'green', title: 'Saved with success', message: 'File:  ' + file,
+      //     actions: [{ title: 'OK', action: () => { this.alert.visible = false } }]
+      //   }
+      // });
+    },
   },
 
 
