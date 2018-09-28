@@ -27,7 +27,7 @@
 
    const viewHiddenWindowsMenu = {
      label: 'Dev Tools',
-     enabled: global.showHiddenWindowsMenu["show"] || isDevelopment,
+     enabled: global.showHiddenWindowsMenu["show"]  ,
      submenu: [{
          label: 'Print Window',
          icon: path.join(__dirname, assetsFolder + 'icons/menu/file-invoice.png'),
@@ -195,18 +195,7 @@
        { role: 'selectall' },
      ],
    };
-
-   const viewMenu = {
-     label: 'View (dev)',
-     submenu: [
-
-       { role: 'forcereload' },
-       { role: 'toggledevtools' },
-       { type: 'separator' },
-       { role: 'togglefullscreen' },
-     ],
-   };
-
+ 
    const windowsMenu = {
      role: 'window',
      submenu: [{ role: 'minimize' }, { role: 'close' }],
@@ -271,7 +260,7 @@
    ];
 
    // Developer Tools Menu
-   if (isDevelopment) menuTemplate.splice(3, 0, viewMenu);
+   if (isDevelopment) menuTemplate.splice(3, 0, viewHiddenWindowsMenu);
 
 
    // Build the menu

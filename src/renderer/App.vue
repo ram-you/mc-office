@@ -85,7 +85,7 @@ export default {
     }
   },
   mounted() {
-    var vm = this
+    var vm = this;
     this.$root.$on("themeToogle", function (theme) {
       vm.dark = (theme == 'dark');
     });
@@ -141,6 +141,7 @@ export default {
 
   },
   methods: {
+
     setUserLocale() {
       var vm = this
       var connectedUserName = this.connectedUserName

@@ -86,7 +86,7 @@
                 <v-icon class="orange--text text--darken-2">mdi-run</v-icon>
               </v-btn>
               <v-btn icon @click="editorContent=''">
-                <v-icon class="red--text text--darken-2">mdi-eraser</v-icon>
+                <v-icon class=" ">mdi-eraser</v-icon>
               </v-btn>
 
               <v-divider class="mx-3" inset vertical></v-divider>
@@ -122,6 +122,7 @@
               <editor v-model="editorContent" @init="editorInit" lang="sql" :theme="isDarkTheme?'tomorrow_night_eighties':'crimson_editor'"
                 width="100%" height="100%" style="min-height:100px; width:100%; font-size: 16px;">
               </editor>
+
             </v-card>
             <!-- =========== -->
 
@@ -274,6 +275,7 @@ export default {
 
       acceptedExcelFiles: ["xlsx", "xlsb", "xlsm", "xls", "xml", "csv", "ods", "dbf"].map(function (x) { return "." + x; }).join(","),
       acceptedSqlFiles: ["sql", "txt"].map(function (x) { return "." + x; }).join(","),
+      lastOpenedFile: "",
 
       isInvoicesDataLoaded: false,
       // invoicesList: [],
@@ -351,6 +353,10 @@ export default {
   },
   mounted() {
 
+    this.initContextMenu();
+
+
+
     var vm = this
     function align(row) {
       var text = "left"
@@ -397,7 +403,7 @@ export default {
           vm.tableData = data.result
         } else {
           vm.alert = {
-            visible: true, color: 'green', title: 'Query Result', message: "Executed with success.",
+            visible: true, color: 'blue-grey', title: 'Query Result', message: "Executed with success.",
             actions: [{ title: 'OK', action: () => { this.alert.visible = false } }]
           }
         }
@@ -584,7 +590,8 @@ export default {
     },
     fileOpenSql(file) {
       var vm = this;
-      console.log(file)
+      this.lastOpenedFile = file.name
+
       fs.readFile(file.path, { encoding: 'utf-8' }, function (err, data) {
         if (err) {
           vm.alert = {
@@ -598,10 +605,10 @@ export default {
     },
     fileSaveSql(file) {
       var vm = this;
-
+      var fileName = this.lastOpenedFile != "" ? this.lastOpenedFile : "query.sql"
       var FileSaver = require('file-saver');
       var blob = new Blob([vm.editorContent], { type: "text/plain;charset=utf-8" });
-      FileSaver.saveAs(blob, "query.sql");
+      FileSaver.saveAs(blob, fileName);
 
 
       // fs.writeFile(file, vm.editorContent, function (err) {
@@ -617,6 +624,33 @@ export default {
       //     actions: [{ title: 'OK', action: () => { this.alert.visible = false } }]
       //   }
       // });
+    },
+    initContextMenu() {
+      const electron = require('electron');
+      const remote = electron.remote;
+      const Menu = remote.Menu;
+
+      const InputMenu = Menu.buildFromTemplate([ 
+        { label: 'Cut', role: 'cut', },
+        { label: 'Copy', role: 'copy', },
+        { label: 'Paste', role: 'paste', },
+        { type: 'separator', },
+        { label: 'Select all', role: 'selectall', },
+      ]);
+
+      document.body.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        let node = e.target;
+        while (node) {
+          if (node.nodeName.match(/^(input|textarea)$/i) || node.isContentEditable) {
+            InputMenu.popup(remote.getCurrentWindow());
+            break;
+          }
+          node = node.parentNode;
+        }
+      });
+
     },
   },
 
