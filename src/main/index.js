@@ -29,10 +29,12 @@ let platform = os.platform()
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 
-
 let ASSETS_DIR = path.resolve(__dirname, '../common/assets')
 
 global.ASSETS_GLOBAL = isDevelopment ? path.resolve(__dirname, '../common/assets') : path.join(__dirname, '/../../../assets');
+global.ASSETS =global.ASSETS_GLOBAL 
+
+
 
 global.mainWindow = null
 global.dbWorkerWindow = null 

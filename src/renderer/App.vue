@@ -93,17 +93,17 @@ export default {
     this.$vuetify.lang.current = (this.$root.$i18n.locale).substring(0, 2);
     this.$vuetify.rtl = (this.$vuetify.lang.current == "ar");
 
-    const ipc = require('electron').ipcRenderer
-    ipc.send('put-in-tray')
-    ipc.on('tray-removed', function () {
-      ipc.send('remove-tray')
+    const ipcRenderer = require('electron').ipcRenderer
+    ipcRenderer.send('put-in-tray')
+    ipcRenderer.on('tray-removed', function () {
+      ipcRenderer.send('remove-tray')
     })
-    ipc.on('menu-change-tab', function (event, tab) {
+    ipcRenderer.on('menu-change-tab', function (event, tab) {
       vm.$router.push({ name: tab });
     })
 
 
-    ipc.on('initApplicationData', function (event, message) {
+    ipcRenderer.on('initApplicationData', function (event, message) {
       if (message == 'start') {
         vm.waitingResponse = true;
         vm.waitingMessage = "Initialisation des données, veuillez patienter... "
@@ -123,7 +123,7 @@ export default {
       }
     })
 
-    ipc.on('migrateDatabase', function (event, message) {
+    ipcRenderer.on('migrateDatabase', function (event, message) {
       if (message.status == 'start') {
         vm.waitingResponse = true;
         vm.waitingMessage = "Migration des données, veuillez patienter... "
@@ -150,7 +150,10 @@ export default {
         this.$root.$i18n.locale = userLocale
         this.$vuetify.lang.current = (this.$root.$i18n.locale).substring(0, 2);
         this.$vuetify.rtl = this.$vuetify.lang.current == "ar"
-        this.$store.dispatch('setUserLocale', userLocale)
+        this.$store.dispatch('setUserLocale', userLocale);
+   
+   
+
       }
     },
     setUserTheme() {

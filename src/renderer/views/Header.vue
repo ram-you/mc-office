@@ -1,8 +1,23 @@
 <template>
   <div>
 
-    <v-navigation-drawer :value="drawerState" :clipped="isDesktop" app :right="$vuetify.rtl" :absolute="isDesktop"
-      :mini-variant="miniVariant">
+    <v-dialog v-model="alert.visible" max-width="300">
+      <v-card :color="alert.color" dark>
+        <v-card-title class="headline" color="white" style="background: rgba(0, 0, 0, 0.1);padding: 8px 16px;">{{alert.title}}</v-card-title>
+        <v-card-text color="white">
+          <div> {{alert.message}} </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn v-for="action in alert.actions" :key="action.title" @click="action.action" dark
+            flat>
+            {{action.title}} </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-navigation-drawer :value="drawerState" :clipped="isDesktop" app :right="$vuetify.rtl"
+      :absolute="isDesktop" :mini-variant="miniVariant">
       <div class="py-2"></div>
       <v-list>
         <!-- ****************************** -->
@@ -33,7 +48,8 @@
           </v-list-tile-content>
         </v-list-tile>
 
-        <v-list-tile to="/invoices" @mouseover="invoice_new=true" @mouseleave="invoice_new=false" ripple>
+        <v-list-tile to="/invoices" @mouseover="invoice_new=true" @mouseleave="invoice_new=false"
+          ripple>
           <v-list-tile-action>
             <v-icon class="green white--text">mdi-file-pdf</v-icon>
           </v-list-tile-action>
@@ -186,7 +202,8 @@
       <v-toolbar-side-icon @click.stop="toggleMenuDrawer()" :style="{'margin-left':$vuetify.rtl?'0':'','margin-right':$vuetify.rtl?'-6px':''}"></v-toolbar-side-icon>
       <img src="../../common/assets/img/logo/32x32.png" alt="MC-Office" style="width:32px; height:32px;">
       <v-toolbar-title class="mx-2 align-center">
-        <span class="title font-weight-bold light-blue--text text--darken-3">{{ $t('main.app.Title_Long') }} </span>
+        <span class="title font-weight-bold light-blue--text text--darken-3">{{
+          $t('main.app.Title_Long') }} </span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
 
@@ -198,7 +215,8 @@
         </v-toolbar-title>
         <v-list dense subheader :class="isDarkTheme?'theme--dark':'theme--light'">
           <v-subheader> {{ $t('main.app.Color_theme')}}</v-subheader>
-          <v-list-tile v-for="item in themesItems" :key="item.theme" @click="updateUserTheme(item)" :class="isDarkTheme?'theme--dark':'theme--light'">
+          <v-list-tile v-for="item in themesItems" :key="item.theme" @click="updateUserTheme(item)"
+            :class="isDarkTheme?'theme--dark':'theme--light'">
             <v-list-tile-title v-text="item.name" :class="(item.name==userTheme.name)?'font-weight-bold primary--text':''"
               style="overflow: unset;"></v-list-tile-title>
           </v-list-tile>
@@ -254,7 +272,10 @@ export default {
       drawer: -1,
       localesItems: this.$localesItems,
       themesItems: this.$colorThemeItems,
-
+      alert: {
+        visible: false, color: 'green', title: 'Message', message: 'Message',
+        actions: [{ title: this.$t('main.app.Ok'), action: () => { this.alert.visible = false } }, { title: this.$t('main.app.Cancel'), action: () => { this.alert.visible = false } }]
+      },
     }
   },
   computed: {
@@ -277,8 +298,8 @@ export default {
       this.isHomePage = this.$route.name == "home";
     },
     "$vuetify.rtl": function () {
-      const { getCurrentWindow } = require('electron').remote;
-      getCurrentWindow().reload()
+
+
     },
 
 
@@ -304,7 +325,7 @@ export default {
 
     this.drawerState = breakPoint ? (this.drawer > -1) : false
     _store.onDidChange('users.' + connectedUserName + '.locale', (newValue, oldValue) => {
-      ipcRenderer.send('update-menu')
+      ipcRenderer.send('update-main-menu')
     })
     this.themesItems = this.$colorThemeItems.map(function (e) {
       e.name = vm.$i18n.t('main.app.' + e.theme)
@@ -320,10 +341,47 @@ export default {
     },
     updateUserLocale(locale) {
       var vm = this
+      var currentDirection = this.$vuetify.rtl ? 'rtl' : 'ltr'
+      var askedDirection = locale.locale.substring(0, 2) == "ar" ? 'rtl' : 'ltr'
+      if (currentDirection != askedDirection) {
+
+        this.alert = {
+          visible: true, color: 'primary', title: this.$t('main.app.Restart'), message: this.$t('main.app.Restart_message'),
+          actions: [
+            {
+              title: this.$t('main.app.Restart'),
+              action: () => {
+                vm.alert.visible = false;
+                vm._updateUserLocale(locale);
+                setTimeout(() => {
+                  const remote = require('electron').remote;
+                  remote.app.relaunch();
+                  remote.app.quit(0);
+                }, 100);
+
+              }
+            },
+            {
+              title: this.$t('main.app.Cancel'),
+              action: () => {
+                this.alert.visible = false;
+              }
+            }
+          ]
+        }
+
+      } else {
+        vm._updateUserLocale(locale)
+      }
+
+
+    },
+    _updateUserLocale(locale) {
+      var vm = this;
       var connectedUserName = this.connectedUserName
       this.$root.$i18n.locale = locale.locale
       this.$vuetify.lang.current = (this.$root.$i18n.locale).substring(0, 2);
-      this.$vuetify.rtl = this.$vuetify.lang.current == "ar"
+      this.$vuetify.rtl = this.$vuetify.lang.current == "ar";
       this.$store.dispatch('setUserLocale', locale.locale).then(() => {
         if (connectedUserName == 'admin') _store.set('global.locale', locale);
         _store.set('users.' + connectedUserName + '.locale', locale);
@@ -332,6 +390,9 @@ export default {
         e.name = vm.$i18n.t('main.app.' + e.theme)
         return e;
       });
+      ipcRenderer.send("update-main-menu");
+
+
     },
     updateUserTheme(theme) {
       var connectedUserName = this.connectedUserName

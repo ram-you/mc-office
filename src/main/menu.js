@@ -7,15 +7,15 @@
  const app = electron.app
  var i18n = new(require('./i18n'))
  const isDevelopment = process.env.NODE_ENV !== 'production'
- let assetsFolder = isDevelopment ? '../common/assets/' : '/../../../assets/'
+ let ASSETS = global.ASSETS + '/' // isDevelopment ? '../common/assets/' : '/../../../assets/'
 
  function init(window) {
    mainWindow = global.mainWindow;
    const fileMenu = {
-     label: 'File',
+     label: i18n.__('File'),
      submenu: [{
-         label: 'Home',
-         icon: path.join(__dirname, assetsFolder + 'icons/menu/home.png'),
+         label: i18n.__('Home'),
+         icon: (ASSETS + 'icons/menu/home.png'),
          accelerator: 'CmdOrCtrl+H',
          click() {
            mainWindow.webContents.send('menu-change-tab', 'home');
@@ -27,10 +27,10 @@
 
    const viewHiddenWindowsMenu = {
      label: 'Dev Tools',
-     enabled: global.showHiddenWindowsMenu["show"]  ,
+     enabled: global.showHiddenWindowsMenu["show"],
      submenu: [{
          label: 'Print Window',
-         icon: path.join(__dirname, assetsFolder + 'icons/menu/file-invoice.png'),
+         icon: (ASSETS + 'icons/menu/file-invoice.png'),
          click() {
            var win = global.printWorkerWindow
            win.show();
@@ -41,7 +41,7 @@
 
        {
          label: 'Database Window',
-         icon: path.join(__dirname, assetsFolder + 'icons/menu/database.png'),
+         icon: (ASSETS + 'icons/menu/database.png'),
          click() {
            var win = global.dbWorkerWindow
            win.show();
@@ -51,7 +51,7 @@
        },
        {
          label: 'Close all',
-         icon: path.join(__dirname, assetsFolder + 'icons/menu/eye-slash.png'),
+         icon: (ASSETS + 'icons/menu/eye-slash.png'),
          click() {
            global.dbWorkerWindow.hide();
            global.printWorkerWindow.hide();
@@ -60,7 +60,7 @@
        { type: 'separator' },
        {
          label: 'Database Administration',
-         icon: path.join(__dirname, assetsFolder + 'icons/menu/database.png'),
+         icon: (ASSETS + 'icons/menu/database.png'),
          click() {
            mainWindow.webContents.send('menu-change-tab', 'database');
          },
@@ -173,7 +173,7 @@
        },
        {
          label: 'Settings',
-         icon: path.join(__dirname, assetsFolder + 'icons/menu/wrench.png'),
+         icon: (ASSETS + 'icons/menu/wrench.png'),
          accelerator: 'CmdOrCtrl+Shift+S',
          click() {
            mainWindow.webContents.send('menu-change-tab', 'settings');
@@ -195,7 +195,7 @@
        { role: 'selectall' },
      ],
    };
- 
+
    const windowsMenu = {
      role: 'window',
      submenu: [{ role: 'minimize' }, { role: 'close' }],
@@ -208,7 +208,7 @@
          label: 'Show Tutorial',
          accelerator: 'CmdOrCtrl+t',
          click() {
-          mainWindow.webContents.send('menu-change-tab','start-tour');
+           mainWindow.webContents.send('menu-change-tab', 'start-tour');
          },
        },
        { type: 'separator' },
@@ -222,7 +222,7 @@
        },
        {
          label: 'About MC Office',
-         icon: path.join(__dirname, assetsFolder + 'icons/menu/info-circle.png'),
+         icon: (ASSETS + 'icons/menu/info-circle.png'),
          accelerator: 'CmdOrCtrl+i',
          click() {
            mainWindow.webContents.send('menu-change-tab', 'about');
@@ -236,7 +236,7 @@
    if (process.platform !== 'darwin') {
      // Add Quit to invoiceMenu
      fileMenu.submenu.push({ type: 'separator' }, {
-       icon: path.join(__dirname, assetsFolder + 'icons/menu/power-off.png'),
+       icon: (ASSETS + 'icons/menu/power-off.png'),
        role: 'close',
        label: i18n.__('Close')
      }, );
@@ -271,6 +271,7 @@
    mainWindow.setMenu(menu);
 
    ipcMain.once("update-main-menu", (event) => {
+    i18n = new(require('./i18n'))
      init()
 
    })

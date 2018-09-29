@@ -11,6 +11,8 @@
     "Login": "Se connecter",
     "Logout": "Se déconnecter",
     "Sign_In": "Connection",
+    "Ok":"D'accord",
+    "Cancel": "Annuler",
     "Username": "Utilisateur",
     "Password": "Mot de passe",
     "Username_is_required": "Nom utilisateur obligatoire",
@@ -21,6 +23,8 @@
     "Search":"Rechercher",
     "Color_theme":"Thème de couleur",
     "dark":"Sombre (noir)",
-    "light":"Clair (blanc)"
+    "light":"Clair (blanc)",
+     "Restart":"Redémarrer",
+    "Restart_message":   "Vous devez redémarrer l'application pour que les modifications prennent effet"
   }
 }

@@ -11,6 +11,8 @@
     "Login": "Login",
     "Logout": "Logout",
     "Sign_In": "Sign In",
+    "Ok":"Ok",
+    "Cancel": "Cancel",
     "Username": "Username",
     "Password": "Password",
     "Username_is_required": "Username is required",
@@ -21,7 +23,9 @@
     "Search":"Search",
     "Color_theme":"Color Theme",
     "dark":"Dark (black)",
-    "light":"Light (white)"
+    "light":"Light (white)",
+    "Restart":"Restart",
+    "Restart_message":   "You must restart the application for the changes to take effect"
 
   }
 }
