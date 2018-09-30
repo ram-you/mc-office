@@ -151,8 +151,8 @@ export default {
         this.$vuetify.lang.current = (this.$root.$i18n.locale).substring(0, 2);
         this.$vuetify.rtl = this.$vuetify.lang.current == "ar"
         this.$store.dispatch('setUserLocale', userLocale);
-   
-   
+
+
 
       }
     },
@@ -250,5 +250,10 @@ export default {
 /* ================================ */
 .v-icon {
   vertical-align: middle !important;
+}
+
+.application.application--is-rtl .v-list__tile__content,
+.application.application--is-rtl .v-list__tile__title {
+  text-align: right !important;
 }
 </style>

@@ -666,7 +666,7 @@ export default {
   padding-right: 0 !important;
 }
 /* --------- */
-.ace_gutter {
+.ace_gutter,.ace_content {
   z-index: 2 !important;
 }
 /* ------------ */

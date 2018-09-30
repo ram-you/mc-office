@@ -338,9 +338,7 @@ export default {
 }
 </script>
 <style>
-.about-container * {
-  direction: ltr !important;
-}
+ 
 div.weatherwidget {
   width: 100%;
   max-width: 1200px;

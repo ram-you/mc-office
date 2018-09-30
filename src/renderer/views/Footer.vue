@@ -8,7 +8,7 @@
       </v-card-text>
     </v-card>
 
-    <v-card flat tile class="text-xs-right" width="100%">
+    <v-card flat tile :class="$vuetify.rtl?'text-xs-left':'text-xs-right'" width="100%">
       <v-divider></v-divider>
       <v-card-text class="grey--text text--darken-2 py-2">
        

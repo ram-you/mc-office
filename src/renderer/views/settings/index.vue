@@ -1,5 +1,5 @@
 <template>
-  <v-tabs centered icons-and-text style="height:100%">
+  <v-tabs centered icons-and-text  >
     <v-tabs-slider color="orange"></v-tabs-slider>
 
     <v-tab href="#tab-profile">
@@ -47,3 +47,9 @@ export default {
   }
 }
 </script>
+<style>
+.v-tabs__container.v-tabs__container--centered{
+  direction: ltr
+}
+</style>
+

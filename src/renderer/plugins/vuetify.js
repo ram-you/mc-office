@@ -1,6 +1,14 @@
 import './main.styl'
 
+import store from '../store' 
+
 import Vue from 'vue'
+
+ 
+import en from 'vuetify/es5/locale/en' 
+import fr from 'vuetify/es5/locale/fr' 
+import ar from './ar'
+
 
 import {
   Vuetify,
@@ -94,6 +102,10 @@ Vue.use(Vuetify, {
   },
   directives: {
     Ripple
+  },
+  lang: {
+    locales: { en, fr, ar },
+    current: en
   },
   options: {
     minifyTheme: function(css) {

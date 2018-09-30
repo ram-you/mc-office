@@ -56,7 +56,7 @@ function createMainWindow() {
   if (shouldQuit) return app.quit()
 
   mainWindow = new BrowserWindow({
-    title: "MEDIACEPT Office",
+    title: i18n.__('MEDIACEPT Office'),
     useContentSize: true,
     width: windowWidth || 1264,
     height: windowHeight || 700,
