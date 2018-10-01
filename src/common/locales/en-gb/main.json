@@ -25,7 +25,8 @@
     "dark":"Dark (black)",
     "light":"Light (white)",
     "Restart":"Restart",
+    "Later": "Later",
     "Restart_message":   "You must restart the application for the changes to take effect"
-
+   
   }
 }

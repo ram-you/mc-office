@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <v-dialog v-model="alert.visible" max-width="300">
+    <v-dialog v-model="alert.visible" max-width="300" persistent>
       <v-card :color="alert.color" dark>
         <v-card-title class="headline" color="white" style="background: rgba(0, 0, 0, 0.1);padding: 8px 16px;">{{alert.title}}</v-card-title>
         <v-card-text color="white">
@@ -362,9 +362,10 @@ export default {
               }
             },
             {
-              title: this.$t('main.app.Cancel'),
+              title: this.$t('main.app.Later'),
               action: () => {
                 this.alert.visible = false;
+                vm._updateUserLocale(locale)
               }
             }
           ]
@@ -373,8 +374,6 @@ export default {
       } else {
         vm._updateUserLocale(locale)
       }
-
-
     },
     _updateUserLocale(locale) {
       var vm = this;

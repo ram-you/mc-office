@@ -20,6 +20,22 @@
          click() {
            mainWindow.webContents.send('menu-change-tab', 'home');
          },
+       },
+       { type: 'separator' },
+       {
+         label: i18n.__('Restart'), 
+         click() {
+           app.relaunch();
+           app.quit(0);
+         }
+
+       },
+       { type: 'separator' },
+       {
+         label: i18n.__('Close'),
+         icon: (ASSETS + 'icons/menu/power-off.png'),
+         role: 'close',
+
        }
 
      ],
@@ -66,8 +82,8 @@
          },
        },
        { type: 'separator' },
-       {  label: i18n.__('Reload'), role: 'forcereload' },
-       {  label: i18n.__('Toggle fullscreen'),role: 'togglefullscreen' },
+       { label: i18n.__('Reload'), role: 'forcereload' },
+       { label: i18n.__('Toggle fullscreen'), role: 'togglefullscreen' },
        { type: 'separator' },
        { role: 'toggledevtools' },
 
@@ -223,7 +239,7 @@
          },
        },
        {
-         label: i18n.__('About')+" "+i18n.__('MEDIACEPT Office') ,
+         label: i18n.__('About') + " " + i18n.__('MEDIACEPT Office'),
          icon: (ASSETS + 'icons/menu/info-circle.png'),
          accelerator: 'CmdOrCtrl+i',
          click() {
@@ -236,12 +252,7 @@
 
    // Add additional menu item on Windows & Linux
    if (process.platform !== 'darwin') {
-     // Add Quit to invoiceMenu
-     fileMenu.submenu.push({ type: 'separator' }, {
-       icon: (ASSETS + 'icons/menu/power-off.png'),
-       role: 'close',
-       label: i18n.__('Close')
-     }, );
+     
      // Add check for update to helpMenu
      helpMenu.submenu.unshift({
        label: 'Check For Updates',
