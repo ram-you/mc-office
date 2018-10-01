@@ -1,7 +1,7 @@
 {
   "MEDIACEPT Office": "MEDIACEPT Office",
-  "File":"File",
-  "Home":"Home",
+  "File": "File",
+  "Home": "Home",
   "Edit": "Edit",
   "Undo": "Undo",
   "Redo": "Redo",
@@ -11,9 +11,22 @@
   "Delete": "Delete",
   "Select all": "Select all",
   "View": "View",
-  "Speech": "Speech",
-  "Start speaking": "Start speaking",
-  "Stop speaking": "Stop speaking",
+
+  "New": "New",
+  "Save": "Save",
+  "Reset": "Reset",
+  "Add Item": "Add Item",
+  "Toggle": "Toggle",
+  "Toggle Form Settings": "Toggle Form Settings",
+  "Toggle Due Date": "Toggle Due Date",
+  "Toggle Currency": "Toggle Currency",
+  "Toggle VAT": "Toggle VAT",
+  "Toggle Discount": "Toggle Discount",
+  "Toggle Note": "Toggle Note",
+
+
+
+
   "Actual size": "Actual size",
   "Zoom in": "Zoom in",
   "Zoom out": "Zoom out",
@@ -32,9 +45,12 @@
   "Zoom": "Zoom",
   "Bring all to front": "Bring all to front",
   "Welcome": "Welcome",
-  "Hopefully this helps someone to get up to speed with electron.": "Hopefully this helps someone to get up to speed with electron.",
-  "Who we are": "Who we are",
-  "What we do": "What we do",
-  "Get in touch": "Get in touch",
-  "Reload":"Reload"
+
+  "Reload": "Reload",
+  "Go to": "Go to",
+  "Settings": "Settings",
+  "Dev tools": "Dev tools",
+  "Invoice": "Invoice",
+  "Invoices": "Invoices",
+  "Contacts": "Contacts"
 }

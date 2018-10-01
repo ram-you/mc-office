@@ -2,7 +2,7 @@
   <div>
 
     <v-dialog v-model="alert.visible" max-width="300" persistent>
-      <v-card :color="alert.color" dark>
+      <v-card :color="alert.color" dark  style="direction: ltr;">
         <v-card-title class="headline" color="white" style="background: rgba(0, 0, 0, 0.1);padding: 8px 16px;">{{alert.title}}</v-card-title>
         <v-card-text color="white">
           <div class="font-weight-bold" v-html="alert.message"> </div>

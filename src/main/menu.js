@@ -26,7 +26,7 @@
    };
 
    const viewHiddenWindowsMenu = {
-     label: 'Dev Tools',
+     label: i18n.__('Dev tools'),
      enabled: global.showHiddenWindowsMenu["show"],
      submenu: [{
          label: 'Print Window',
@@ -50,7 +50,7 @@
          },
        },
        {
-         label: 'Close all',
+         label: i18n.__('Close all'),
          icon: (ASSETS + 'icons/menu/eye-slash.png'),
          click() {
            global.dbWorkerWindow.hide();
@@ -66,8 +66,8 @@
          },
        },
        { type: 'separator' },
-       { role: 'forcereload' },
-       { role: 'togglefullscreen' },
+       {  label: i18n.__('Reload'), role: 'forcereload' },
+       {  label: i18n.__('Toggle fullscreen'),role: 'togglefullscreen' },
        { type: 'separator' },
        { role: 'toggledevtools' },
 
@@ -75,23 +75,23 @@
    };
 
    const invoiceMenu = {
-     label: 'Invoice',
+     label: i18n.__('Invoice'),
      submenu: [{
-         label: 'New',
+         label: i18n.__('New'),
          accelerator: 'CmdOrCtrl+N',
          click() {
            mainWindow.webContents.send('menu-change-tab', 'new-invoice');
          },
        },
        {
-         label: 'Save',
+         label: i18n.__('Save'),
          accelerator: 'CmdOrCtrl+S',
          click() {
            mainWindow.webContents.send('menu-form-save');
          },
        },
        {
-         label: 'Reset',
+         label: i18n.__('Reset'),
          accelerator: 'CmdOrCtrl+R',
          click() {
            mainWindow.webContents.send('menu-form-clear');
@@ -99,7 +99,7 @@
        },
        { type: 'separator' },
        {
-         label: 'Add Item',
+         label: i18n.__('Add Item'),
          accelerator: 'CmdOrCtrl+I',
          click() {
            mainWindow.webContents.send('menu-form-add-item');
@@ -107,44 +107,44 @@
        },
        { type: 'separator' },
        {
-         label: 'Toggle',
+         label: i18n.__('Toggle'),
          submenu: [{
-             label: 'Toggle Form Settings',
+             label: i18n.__('Toggle Form Settings'),
              accelerator: 'Alt+S',
              click() {
                mainWindow.webContents.send('menu-form-toggle-settings');
              },
            },
            {
-             label: 'Toggle Due Date',
+             label: i18n.__('Toggle Due Date'),
              accelerator: 'Alt+T',
              click() {
                mainWindow.webContents.send('menu-form-toggle-dueDate');
              },
            },
            {
-             label: 'Toggle Currency',
+             label: i18n.__('Toggle Currency'),
              accelerator: 'Alt+C',
              click() {
                mainWindow.webContents.send('menu-form-toggle-currency');
              },
            },
            {
-             label: 'Toggle VAT',
+             label: i18n.__('Toggle VAT'),
              accelerator: 'Alt+V',
              click() {
                mainWindow.webContents.send('menu-form-toggle-vat');
              },
            },
            {
-             label: 'Toggle Discount',
+             label: i18n.__('Toggle Discount'),
              accelerator: 'Alt+D',
              click() {
                mainWindow.webContents.send('menu-form-toggle-discount');
              },
            },
            {
-             label: 'Toggle Note',
+             label: i18n.__('Toggle Note'),
              accelerator: 'Alt+N',
              click() {
                mainWindow.webContents.send('menu-form-toggle-note');
@@ -156,23 +156,23 @@
    };
 
    const goMenu = {
-     label: 'Go',
+     label: i18n.__('Go to'),
      submenu: [{
-         label: 'Invoices',
+         label: i18n.__('Invoices'),
          accelerator: 'CmdOrCtrl+Shift+A',
          click() {
            mainWindow.webContents.send('menu-change-tab', 'invoices');
          },
        },
        {
-         label: 'Contacts',
+         label: i18n.__('Contacts'),
          accelerator: 'CmdOrCtrl+Shift+D',
          click() {
            mainWindow.webContents.send('menu-change-tab', 'contacts');
          },
        },
        {
-         label: 'Settings',
+         label: i18n.__('Settings'),
          icon: (ASSETS + 'icons/menu/wrench.png'),
          accelerator: 'CmdOrCtrl+Shift+S',
          click() {
@@ -183,27 +183,29 @@
    };
 
    const editMenu = {
-     label: 'Edit',
+     label: i18n.__('Edit'),
      submenu: [
-       { role: 'undo' },
-       { role: 'redo' },
+       { label: i18n.__('Undo'), role: 'undo' },
+       { label: i18n.__('Redo'), role: 'redo' },
        { type: 'separator' },
-       { role: 'cut' },
-       { role: 'copy' },
-       { role: 'paste' },
+       { label: i18n.__('Cut'), role: 'cut' },
+       { label: i18n.__('Copy'), role: 'copy' },
+       { label: i18n.__('Paste'), role: 'paste' },
        { type: 'separator' },
-       { role: 'selectall' },
+       { label: i18n.__('Select all'), role: 'selectall' },
      ],
    };
 
    const windowsMenu = {
+     label: i18n.__('Window'),
      role: 'window',
-     submenu: [{ role: 'minimize' }, { role: 'close' }],
+     submenu: [{ label: i18n.__('Minimize'), role: 'minimize' }, { label: i18n.__('Close'), role: 'close' }],
 
    };
 
    const helpMenu = {
      role: 'help',
+     label: i18n.__('Help'),
      submenu: [{
          label: 'Show Tutorial',
          accelerator: 'CmdOrCtrl+t',
@@ -221,7 +223,7 @@
          },
        },
        {
-         label: 'About MC Office',
+         label: i18n.__('About')+" "+i18n.__('MEDIACEPT Office') ,
          icon: (ASSETS + 'icons/menu/info-circle.png'),
          accelerator: 'CmdOrCtrl+i',
          click() {
@@ -271,7 +273,7 @@
    mainWindow.setMenu(menu);
 
    ipcMain.once("update-main-menu", (event) => {
-    i18n = new(require('./i18n'))
+     i18n = new(require('./i18n'))
      init()
 
    })

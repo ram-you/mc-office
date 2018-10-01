@@ -118,9 +118,9 @@ function createMainWindow() {
 
   return mainWindow
 }
-
+ 
 // create main BrowserWindow when electron is ready
-app.on('ready', async () => {
+app.on('ready', async () => {    
   dbWorkerWindow = createDataBaseWorkerWindow();
   mainWindow = createMainWindow();
   printWorkerWindow = createPrintWorkerWindow(); 

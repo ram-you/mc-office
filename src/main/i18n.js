@@ -21,10 +21,10 @@ function i18n() {
   var connectedUserName = _store.get('user.username')
   var userLocale = _store.get('users.'+connectedUserName+'.locale.locale') || _store.get('global.locale.locale') ;
   var direction= (userLocale.substring(0, 2)=="ar")?'rtl':'ltr';
-  
-  global.DIRECTION=direction
+   
+  app.commandLine.appendSwitch('force-ui-direction', direction); 
+   
 
-  app.commandLine.appendSwitch('force-ui-direction', direction)
   if (fs.existsSync((LOCALES + userLocale + '.json'))) {
     loadedLanguage = JSON.parse(fs.readFileSync((LOCALES + userLocale + '.json'), 'utf8'));
   } else {
