@@ -1,6 +1,6 @@
 {
   "name": "mc-office",
-  "version": "0.3.60",
+  "version": "0.3.61",
   "description": "A MEDIACEPT Technology creation",
   "repository": {
     "type": "git",
@@ -45,7 +45,7 @@
     "handlebars": "^4.0.12",
     "jquery": "^3.3.1",
     "knex": "^0.15.2",
-    "lodash": "^4.17.11",
+    "lodash-es": "^4.17.11",
     "nedb": "^1.8.0",
     "pdf-lib": "^0.3.0",
     "popper.js": "^1.14.4",
@@ -55,7 +55,7 @@
     "vue-i18n": "^8.1.0",
     "vue-router": "^3.0.1",
     "vue-swatches": "^1.0.2",
-    "vuetify": "^1.2.5",
+    "vuetify": "^1.2.6",
     "vuex": "^3.0.1",
     "xlsx": "^0.14.0"
   },
@@ -74,7 +74,7 @@
     "css-loader": "^1.0.0",
     "del": "^3.0.0",
     "devtron": "^1.4.0",
-    "electron": "^2.0.10",
+    "electron": "^2.0.11",
     "electron-builder": "^20.28.4",
     "electron-debug": "^2.0.0",
     "electron-rebuild": "^1.8.2",

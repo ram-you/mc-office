@@ -2,14 +2,15 @@
   <div>
 
     <v-dialog v-model="alert.visible" max-width="300" persistent>
-      <v-card :color="alert.color" dark  style="direction: ltr;">
+      <v-card :color="alert.color" dark style="direction: ltr;">
         <v-card-title class="headline" color="white" style="background: rgba(0, 0, 0, 0.1);padding: 8px 16px;">{{alert.title}}</v-card-title>
         <v-card-text color="white">
           <div class="font-weight-bold" v-html="alert.message"> </div>
         </v-card-text>
         <v-card-text color="white">
           <v-text-field v-for="input in alert.inputs" :key="input.label" :label="input.label"
-            v-model="input.model" :placeholder="input.label" dark color="white"></v-text-field>
+            v-model="input.model" :placeholder="input.label" dark color="white" :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+            :type="showPassword ? 'text' : 'password'" @click:append="showPassword = !showPassword"></v-text-field>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -139,6 +140,7 @@ export default {
   data() {
     var appTitle = this.$i18n.t('main.app.Title')
     return {
+      showPassword: false,
       iAmSuperAdmin: false,
       sa: { sk: '', sp: '', cp: '' },
       alert: {
@@ -247,6 +249,7 @@ export default {
       }
     },
     amISuperAdmin() {
+      this.showPassword = false
       this.alert = {
         visible: true, color: 'red', title: 'MEDIACEPT password', message: "Super Admin Password",
         inputs: [{ label: 'Password', model: null }],
@@ -299,7 +302,7 @@ export default {
           " <span class='font-weight-bold'>" + ct + "</span>" +
           " </div>"
       }
-
+      this.showPassword = true
       this.alert = {
         visible: true, color: 'teal', title: 'Your password', message: message,
         inputs: [{ label: 'Password', model: null }],
@@ -338,7 +341,6 @@ export default {
 }
 </script>
 <style>
- 
 div.weatherwidget {
   width: 100%;
   max-width: 1200px;

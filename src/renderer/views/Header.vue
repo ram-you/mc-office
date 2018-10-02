@@ -16,8 +16,8 @@
       </v-card>
     </v-dialog>
 
-    <v-navigation-drawer :value="drawerState" :clipped="isDesktop" app :right="$vuetify.rtl"
-      :absolute="isDesktop" :mini-variant="miniVariant">
+    <v-navigation-drawer :value="drawerState" :clipped="isDesktop" app :right="$vuetify.rtl" :fixed="isDesktop"
+      :mini-variant="miniVariant">
       <div class="py-2"></div>
       <v-list>
         <!-- ****************************** -->

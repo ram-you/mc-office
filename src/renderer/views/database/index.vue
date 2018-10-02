@@ -630,7 +630,8 @@ export default {
       const remote = electron.remote;
       const Menu = remote.Menu;
 
-      const InputMenu = Menu.buildFromTemplate([ 
+      const InputMenu = Menu.buildFromTemplate([
+
         { label: 'Cut', role: 'cut', },
         { label: 'Copy', role: 'copy', },
         { label: 'Paste', role: 'paste', },
@@ -642,12 +643,14 @@ export default {
         e.preventDefault();
         e.stopPropagation();
         let node = e.target;
+        let className = e.target.getAttribute('class')
         while (node) {
-          if (node.nodeName.match(/^(input|textarea)$/i) || node.isContentEditable) {
+          if ((node.nodeName.match(/^(input|textarea)$/i) || node.isContentEditable) && className == "ace_text-input") {
             InputMenu.popup(remote.getCurrentWindow());
             break;
           }
           node = node.parentNode;
+
         }
       });
 
@@ -666,7 +669,8 @@ export default {
   padding-right: 0 !important;
 }
 /* --------- */
-.ace_gutter,.ace_content {
+.ace_gutter,
+.ace_content {
   z-index: 2 !important;
 }
 /* ------------ */
