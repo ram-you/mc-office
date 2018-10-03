@@ -48,8 +48,7 @@
           </v-list-tile-content>
         </v-list-tile>
 
-        <v-list-tile to="/invoices" @mouseover="invoice_new=true" @mouseleave="invoice_new=false"
-          ripple>
+        <v-list-tile to="/invoices" @mouseover="invoice_new=true" @mouseleave="invoice_new=false">
           <v-list-tile-action>
             <v-icon class="green white--text">mdi-file-pdf</v-icon>
           </v-list-tile-action>

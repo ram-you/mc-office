@@ -35,7 +35,6 @@ const rendererConfig = {
   module: {
     rules: [
 
-
       {
         test: /\.scss$/,
         use: ['vue-style-loader', 'css-loader', 'sass-loader']
@@ -49,11 +48,11 @@ const rendererConfig = {
         use: ['vue-style-loader', 'css-loader', 'less-loader']
       },
 
- 
+
 
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader',]
+        use: [MiniCssExtractPlugin.loader, 'css-loader', ]
       },
 
 
@@ -175,7 +174,7 @@ const rendererConfig = {
   target: 'electron-renderer',
 
   optimization: {
-    splitChunks: { 
+    splitChunks: {
       chunks: 'all'
     },
     runtimeChunk: false,
