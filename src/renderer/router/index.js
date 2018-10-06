@@ -9,6 +9,7 @@ export default new Router({
   routes: [{
     path: '/',
     name: 'home',
+    meta: { transitionName: 'zoom' },
     component: Home
   },
   {
@@ -45,7 +46,7 @@ export default new Router({
   {
     path: '/invoice/new',
     name: 'new-invoice',
-    // meta: { transitionName: 'slide' },
+    meta: { transitionName: 'fade' },
     component: () => import('../views/billing/invoice/new')
   },
   {
