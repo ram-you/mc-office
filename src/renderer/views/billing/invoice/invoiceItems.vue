@@ -30,18 +30,19 @@
         class="mx-2 py-2" @mouseover="item.overed=true" @mouseleave="item.overed=false">
 
         <div style="width: 3%;padding: 14px 4px 0;text-align: center;">{{index+1}}</div>
-        <v-text-field label="Item" v-model="item.item" @input="updateLine($event, item)" solo hide-details flat
-          class="px-2" style="width:15%;"></v-text-field>
-        <v-text-field label="Description" v-model="item.description" @input="updateLine($event, item)" solo hide-details
-          flat class="px-2" style="width:47%;"></v-text-field>
+        <v-text-field label="Item" v-model="item.item" @input="updateLine($event, item)" solo
+          hide-details flat class="px-2" style="width:15%;"></v-text-field>
+        <v-text-field label="Description" v-model="item.description" @input="updateLine($event, item)"
+          solo hide-details flat class="px-2" style="width:47%;"></v-text-field>
         <v-text-field label="Unit Cost" type="number" v-model="item.unit_cost" @input="updateLine($event, item)"
           solo hide-details flat class="px-2" style="width:12%;"></v-text-field>
         <v-text-field label="Quantity" type="number" v-model="item.quantity" @input="updateLine($event, item)"
           solo hide-details flat class="px-2" style="width:10%;"></v-text-field>
-        <v-text-field label="Line Total" type="number" v-model="item.line_total" readonly solo hide-details flat
-          class="px-2 align-right" style="width:13%;"></v-text-field>
+        <v-text-field label="Line Total" type="number" v-model="item.line_total" readonly solo
+          hide-details flat class="px-2 align-right" style="width:13%;"></v-text-field>
 
-        <v-icon @click="deleteLine(item.id)" :class="item.overed?'red--text':'transparent--text'" class="px-1 mdi-18px">mdi-minus-circle</v-icon>
+        <v-icon @click="deleteLine(item.id)" :class="item.overed?'red--text':'transparent--text'"
+          class="px-1 mdi-18px">mdi-minus-circle</v-icon>
 
       </v-layout>
     </transition-group>
@@ -108,11 +109,11 @@ export default {
         if (vm.childData.invoice_items.length == 0) vm.addNewLine()
       }, 100);
     },
-  
+
 
     updateLine: debounce(function (event, item) {
       var vm = this;
-      item.line_total =parseFloat(( item.quantity * item.unit_cost).toFixed(3).replace(",", "."));
+      item.line_total = parseFloat((item.quantity * item.unit_cost).toFixed(3).replace(",", "."));
 
       vm.updateGrandTotal()
     }, 500),
@@ -122,7 +123,7 @@ export default {
       for (var i = 0; i < this.childData.invoice_items.length; i++) {
         subtotal += this.childData.invoice_items[i].line_total
       }
-      this.childData.totals.subtotal =  parseFloat((subtotal).toFixed(3).replace(",", "."));
+      this.childData.totals.subtotal = parseFloat((subtotal).toFixed(3).replace(",", "."));
       if (this.childData.is_amount_discount == 1) {
         this.childData.totals.discount = this.childData.discount;
       } else {
