@@ -97,7 +97,7 @@
 
       </v-toolbar>
 
-      <webview id="pdf-viewer" :src="pdfString" style="display:flex; width:100%; height:100vh" autosize plugins></webview>
+      <webview id="pdf-viewer"  style="display:flex; width:100%; height:100vh" autosize   ></webview>
 
     </v-card>
 
@@ -176,8 +176,7 @@ export default {
       logoImg: require("../../../../common/assets/img/logo/256x256.png"),
       base64: '',
       showInvoiceData: false,
-      clientDialog: false,
-      pdfString: 'about:blank',
+      clientDialog: false, 
       isRenderingPdf: false,
       invoiceDate: false,
       dueDate: false,
@@ -224,25 +223,25 @@ export default {
     var connectedUserName = this.connectedUserName;
     var userTheme = _store.get('users.' + connectedUserName + '.invoice.theme') || 'default'
     this.theme = userTheme;
-
-
+ 
 
     vm.webview = document.querySelector('webview')
-    vm.webview.webContents = vm.webview.getWebContents()
+    vm.webview.webContents =   vm.webview.getWebContents()
     PDFWindow.addSupport(vm.webview);
 
-
+    
 
     ipcRenderer.on("data-pdf", (event, pdfData) => {
-      console.log(" PDF DATA regenerated.....");
-      // vm.pdfString = 'data:application/pdf;base64, ' + (Uint8ToBase64(pdfData))
+      console.log(" PDF DATA regenerated....."); 
 
-      vm.webview.webContents = vm.webview.getWebContents()
+      vm.webview.webContents =  vm.webview.getWebContents()
 
       var tempPdfFile = os.tmpdir() + '/tmp_invoice.pdf'
       fs.writeFileSync(tempPdfFile, pdfData);
       vm.isRenderingPdf = false;
-      vm.webview.loadURL(tempPdfFile);
+      vm.webview.loadURL(tempPdfFile); 
+
+  
 
     });
 

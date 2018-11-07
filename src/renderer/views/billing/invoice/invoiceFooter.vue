@@ -8,26 +8,26 @@
 
             <v-tabs slider-color="orange" grow class="elevation-1 pa-2 pb-4">
 
-              <v-tab href="#tab-publicNotes"> Public Notes </v-tab>
-              <v-tab href="#tab-privateNotes"> Private Notes </v-tab>
-              <v-tab href="#tab-terms"> Terms </v-tab>
-              <v-tab href="#tab-footer"> Footer </v-tab>
+              <v-tab key="tab-publicNotes"> Public Notes </v-tab>
+              <v-tab key="tab-privateNotes"> Private Notes </v-tab>
+              <v-tab key="tab-terms"> Terms </v-tab>
+              <v-tab key="tab-footer"> Footer </v-tab>
 
               <v-tabs-items>
 
-                <v-tab-item id="tab-publicNotes">
+                <v-tab-item key="tab-publicNotes">
                   <v-textarea counter="255" value=""></v-textarea>
                 </v-tab-item>
 
-                <v-tab-item id="tab-privateNotes">
+                <v-tab-item key="tab-privateNotes">
                   <v-textarea counter="255" value=""></v-textarea>
                 </v-tab-item>
 
-                <v-tab-item id="tab-terms">
+                <v-tab-item key="tab-terms">
                   <v-textarea counter="255" value=""></v-textarea>
                 </v-tab-item>
 
-                <v-tab-item id="tab-footer">
+                <v-tab-item key="tab-footer">
                   <v-textarea counter="255" value=""></v-textarea>
                 </v-tab-item>
 
