@@ -3,15 +3,7 @@
 <template>
   <div>
     <v-toolbar flat style="border-bottom:1px solid rgba(150, 150, 150, 0.23);">
-      <v-breadcrumbs divider="/">
-        <v-breadcrumbs-item to="/">
-          <span class="subheading">{{ $t('main.app.Home') }} </span>
-        </v-breadcrumbs-item>
-        <v-breadcrumbs-item disabled>
-          <span class="subheading">Statistiques </span>
-          <span class="subheading font-weight-medium"> </span>
-        </v-breadcrumbs-item>
-      </v-breadcrumbs>
+      <v-breadcrumbs :items="breadcrumbsItems" divider="/"></v-breadcrumbs>
       <v-spacer></v-spacer>
       <div class="mx-1">
         <v-btn icon @click="()=>{}">
@@ -46,7 +38,11 @@ export default {
   components: { MonthlyIncome },
   data() {
     return {
-      chartData1: [40, 39, 55, 40, 39, 45, 40,50, 35,33,60,32],
+      chartData1: [40, 39, 55, 40, 39, 45, 40, 50, 35, 33, 60, 32],
+      breadcrumbsItems: [
+        { text: this.$t('main.app.Home'), disabled: false, to: '/' },
+        { text: 'Statistiques', disabled: true, to: '' }
+      ]
     }
   },
 }

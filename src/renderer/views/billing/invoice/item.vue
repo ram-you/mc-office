@@ -2,16 +2,7 @@
   <div>
 
     <v-toolbar flat style="border-bottom:1px solid rgba(150, 150, 150, 0.23);">
-      <v-breadcrumbs divider="/">
-        <v-breadcrumbs-item to="/invoices">
-          <span class="subheading">Liste des Factures </span>
-        </v-breadcrumbs-item>
-        <v-breadcrumbs-item disabled>
-          <span class="pr-1 subheading">Facture: </span>
-          <span class="subheading font-weight-medium"> {{invoice.number}}</span>
-        </v-breadcrumbs-item>
-      </v-breadcrumbs>
-
+      <v-breadcrumbs :items="breadcrumbsItems" divider="/"></v-breadcrumbs>
       <v-spacer></v-spacer>
 
       <div class="mx-1">
@@ -62,16 +53,15 @@ export default {
   components: { InvoiceSetup, InvoiceDetail },
   data() {
     return {
-
-
-
-
-
       theme: 'default',
       invoice: {},
       invoiceID: this.$route.params.id,
       invoiceNumber: this.$route.query.number,
       systemPrinters: [],
+      breadcrumbsItems: [
+        { text: 'Liste des Factures', disabled: false, to: '/invoices' },
+        { text: 'Facture: ' + this.invoice.number, disabled: true, to: '' }
+      ]
     }
   },
   computed: {

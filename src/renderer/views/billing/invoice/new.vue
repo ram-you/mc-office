@@ -2,15 +2,7 @@
   <div class="heightAuto">
 
     <v-toolbar flat style="border-bottom:1px solid rgba(150, 150, 150, 0.23);">
-      <v-breadcrumbs divider="/">
-        <v-breadcrumbs-item to="/invoices">
-          <span class="subheading">Liste des Factures </span>
-        </v-breadcrumbs-item>
-        <v-breadcrumbs-item disabled>
-          <span class="subheading">Nouvelle Facture </span>
-          <span class="subheading font-weight-medium"> </span>
-        </v-breadcrumbs-item>
-      </v-breadcrumbs>
+      <v-breadcrumbs :items="breadcrumbsItems" divider="/"></v-breadcrumbs>
       <v-spacer></v-spacer>
       <div class="mx-1">
         <v-btn icon>
@@ -97,7 +89,7 @@
 
       </v-toolbar>
 
-      <webview id="pdf-viewer"  style="display:flex; width:100%; height:100vh" autosize   ></webview>
+      <webview id="pdf-viewer" style="display:flex; width:100%; height:100vh" autosize></webview>
 
     </v-card>
 
@@ -170,13 +162,14 @@ export default {
       totals: {},
       client: { contact: {} },
       age: null,
-      terms: false
+      terms: false,
+
     })
     return {
       logoImg: require("../../../../common/assets/img/logo/256x256.png"),
       base64: '',
       showInvoiceData: false,
-      clientDialog: false, 
+      clientDialog: false,
       isRenderingPdf: false,
       invoiceDate: false,
       dueDate: false,
@@ -200,7 +193,11 @@ export default {
       terms: false,
       defaultForm,
       theme: 'default',
-      webview: ""
+      webview: "",
+      breadcrumbsItems: [
+        { text: 'Liste des Factures', disabled: false, to: '/invoices' },
+        { text: 'Nouvelle Facture', disabled: true, to: '' }
+      ]
     }
   },
   computed: {
@@ -223,25 +220,25 @@ export default {
     var connectedUserName = this.connectedUserName;
     var userTheme = _store.get('users.' + connectedUserName + '.invoice.theme') || 'default'
     this.theme = userTheme;
- 
+
 
     vm.webview = document.querySelector('webview')
-    vm.webview.webContents =   vm.webview.getWebContents()
+    vm.webview.webContents = vm.webview.getWebContents()
     PDFWindow.addSupport(vm.webview);
 
-    
+
 
     ipcRenderer.on("data-pdf", (event, pdfData) => {
-      console.log(" PDF DATA regenerated....."); 
+      console.log(" PDF DATA regenerated.....");
 
-      vm.webview.webContents =  vm.webview.getWebContents()
+      vm.webview.webContents = vm.webview.getWebContents()
 
       var tempPdfFile = os.tmpdir() + '/tmp_invoice.pdf'
       fs.writeFileSync(tempPdfFile, pdfData);
       vm.isRenderingPdf = false;
-      vm.webview.loadURL(tempPdfFile); 
+      vm.webview.loadURL(tempPdfFile);
 
-  
+
 
     });
 

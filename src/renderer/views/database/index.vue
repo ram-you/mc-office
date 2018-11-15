@@ -2,15 +2,7 @@
   <div>
 
     <v-toolbar flat style="border-bottom:1px solid rgba(150, 150, 150, 0.23);">
-      <v-breadcrumbs divider="/">
-        <v-breadcrumbs-item to="/">
-          <span class="subheading">{{ $t('main.app.Home') }} </span>
-        </v-breadcrumbs-item>
-        <v-breadcrumbs-item disabled>
-          <span class="subheading">Database (Base de données)</span>
-          <span class="subheading font-weight-medium"> </span>
-        </v-breadcrumbs-item>
-      </v-breadcrumbs>
+      <v-breadcrumbs :items="breadcrumbsItems" divider="/"></v-breadcrumbs>
       <v-spacer></v-spacer>
       <div class="mx-1">
         <v-btn icon @click="exportDatabaseToExel">
@@ -312,6 +304,10 @@ export default {
         protein: 0
       },
       themesItems: this.$colorThemeItems,
+      breadcrumbsItems: [
+        { text: this.$t('main.app.Home'), disabled: false, to: '/' },
+        { text: 'Database (Base de données)', disabled: true, to: '' }
+      ]
     }
   },
   computed: {

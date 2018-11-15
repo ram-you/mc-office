@@ -21,21 +21,14 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn @click="gotResponse = false" light> OK </v-btn>
-          <v-btn @click='gotResponse = false;openXlsFile(serverResponse.link)' light> Ouvrir </v-btn>
+          <v-btn @click='gotResponse = false;openXlsFile(serverResponse.link)' light> Ouvrir
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
     <v-toolbar flat style="border-bottom:1px solid rgba(150, 150, 150, 0.23);">
-      <v-breadcrumbs divider="/">
-        <v-breadcrumbs-item to="/">
-          <span class="subheading">{{ $t('main.app.Home') }} </span>
-        </v-breadcrumbs-item>
-        <v-breadcrumbs-item disabled>
-          <span class="subheading">Liste des Factures </span>
-          <span class="subheading font-weight-medium"> </span>
-        </v-breadcrumbs-item>
-      </v-breadcrumbs>
+      <v-breadcrumbs :items="breadcrumbsItems" divider="/"></v-breadcrumbs>
       <v-spacer></v-spacer>
       <div class="mx-1">
         <v-btn icon @click="exportDatabaseToExel">
@@ -62,7 +55,8 @@
             <v-card-title>
               Factures
               <v-spacer></v-spacer>
-              <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line hide-details></v-text-field>
+              <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line
+                hide-details></v-text-field>
             </v-card-title>
             <v-dialog v-model="dialog" max-width="500px">
               <v-btn slot="activator" color="primary" dark class="mb-2">New Item</v-btn>
@@ -128,7 +122,8 @@
                     <v-icon v-if="$vuetify.rtl" class="green--text mdi-18px px-2">mdi-subdirectory-arrow-left</v-icon>
                     <v-icon v-else class="green--text mdi-18px px-2">mdi-subdirectory-arrow-right</v-icon>
                     <span class="grey--text text--darken-3 font-weight-regular px-2">Facture:</span>
-                    <a class="font-weight-medium" @click="goDetail(props.item)"> {{ props.item.number }} </a>
+                    <a class="font-weight-medium" @click="goDetail(props.item)"> {{
+                      props.item.number }} </a>
 
                   </v-card-text>
                 </v-card>
@@ -197,7 +192,7 @@ export default {
   data() {
     return {
       waitingResponse: false,
-      waitingMessage:'',
+      waitingMessage: '',
       gotResponse: false,
       serverResponse: '',
       SheetJSFT: ["xlsx", "xlsb", "xlsm", "xls", "xml", "csv", "ods", "dbf"].map(function (x) { return "." + x; }).join(","),
@@ -243,6 +238,10 @@ export default {
         carbs: 0,
         protein: 0
       },
+      breadcrumbsItems: [
+        { text: this.$t('main.app.Home'), disabled: false, to: '/' },
+        { text: 'Liste des Factures', disabled: true, to: '' }
+      ]
     }
   },
   computed: {
@@ -265,11 +264,11 @@ export default {
     },
     dialog(val) { val || this.close() }
   },
-  beforeCreate(){ 
-    dbWorkerWindow.webContents.send("getInvoices", 'invoices'); 
+  beforeCreate() {
+    dbWorkerWindow.webContents.send("getInvoices", 'invoices');
   },
-  created() { 
-    this.initialize(); 
+  created() {
+    this.initialize();
     this.isInvoicesDataLoaded = true;
   },
   destroyed() {
@@ -520,7 +519,7 @@ export default {
       ]
     },
     createPDF(item) {
-      var vm=this;
+      var vm = this;
       this.selectedInvoiceID = item.id;
       this.selectedInvoiceNumber = item.number;
 
@@ -577,7 +576,7 @@ export default {
     exportDatabaseToExel() {
       var vm = this
       this.waitingResponse = true;
-      this.waitingMessage="Exportation en cours, veuillez patienter... "
+      this.waitingMessage = "Exportation en cours, veuillez patienter... "
       ipcRenderer.on('exportToXLS', (event, message) => {
         ipcRenderer.removeAllListeners("exportToXLS");
         vm.waitingResponse = false;
